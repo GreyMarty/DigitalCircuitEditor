@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor.Component.Core", "Editor.Component.Core\Editor.Component.Core.csproj", "{B1145D51-DED5-4557-86D4-C8529724B696}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor.Component", "Editor.Component\Editor.Component.csproj", "{B1145D51-DED5-4557-86D4-C8529724B696}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
