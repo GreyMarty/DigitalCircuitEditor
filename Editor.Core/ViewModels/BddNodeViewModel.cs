@@ -11,15 +11,17 @@ public partial class BddNodeViewModel : ViewModelComponentBase
     private IUnitsToPixelsConverter? _positionConverter;
     private Position? _positionComponent;
     
-        
+    
     public Vector2 Position => _positionComponent is null
         ? new Vector2()
         : _positionConverter?.ToPixels(_positionComponent.Value) ?? new Vector2();
     public float PositionX => Position.X;
     public float PositionY => Position.Y;
     
-    public string? Label { get; set; }
     
+    public string? Label { get; set; }
+
+    public Hoverable Hoverable { get; private set; } = new();
 
     public override void Init(EditorWorld world, Entity entity)
     {
@@ -27,6 +29,8 @@ public partial class BddNodeViewModel : ViewModelComponentBase
         
         _positionComponent = entity.GetRequiredComponent<Position>();
         _positionComponent.PropertyChanged += PositionComponent_OnPropertyChanged;
+
+        Hoverable = entity.GetRequiredComponent<Hoverable>();
     }
 
     public override void Dispose()
