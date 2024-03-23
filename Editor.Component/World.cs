@@ -65,7 +65,7 @@ public class World : IWorld
             return;
         }
 
-        entity.Alive = false;
+        entity.Dispose();
         EventBus.Publish(new EntityDestroyed(this, entity));
     }
     

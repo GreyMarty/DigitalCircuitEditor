@@ -1,14 +1,16 @@
-﻿namespace Editor.Component;
+﻿using Editor.Component.Exceptions;
 
-public sealed class Entity
+namespace Editor.Component;
+
+public sealed class Entity : IDisposable
 {
-    private readonly List<Component> _components = [];
+    private readonly List<ComponentBase> _components = [];
     
     
     public bool Alive { get; internal set; }
     public bool Initialized { get; private set; }
     
-    public IEnumerable<Component> Components => _components;
+    public IEnumerable<ComponentBase> Components => _components;
 
     
     public void Init(IWorld world)
@@ -23,12 +25,24 @@ public sealed class Entity
         Alive = true;
     }
 
-    public T? GetComponent<T>() where T : Component
+    public void Dispose()
+    {
+        _components.ForEach(x => x.Dispose());
+        Initialized = false;
+        Alive = false;
+    }
+
+    public T? GetComponent<T>() where T : ComponentBase
     {
         return _components.FirstOrDefault(x => x is T) as T;
     }
+
+    public T GetRequiredComponent<T>() where T : ComponentBase
+    {
+        return GetComponent<T>() ?? throw new ComponentRequiredException(typeof(T));
+    }
     
-    public T AddComponent<T>() where T : Component, new()
+    public T AddComponent<T>() where T : ComponentBase, new()
     {
         var existingComponent = GetComponent<T>();
         
@@ -42,7 +56,7 @@ public sealed class Entity
         return component;
     }
 
-    public bool RemoveComponent<T>() where T : Component
+    public bool RemoveComponent<T>() where T : ComponentBase
     {
         var component = _components.FirstOrDefault(x => x is T);
         return component != null && _components.Remove(component);
