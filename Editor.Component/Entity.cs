@@ -42,7 +42,7 @@ public sealed class Entity : IDisposable
         return GetComponent<T>() ?? throw new ComponentRequiredException(typeof(T));
     }
     
-    public T AddComponent<T>() where T : ComponentBase, new()
+    public T AddComponent<T>(Action<T>? configure = null) where T : ComponentBase, new()
     {
         var existingComponent = GetComponent<T>();
         
@@ -53,6 +53,7 @@ public sealed class Entity : IDisposable
         
         var component = new T();
         _components.Add(component);
+        configure?.Invoke(component);
         return component;
     }
 
