@@ -12,7 +12,7 @@ public partial class EditorViewModel : INotifyPropertyChanged
     private readonly IUnitsToPixelsConverter _positionConverter;
     
     
-    public Vector2 Offset { get; set; }
+     public Vector2 Offset { get; set; }
     
     public float OffsetX
     {
