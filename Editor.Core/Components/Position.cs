@@ -2,7 +2,7 @@
 using System.Numerics;
 using Editor.Component;
 
-namespace Editor.Core;
+namespace Editor.Core.Components;
 
 public class Position : ComponentBase<EditorWorld>, INotifyPropertyChanged
 {

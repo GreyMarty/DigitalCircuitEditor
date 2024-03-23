@@ -1,9 +1,6 @@
 namespace Editor.Component.Exceptions;
 
-public class ComponentRequiredException : Exception
+public class ComponentRequiredException(Type type) : Exception
 {
-    public ComponentRequiredException(Type type)
-    {
-        throw new NotImplementedException();
-    }
+    public Type Type { get; } = type;
 }

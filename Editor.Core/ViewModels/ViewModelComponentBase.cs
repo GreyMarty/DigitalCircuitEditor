@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using Editor.Component;
 using Editor.Core;
 
-namespace Editor.ViewModel;
+namespace Editor.Core.ViewModels;
 
 public class ViewModelComponentBase : ComponentBase<EditorWorld>, INotifyPropertyChanged
 {
