@@ -8,13 +8,11 @@ namespace Editor.Core.ViewModels;
 
 public partial class BddNodeViewModel : ViewModelComponentBase
 {
-    private IUnitsToPixelsConverter? _positionConverter;
-    private Position? _positionComponent;
+    private IUnitsToPixelsConverter _positionConverter = default!;
+    private Position _positionComponent = default!;
     
     
-    public Vector2 Position => _positionComponent is null
-        ? new Vector2()
-        : _positionConverter?.ToPixels(_positionComponent.Value) ?? new Vector2();
+    public Vector2 Position => _positionConverter.ToPixels(_positionComponent.Value);
     public float PositionX => Position.X;
     public float PositionY => Position.Y;
     
@@ -35,11 +33,6 @@ public partial class BddNodeViewModel : ViewModelComponentBase
 
     public override void Dispose()
     {
-        if (_positionComponent is null)
-        {
-            return;
-        }
-        
         _positionComponent.PropertyChanged -= PositionComponent_OnPropertyChanged;
     }
     
@@ -49,6 +42,8 @@ public partial class BddNodeViewModel : ViewModelComponentBase
         {
             case nameof(_positionComponent.Value):
                 OnPropertyChanged(nameof(Position));
+                OnPropertyChanged(nameof(PositionX));
+                OnPropertyChanged(nameof(PositionY));
                 break;
         }
     }

@@ -16,6 +16,5 @@ public partial class Hoverable : ComponentBase<EditorWorld>, INotifyPropertyChan
     private void OnHover(bool hovered)
     {
         Hovered = hovered;
-        Console.WriteLine(hovered);
     }
 }
