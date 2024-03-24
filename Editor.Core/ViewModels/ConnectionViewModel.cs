@@ -4,7 +4,7 @@ using Editor.Core.Components;
 
 namespace Editor.Core.ViewModels;
 
-public class ConnectionViewModel : ViewModelComponentBase
+public class ConnectionViewModel<TColor> : VisualElementViewModel<TColor>
 {
     public Connection Connection { get; private set; } = default!;
 
@@ -24,11 +24,15 @@ public class ConnectionViewModel : ViewModelComponentBase
         Target = Target.Rebind(Connection.Target?.GetRequiredComponent<Position>(), Target_OnPropertyChanged);
         
         Connection.PropertyChanged += Connection_OnPropertyChanged;
+        
+        base.Init(world, entity);
     }
 
     public override void Dispose()
     {
         Connection.PropertyChanged -= Connection_OnPropertyChanged;
+        
+        base.Dispose();
     }
     
     private void Connection_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

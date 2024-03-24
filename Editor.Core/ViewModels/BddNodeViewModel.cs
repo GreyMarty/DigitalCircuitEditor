@@ -3,10 +3,10 @@ using Editor.Core.Components;
 
 namespace Editor.Core.ViewModels;
 
-public class BddNodeViewModel : ViewModelComponentBase
+public class BddNodeViewModel<TColor> : VisualElementViewModel<TColor>
 {
     public Position Position { get; private set; } = default!;
-    public Hoverable Hoverable { get; private set; } = default!;
+    public new Hoverable Hoverable { get; private set; } = default!;
     
     public string? Label { get; set; }
 
@@ -15,5 +15,7 @@ public class BddNodeViewModel : ViewModelComponentBase
     {
         Position = entity.GetRequiredComponent<Position>();
         Hoverable = entity.GetRequiredComponent<Hoverable>();
+        
+        base.Init(world, entity);
     }
 }
