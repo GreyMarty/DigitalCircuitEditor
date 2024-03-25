@@ -13,6 +13,7 @@ public interface IWorld : IDisposable
     public void Init();
     
     public Entity Instantiate(Entity? entity = null);
+    public IEnumerable<Entity> Instantiate(IEntityGroup entities);
     public void Destroy(Entity entity);
 }
 
@@ -57,7 +58,14 @@ public class World : IWorld
 
         return entity;
     }
-    
+
+    public IEnumerable<Entity> Instantiate(IEntityGroup entities)
+    {
+        return entities.GetEntities()
+            .Select(Instantiate)
+            .ToList();
+    }
+
     public void Destroy(Entity entity)
     {
         if (!_entities.Remove(entity))
