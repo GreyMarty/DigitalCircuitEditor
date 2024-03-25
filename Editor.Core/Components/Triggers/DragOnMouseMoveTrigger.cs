@@ -2,9 +2,9 @@
 using Editor.Core.Events;
 using Editor.Core.Input;
 
-namespace Editor.Core.Components;
+namespace Editor.Core.Components.Triggers;
 
-public class Draggable : ComponentBase<EditorWorld>
+public class DragOnMouseMoveTrigger : OnMouseMoveTrigger
 {
     private Position _positionComponent = default!;
     private Hoverable _hoverableComponent = default!;
@@ -14,11 +14,11 @@ public class Draggable : ComponentBase<EditorWorld>
     {
         _positionComponent = entity.GetRequiredComponent<Position>();
         _hoverableComponent = entity.GetRequiredComponent<Hoverable>();
-
-        world.EventBus.Subscribe<MouseMove>(OnMouseMove);
+        
+        base.Init(world, entity);
     }
     
-    private void OnMouseMove(MouseMove e)
+    protected override void OnMouseMove(MouseMove e)
     {
         if (!_hoverableComponent.Hovered || e.Button != MouseButton.Left!)
         {

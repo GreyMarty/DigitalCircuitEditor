@@ -49,6 +49,8 @@ public class VisualElementViewModel<TColor> : ViewModelComponentBase
         {
             Selectable.PropertyChanged -= Dependency_OnPropertyChanged;
         }
+        
+        base.Dispose();
     }
 
     private void Dependency_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

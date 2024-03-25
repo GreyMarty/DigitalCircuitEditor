@@ -2,9 +2,15 @@
 
 public abstract class ComponentBase : IDisposable
 {
+    public event EventHandler? Disposed;
+    
+    
     public virtual void Init(IWorld world, Entity entity) { }
 
-    public virtual void Dispose() { }
+    public virtual void Dispose()
+    {
+        Disposed?.Invoke(this, EventArgs.Empty);
+    }
 }
 
 public abstract class ComponentBase<TWorld> : ComponentBase where TWorld : IWorld
