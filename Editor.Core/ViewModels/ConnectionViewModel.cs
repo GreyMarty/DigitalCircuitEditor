@@ -4,33 +4,38 @@ using Editor.Core.Components;
 
 namespace Editor.Core.ViewModels;
 
-public class ConnectionViewModel<TColor> : VisualElementViewModel<TColor>
+public class ConnectionViewModel : VisualElementViewModel
 {
-    public Connection Connection { get; private set; } = default!;
-
-    public Position? Source { get; private set; }
-    public float SourceX => Source?.PixelsX ?? 0;
-    public float SourceY => Source?.PixelsY ?? 0;
-    
-    public Position? Target { get; private set; }
-    public float TargetOffsetX => Target?.PixelsX - SourceX ?? 0;
-    public float TargetOffsetY => Target?.PixelsY - SourceY ?? 0;
+    private ComponentRef<Connection> _connection = default!;
 
     
-    public override void Init(EditorWorld world, Entity entity)
+    public ComponentRef<Position>? Source { get; private set; }
+    public float SourceX => Source?.Component?.PixelsX ?? 0;
+    public float SourceY => Source?.Component?.PixelsY ?? 0;
+    
+    public ComponentRef<Position>? Target { get; private set; }
+    public float TargetOffsetX => Target?.Component?.PixelsX - SourceX ?? 0;
+    public float TargetOffsetY => Target?.Component?.PixelsY - SourceY ?? 0;
+
+    
+    public override void Init(EditorWorld world, IEntity entity)
     {
-        Connection = entity.GetRequiredComponent<Connection>();
-        Source = Source.Rebind(Connection.Source?.GetRequiredComponent<Position>(), Source_OnPropertyChanged);
-        Target = Target.Rebind(Connection.Target?.GetRequiredComponent<Position>(), Target_OnPropertyChanged);
+        _connection = entity.GetRequiredComponent<Connection>();
         
-        Connection.PropertyChanged += Connection_OnPropertyChanged;
+        Source = Source.Rebind(_connection.Component?.Source?.GetRequiredComponent<Position>(), Source_OnPropertyChanged);
+        Target = Target.Rebind(_connection.Component?.Target?.GetRequiredComponent<Position>(), Target_OnPropertyChanged);
+        
+        _connection.Component!.PropertyChanged += Connection_OnPropertyChanged;
         
         base.Init(world, entity);
     }
 
     public override void Dispose()
     {
-        Connection.PropertyChanged -= Connection_OnPropertyChanged;
+        if (_connection.Component is not null)
+        {
+            _connection.Component.PropertyChanged -= Connection_OnPropertyChanged;
+        }
         
         base.Dispose();
     }
@@ -39,11 +44,11 @@ public class ConnectionViewModel<TColor> : VisualElementViewModel<TColor>
     {
         switch (e.PropertyName)
         {
-            case nameof(Connection.Source):
-                Source = Source.Rebind(Connection.Source?.GetRequiredComponent<Position>(), Source_OnPropertyChanged);
+            case nameof(_connection.Component.Source):
+                Source = Source.Rebind(_connection.Component?.Source?.GetRequiredComponent<Position>(), Source_OnPropertyChanged);
                 break;
-            case nameof(Connection.Target):
-                Target = Target.Rebind(Connection.Target?.GetRequiredComponent<Position>(), Target_OnPropertyChanged);
+            case nameof(_connection.Component.Target):
+                Target = Target.Rebind(_connection.Component?.Target?.GetRequiredComponent<Position>(), Target_OnPropertyChanged);
                 break;
         }
     }

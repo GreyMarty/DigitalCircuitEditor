@@ -10,7 +10,7 @@ public abstract class OnMouseMoveTrigger : ComponentBase<EditorWorld>
     private TinyMessageSubscriptionToken _mouseMoveToken = default!;
     
     
-    public override void Init(EditorWorld world, Entity entity)
+    public override void Init(EditorWorld world, IEntity entity)
     {
         _eventBus = world.EventBus;
         _mouseMoveToken = _eventBus.Subscribe<MouseMove>(World_OnMouseMove);

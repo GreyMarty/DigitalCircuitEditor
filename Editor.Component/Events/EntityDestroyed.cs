@@ -2,7 +2,7 @@
 
 namespace Editor.Component.Events;
 
-public class EntityDestroyed(object sender, Entity entity) : TinyMessageBase(sender)
+public class EntityDestroyed(object sender, IEntity entity) : TinyMessageBase(sender)
 {
-    public Entity Entity { get; } = entity;
+    public IEntity Entity { get; } = entity;
 }

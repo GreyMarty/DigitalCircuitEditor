@@ -1,20 +1,21 @@
 ﻿using System.ComponentModel;
+using Editor.Component;
 
 namespace Editor.Core.ViewModels;
 
 public static class PropertyChanged
 {
-    public static T? Rebind<T>(this T? from, T? to, PropertyChangedEventHandler propertyChanged)
-        where T : INotifyPropertyChanged
+    public static ComponentRef<T>? Rebind<T>(this ComponentRef<T>? from, ComponentRef<T>? to, PropertyChangedEventHandler propertyChanged)
+        where T : ComponentBase, INotifyPropertyChanged
     {
-        if (from is not null)
+        if (from?.Component is not null)
         {
-            from.PropertyChanged -= propertyChanged;
+            from.Component.PropertyChanged -= propertyChanged;
         }
 
-        if (to is not null)
+        if (to?.Component is not null)
         {
-            to.PropertyChanged += propertyChanged;
+            to.Component.PropertyChanged += propertyChanged;
         }
 
         return to;

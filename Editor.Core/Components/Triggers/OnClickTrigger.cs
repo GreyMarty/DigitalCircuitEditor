@@ -4,15 +4,15 @@ using TinyMessenger;
 
 namespace Editor.Core.Components.Triggers;
 
-public abstract class OnClickTrigger : ComponentBase<EditorWorld>
+public abstract class OnClickTrigger : EditorComponentBase
 {
-    private Hoverable _hoverableComponent = default!;
+    private ComponentRef<Hoverable> _hoverableComponent = default!;
     
     private ITinyMessengerHub _eventBus = default!;
     private TinyMessageSubscriptionToken _mouseDownToken = default!;
     
     
-    public override void Init(EditorWorld world, Entity entity)
+    public override void Init(EditorWorld world, IEntity entity)
     {
         _hoverableComponent = entity.GetRequiredComponent<Hoverable>();
 
@@ -31,6 +31,6 @@ public abstract class OnClickTrigger : ComponentBase<EditorWorld>
     
     private void World_OnMouseButtonDown(MouseButtonDown e)
     {
-        OnClick(e, _hoverableComponent.Hovered);
+        OnClick(e, _hoverableComponent.Component?.Hovered == true);
     }
 }

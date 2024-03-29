@@ -1,18 +1,19 @@
 ﻿using Editor.Component;
+using Editor.Core.Entities;
 
 namespace Editor.Core.Components;
 
-public class Spawner : ComponentBase<EditorWorld>
+public class Spawner : EditorComponentBase
 {
     private EditorWorld _world = default!;
-    private Entity _entity = default!;
+    private IEntity _entity = default!;
     
     
-    public IEntityGroup? Spawnables { get; set; }
+    public IEntityTreeBuilder? Tree { get; set; }
     public bool DestroyOnSpawn { get; set; } = true;
 
 
-    public override void Init(EditorWorld world, Entity entity)
+    public override void Init(EditorWorld world, IEntity entity)
     {
         _world = world;
         _entity = entity;
@@ -20,9 +21,9 @@ public class Spawner : ComponentBase<EditorWorld>
 
     public void Spawn()
     {
-        if (Spawnables is not null)
+        if (Tree is not null)
         {
-            _world.Instantiate(Spawnables);
+            _world.Instantiate(Tree);
         }
 
         if (DestroyOnSpawn)

@@ -5,18 +5,18 @@ using Editor.Core.Converters;
 
 namespace Editor.Core.Components;
 
-public class Position : ComponentBase<EditorWorld>, INotifyPropertyChanged
+public class Position : EditorComponentBase
 {
     private IUnitsToPixelsConverter _converter = default!;
-    private Position? _parent;
+    private ComponentRef<Position>? _parent;
     
         
     public Vector2 Local { get; set; }
 
     public Vector2 Value
     {
-        get => Local + (_parent?.Value ?? Vector2.Zero);
-        set => Local = value - (_parent?.Value ?? Vector2.Zero);
+        get => Local + (_parent?.Component?.Value ?? Vector2.Zero);
+        set => Local = value - (_parent?.Component?.Value ?? Vector2.Zero);
     }
 
     public float X
@@ -48,23 +48,31 @@ public class Position : ComponentBase<EditorWorld>, INotifyPropertyChanged
         get => ValuePixels.Y;
         set => ValuePixels = ValuePixels with { Y = value };
     }
-        
-    public event PropertyChangedEventHandler? PropertyChanged;
 
 
-    public override void Init(EditorWorld world, Entity entity)
+    public override void Init(EditorWorld world, IEntity entity)
     {
         _converter = world.PositionConverter;
-        _parent = entity.GetComponent<ChildOf>()?.Parent?.GetRequiredComponent<Position>();
+        _parent = entity.GetComponent<ChildOf>()?.Component?.Parent?.GetRequiredComponent<Position>();
 
-        if (_parent is not null)
+        if (_parent?.Component is not null)
         {
-            _parent.PropertyChanged += Parent_OnPropertyChanged;
+            _parent.Component.PropertyChanged += Parent_OnPropertyChanged;
         }
+    }
+
+    public override void Dispose()
+    {
+        if (_parent?.Component is not null)
+        {
+            _parent.Component.PropertyChanged -= Parent_OnPropertyChanged;
+        }
+        
+        base.Dispose();
     }
 
     private void Parent_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+        OnPropertyChanged(nameof(Value));
     }
 }

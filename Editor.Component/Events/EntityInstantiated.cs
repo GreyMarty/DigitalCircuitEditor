@@ -2,7 +2,7 @@
 
 namespace Editor.Component.Events;
 
-public class EntityInstantiated(object sender, Entity entity) : TinyMessageBase(sender)
+public class EntityInstantiated(object sender, IEntity entity) : TinyMessageBase(sender)
 {
-    public Entity Entity { get; } = entity;
+    public IEntity Entity { get; } = entity;
 }

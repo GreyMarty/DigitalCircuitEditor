@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Editor.Component;
-using Editor.Core;
 
-namespace Editor.Core.ViewModels;
+namespace Editor.Core.Components;
 
-public class ViewModelComponentBase : ComponentBase<EditorWorld>, INotifyPropertyChanged
+public class EditorComponentBase : ComponentBase<EditorWorld>, INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
+    
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {

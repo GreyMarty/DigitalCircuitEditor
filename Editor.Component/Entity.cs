@@ -1,18 +1,41 @@
-﻿using Editor.Component.Exceptions;
+﻿using Editor.Component.Events;
+using Editor.Component.Exceptions;
 
 namespace Editor.Component;
 
-public sealed class Entity : IDisposable
+public interface IEntity : IDisposable
 {
-    private readonly List<ComponentBase> _components = [];
+    public bool Initialized { get; }
+    public bool Alive { get; }
+    public ComponentBase[] Components { get; init; }
     
     
-    public bool Alive { get; internal set; }
+    public void Init(IWorld world);
+    public ComponentRef<T>? GetComponent<T>() where T : ComponentBase;
+    public ComponentRef<T> GetRequiredComponent<T>() where T : ComponentBase;
+}
+
+public sealed class Entity : IEntity
+{
+    public Entity()
+    {
+        Components = [];
+    }
+
+    internal Entity(IEnumerable<ComponentBase> components)
+    {
+        Components = components.ToArray();
+    }
+    
+    
+    public bool Alive { get; private set; }
     public bool Initialized { get; private set; }
     
-    public IEnumerable<ComponentBase> Components => _components;
+    public ComponentBase[] Components { get; init; }
 
-    
+
+    public static IEntityBuilder CreateBuilder() => new EntityBuilder();
+        
     public void Init(IWorld world)
     {
         if (Initialized)
@@ -20,46 +43,35 @@ public sealed class Entity : IDisposable
             return;
         }
         
-        _components.ForEach(x => x.Init(world, this));
+        foreach (var component in Components)
+        {
+            component.Init(world, this);
+        }
+
         Initialized = true;
         Alive = true;
     }
 
     public void Dispose()
     {
-        _components.ForEach(x => x.Dispose());
+        foreach (var component in Components)
+        {
+            component.Dispose();
+        }
+        
         Initialized = false;
         Alive = false;
     }
 
-    public T? GetComponent<T>() where T : ComponentBase
+    public ComponentRef<T>? GetComponent<T>() where T : ComponentBase
     {
-        return _components.FirstOrDefault(x => x is T) as T;
+        return Components.FirstOrDefault(x => x is T) is not T component 
+            ? null 
+            : new ComponentRef<T>(this, component);
     }
 
-    public T GetRequiredComponent<T>() where T : ComponentBase
+    public ComponentRef<T> GetRequiredComponent<T>() where T : ComponentBase
     {
         return GetComponent<T>() ?? throw new ComponentRequiredException(typeof(T));
-    }
-    
-    public T AddComponent<T>(Action<T>? configure = null) where T : ComponentBase, new()
-    {
-        var existingComponent = GetComponent<T>();
-        
-        if (existingComponent is not null)
-        {
-            return existingComponent;
-        }
-        
-        var component = new T();
-        _components.Add(component);
-        configure?.Invoke(component);
-        return component;
-    }
-
-    public bool RemoveComponent<T>() where T : ComponentBase
-    {
-        var component = _components.FirstOrDefault(x => x is T);
-        return component != null && _components.Remove(component);
     }
 }

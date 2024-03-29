@@ -6,48 +6,42 @@ using PropertyChanged;
 
 namespace Editor.Core.ViewModels;
 
-public class VisualElementViewModel<TColor> : ViewModelComponentBase
+public class VisualElementViewModel : ViewModelBase
 {
-    public IPalette<TColor> Palette { get; set; } = default!;
-    
-    public Hoverable? Hoverable { get; private set; }
-    public Selectable? Selectable { get; private set; }
-    
-    public float StrokeThickness { get; private set; }
-    public TColor StrokeColor { get; private set; }
-    public TColor Fill { get; private set; }
+    private ComponentRef<Hoverable>? _hoverableComponent;
+    private ComponentRef<Selectable>? _selectableComponent;
 
 
-    public override void Init(EditorWorld world, Entity entity)
+    public StrokeStyle StrokeStyle { get; private set; } = StrokeStyle.Default;
+    public FillStyle FillStyle { get; private set; } = FillStyle.Default;
+
+
+    public override void Init(EditorWorld world, IEntity entity)
     {
-        Hoverable = entity.GetComponent<Hoverable>();
-        Selectable = entity.GetComponent<Selectable>();
-
-        StrokeThickness = Palette.DefaultStokeThickness;
-        StrokeColor = Palette.DefaultStrokeColor;
-        Fill = Palette.DefaultFill;
+        _hoverableComponent = entity.GetComponent<Hoverable>();
+        _selectableComponent = entity.GetComponent<Selectable>();
         
-        if (Hoverable is not null)
+        if (_hoverableComponent?.Component is not null)
         {
-            Hoverable.PropertyChanged += Dependency_OnPropertyChanged;
+            _hoverableComponent.Component.PropertyChanged += Dependency_OnPropertyChanged;
         }
         
-        if (Selectable is not null)
+        if (_selectableComponent?.Component is not null)
         {
-            Selectable.PropertyChanged += Dependency_OnPropertyChanged;
+            _selectableComponent.Component.PropertyChanged += Dependency_OnPropertyChanged;
         }
     }
 
     public override void Dispose()
     {
-        if (Hoverable is not null)
+        if (_hoverableComponent?.Component is not null)
         {
-            Hoverable.PropertyChanged -= Dependency_OnPropertyChanged;
+            _hoverableComponent.Component.PropertyChanged -= Dependency_OnPropertyChanged;
         }
         
-        if (Selectable is not null)
+        if (_selectableComponent?.Component is not null)
         {
-            Selectable.PropertyChanged -= Dependency_OnPropertyChanged;
+            _selectableComponent.Component.PropertyChanged -= Dependency_OnPropertyChanged;
         }
         
         base.Dispose();
@@ -55,24 +49,21 @@ public class VisualElementViewModel<TColor> : ViewModelComponentBase
 
     private void Dependency_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (Selectable?.Selected == true)
+        if (_selectableComponent?.Component?.Selected == true)
         {
-            StrokeThickness = Palette.SelectedStrokeThickness;
-            StrokeColor = Palette.SelectedStrokeColor;
-            Fill = Palette.SelectedFill;
+            StrokeStyle = StrokeStyle.Selected;
+            FillStyle = FillStyle.Selected;
             return;
         }
 
-        if (Hoverable?.Hovered == true)
+        if (_hoverableComponent?.Component?.Hovered == true)
         {
-            StrokeThickness = Palette.HoveredStrokeThickness;
-            StrokeColor = Palette.HoveredStrokeColor;
-            Fill = Palette.HoveredFill;
+            StrokeStyle = StrokeStyle.Hovered;
+            FillStyle = FillStyle.Hovered;
             return;
         }
-        
-        StrokeThickness = Palette.DefaultStokeThickness;
-        StrokeColor = Palette.DefaultStrokeColor;
-        Fill = Palette.DefaultFill;
+
+        StrokeStyle = StrokeStyle.Default;
+        FillStyle = FillStyle.Default;
     }
 }

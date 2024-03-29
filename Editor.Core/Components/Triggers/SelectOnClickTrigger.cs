@@ -6,10 +6,10 @@ namespace Editor.Core.Components.Triggers;
 
 public class SelectOnClickTrigger : OnClickTrigger
 {
-    private Selectable _selectableComponent = default!;
+    private ComponentRef<Selectable> _selectableComponent = default!;
 
 
-    public override void Init(EditorWorld world, Entity entity)
+    public override void Init(EditorWorld world, IEntity entity)
     {
         _selectableComponent = entity.GetRequiredComponent<Selectable>();
         
@@ -20,7 +20,7 @@ public class SelectOnClickTrigger : OnClickTrigger
     {
         if (e.Button == MouseButton.Left)
         {
-            _selectableComponent.Selected = hovered;
+            _selectableComponent.Component!.Selected = hovered;
         }
     }
 }

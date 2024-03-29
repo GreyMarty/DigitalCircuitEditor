@@ -6,24 +6,24 @@ namespace Editor.Component;
 public interface IWorld : IDisposable
 {
     public bool Initialized { get; }
-    public IEnumerable<Entity> Entities { get; }
+    public IEnumerable<IEntity> Entities { get; }
     public ITinyMessengerHub EventBus { get; }
     
     
     public void Init();
     
-    public Entity Instantiate(Entity? entity = null);
-    public IEnumerable<Entity> Instantiate(IEntityGroup entities);
-    public void Destroy(Entity entity);
+    public IEntity Instantiate(IEntityBuilder? builder = null);
+    public IEnumerable<IEntity> Instantiate(IEntityTreeBuilder treeBuilder);
+    public void Destroy(IEntity entity);
 }
 
 public class World : IWorld
 {
-    private readonly List<Entity> _entities = [];
+    private readonly List<IEntity> _entities = [];
 
 
     public bool Initialized { get; private set; }
-    public IEnumerable<Entity> Entities => _entities;
+    public IEnumerable<IEntity> Entities => _entities;
     public ITinyMessengerHub EventBus { get; } = new TinyMessengerHub();
 
     
@@ -43,9 +43,9 @@ public class World : IWorld
         Initialized = true;
     }
 
-    public Entity Instantiate(Entity? entity = null)
+    public IEntity Instantiate(IEntityBuilder? builder = null)
     {
-        entity ??= new Entity();
+        var entity = builder?.Build() ?? new Entity();
         _entities.Add(entity);
 
         if (!Initialized)
@@ -59,14 +59,28 @@ public class World : IWorld
         return entity;
     }
 
-    public IEnumerable<Entity> Instantiate(IEntityGroup entities)
+    public IEnumerable<IEntity> Instantiate(IEntityTreeBuilder treeBuilder)
     {
-        return entities.GetEntities()
-            .Select(Instantiate)
-            .ToList();
+        var entities = new List<IEntity>();
+        
+        foreach (var entity in treeBuilder.Build())
+        {
+            entities.Add(entity);
+            _entities.Add(entity);
+
+            if (!Initialized)
+            {
+                continue;
+            }
+            
+            entity.Init(this);
+            EventBus.Publish(new EntityInstantiated(this, entity));
+        }
+
+        return entities;
     }
 
-    public void Destroy(Entity entity)
+    public void Destroy(IEntity entity)
     {
         if (!_entities.Remove(entity))
         {
@@ -79,6 +93,13 @@ public class World : IWorld
     
     public void Dispose()
     {
-        // TODO release managed resources here
+        var entities = _entities.ToArray();
+        
+        foreach (var entity in entities)
+        {
+            Destroy(entity);
+        }
+
+        Initialized = false;
     }
 }
