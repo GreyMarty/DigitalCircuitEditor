@@ -43,13 +43,13 @@ public sealed class Entity : IEntity
             return;
         }
         
+        Initialized = true;
+        Alive = true;
+        
         foreach (var component in Components)
         {
             component.Init(world, this);
         }
-
-        Initialized = true;
-        Alive = true;
     }
 
     public void Dispose()

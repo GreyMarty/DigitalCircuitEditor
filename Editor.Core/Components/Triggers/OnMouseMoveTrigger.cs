@@ -4,7 +4,7 @@ using TinyMessenger;
 
 namespace Editor.Core.Components.Triggers;
 
-public abstract class OnMouseMoveTrigger : ComponentBase<EditorWorld>
+public abstract class OnMouseMoveTrigger : EditorComponentBase
 {
     private ITinyMessengerHub _eventBus = default!;
     private TinyMessageSubscriptionToken _mouseMoveToken = default!;

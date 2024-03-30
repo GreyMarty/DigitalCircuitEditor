@@ -9,7 +9,7 @@ namespace Editor.Core.ViewModels;
 
 public partial class EditorViewModel : INotifyPropertyChanged
 {
-    private readonly IUnitsToPixelsConverter _positionConverter;
+    private IUnitsToPixelsConverter _positionConverter = default!;
     
     
      public Vector2 Offset { get; set; }
@@ -32,9 +32,12 @@ public partial class EditorViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
 
-    public EditorViewModel(EditorWorld world)
+    public void Init(EditorWorld world)
     {
         _positionConverter = world.PositionConverter;
+        
+        world.EventBus.Subscribe<MouseMove>(OnMouseMove);
+        world.EventBus.Subscribe<MouseWheel>(OnMouseWheel);
     }
     
 
@@ -46,7 +49,8 @@ public partial class EditorViewModel : INotifyPropertyChanged
             return;
         }
 
-        Offset += _positionConverter.ToPixels(e.NewPosition - e.OldPosition);
+        var delta = e.NewPosition - e.OldPosition;
+        Offset += _positionConverter.ToPixels(delta);
     }
 
     [RelayCommand]
