@@ -6,11 +6,12 @@ public class UnitsToPixelsConverter : IUnitsToPixelsConverter
 {
     private static readonly UnitsToPixelsConverter Instance = new();
 
-    private readonly float _unit = 1;
+    private readonly float _unit;
     
     
     private UnitsToPixelsConverter(float unit = 1)
     {
+        _unit = unit;
     }
 
     public static IUnitsToPixelsConverter Default => Instance;

@@ -74,5 +74,10 @@ public class Position : EditorComponentBase
     private void Parent_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         OnPropertyChanged(nameof(Value));
+        OnPropertyChanged(nameof(X));
+        OnPropertyChanged(nameof(Y));
+        OnPropertyChanged(nameof(ValuePixels));
+        OnPropertyChanged(nameof(PixelsX));
+        OnPropertyChanged(nameof(PixelsY));
     }
 }
