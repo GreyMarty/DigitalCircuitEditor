@@ -15,4 +15,17 @@
       <ProjectReference Include="..\Editor.Core\Editor.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Page Update="Views\GhostConnectionLine.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\GhostDiagramNode.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
 </Project>

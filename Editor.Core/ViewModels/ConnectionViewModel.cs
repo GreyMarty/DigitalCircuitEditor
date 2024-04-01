@@ -10,6 +10,8 @@ public class ConnectionViewModel : EditorElementViewModel
     private ComponentRef<Position>? _target;
 
 
+    public string? Label => _connection.Component?.Label;
+    
     public float OffsetPixelsX => _target?.Component?.PixelsX - PixelsX ?? 0;
     public float OffsetPixelsY => _target?.Component?.PixelsY - PixelsY ?? 0;
     
@@ -75,6 +77,7 @@ public class ConnectionViewModel : EditorElementViewModel
     private void Connection_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         UpdateTarget();
+        OnPropertyChanged(nameof(Label));
     }
 
     private void Target_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

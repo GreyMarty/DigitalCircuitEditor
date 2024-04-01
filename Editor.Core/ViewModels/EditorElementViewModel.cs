@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Numerics;
 using CommunityToolkit.Mvvm.Input;
 using Editor.Component;
 using Editor.Core.Components;
@@ -12,11 +13,12 @@ public partial class EditorElementViewModel : ViewModelBase
     private ComponentRef<Hoverable>? _hoverableComponent;
     private ComponentRef<Selectable>? _selectableComponent;
 
-    public float PixelsX => _positionComponent?.Component?.PixelsX ?? 0;
-    public float PixelsY => _positionComponent?.Component?.PixelsY ?? 0;
+    public Vector2 PixelsPosition => _positionComponent?.Component?.ValuePixels ?? Vector2.Zero;
+    public float PixelsX => PixelsPosition.X;
+    public float PixelsY => PixelsPosition.Y;
 
-    public Color Stroke { get; private set; } = Color.Primary;
-    public Color Fill { get; private set; } = Color.Secondary;
+    public Color Stroke { get; protected set; } = Color.Primary;
+    public Color Fill { get; protected set; } = Color.Secondary;
 
 
     public override void Init(EditorWorld world, IEntity entity)
@@ -61,6 +63,26 @@ public partial class EditorElementViewModel : ViewModelBase
         base.Dispose();
     }
 
+    protected virtual void EvaluateColors(bool hovered, bool selected)
+    {
+        if (selected)
+        {
+            Stroke = Color.PrimarySelected;
+            Fill = Color.SecondarySelected;
+            return;
+        }
+
+        if (hovered)
+        {
+            Stroke = Color.PrimaryHovered;
+            Fill = Color.SecondaryHovered;
+            return;
+        }
+
+        Stroke = Color.Primary;
+        Fill = Color.Secondary;
+    }
+    
     [RelayCommand]
     private void OnHover(bool hovered)
     {
@@ -72,27 +94,13 @@ public partial class EditorElementViewModel : ViewModelBase
 
     private void Position_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        OnPropertyChanged(nameof(PixelsPosition));
         OnPropertyChanged(nameof(PixelsX));
         OnPropertyChanged(nameof(PixelsY));
     }
     
     private void HoverableOrSelectable_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (_selectableComponent?.Component?.Selected == true)
-        {
-            Stroke = Color.PrimarySelected;
-            Fill = Color.SecondarySelected;
-            return;
-        }
-
-        if (_hoverableComponent?.Component?.Hovered == true)
-        {
-            Stroke = Color.PrimaryHovered;
-            Fill = Color.SecondaryHovered;
-            return;
-        }
-
-        Stroke = Color.Primary;
-        Fill = Color.Secondary;
+        EvaluateColors(_hoverableComponent?.Component?.Hovered == true ,_selectableComponent?.Component?.Selected == true);
     }
 }

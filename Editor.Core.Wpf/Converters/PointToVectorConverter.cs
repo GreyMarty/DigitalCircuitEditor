@@ -9,4 +9,9 @@ public static class PointToVectorConverter
     {
         return new Vector2((float)point.X, (float)point.Y);
     }
+    
+    public static Point ToPoint(this Vector2 vector)
+    {
+        return new Point(vector.X, vector.Y);
+    }
 }
