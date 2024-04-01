@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Numerics;
 using Editor.Component;
 using Editor.Core.Components;
 
@@ -11,9 +12,15 @@ public class ConnectionViewModel : EditorElementViewModel
 
 
     public string? Label => _connection.Component?.Label;
-    
-    public float OffsetPixelsX => _target?.Component?.PixelsX - PixelsX ?? 0;
-    public float OffsetPixelsY => _target?.Component?.PixelsY - PixelsY ?? 0;
+
+    public Vector2 OffsetPixels => _target?.Component?.ValuePixels - PixelsPosition ?? Vector2.Zero;
+    public float OffsetPixelsX => OffsetPixels.X;
+    public float OffsetPixelsY => OffsetPixels.Y;
+
+    public float OffsetDistance => OffsetPixels.Length();
+    public float OffsetRotation => MathF.Atan2(OffsetPixelsY, OffsetPixelsX) * (180 / MathF.PI);
+
+    public float TextScale => MathF.Abs(OffsetRotation) < 90 ? 1 : -1;
     
     
     public override void Init(EditorWorld world, IEntity entity)
@@ -25,6 +32,7 @@ public class ConnectionViewModel : EditorElementViewModel
         base.Init(world, entity);
         
         UpdateTarget();
+        OnPropertyChanged(nameof(Label));
     }
 
     public override void Dispose()
@@ -57,19 +65,25 @@ public class ConnectionViewModel : EditorElementViewModel
             _target.Component.PropertyChanged += Target_OnPropertyChanged;
         }
         
+        OnOffsetChanged();
+    }
+
+    private void OnOffsetChanged()
+    {
+        OnPropertyChanged(nameof(OffsetPixels));
         OnPropertyChanged(nameof(OffsetPixelsX));
         OnPropertyChanged(nameof(OffsetPixelsY));
+        OnPropertyChanged(nameof(OffsetDistance));
+        OnPropertyChanged(nameof(OffsetRotation));
+        OnPropertyChanged(nameof(TextScale));
     }
     
     private void This_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
         {
-            case nameof(PixelsX):
-                OnPropertyChanged(nameof(OffsetPixelsX));
-                break;
-            case nameof(PixelsY):
-                OnPropertyChanged(nameof(OffsetPixelsY));
+            case nameof(PixelsX) or nameof(PixelsY):
+                OnOffsetChanged();
                 break;
         }
     }
@@ -82,7 +96,6 @@ public class ConnectionViewModel : EditorElementViewModel
 
     private void Target_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        OnPropertyChanged(nameof(OffsetPixelsX));
-        OnPropertyChanged(nameof(OffsetPixelsY));
+        OnOffsetChanged();
     }
 }

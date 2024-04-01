@@ -29,7 +29,7 @@ public class EntityTreeBuilder : IEntityTreeBuilder
         
         foreach (var child in children)
         {
-            child.Node.AddComponent<ChildOf>(x => x.Parent = parent);
+            child.Node.AddComponent(new ChildOf { Parent = parent});
             entities.AddRange(child.Build());
         }
 

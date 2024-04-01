@@ -13,11 +13,28 @@
     </UserControl.Resources>
     
     <Grid>
+        <Grid.RenderTransform>
+            <RotateTransform Angle="{Binding OffsetRotation, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid.RenderTransform>
+        
         <Line
             X1="0" Y1="0"
-            X2="{Binding OffsetPixelsX, UpdateSourceTrigger=PropertyChanged}"
-            Y2="{Binding OffsetPixelsY, UpdateSourceTrigger=PropertyChanged}"
+            X2="{Binding OffsetDistance, UpdateSourceTrigger=PropertyChanged}"
+            Y2="0"
             Stroke="{Binding Stroke, Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
             StrokeThickness="{StaticResource StrokeThickness}"/>
+        
+        <TextBlock 
+            Text="{Binding Label}"
+            TextAlignment="Center"
+            RenderTransformOrigin="0.5 0.5">
+            <TextBlock.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform
+                        ScaleX="{Binding TextScale, UpdateSourceTrigger=PropertyChanged}"
+                        ScaleY="{Binding TextScale, UpdateSourceTrigger=PropertyChanged}"/>
+                </TransformGroup>
+            </TextBlock.RenderTransform>
+        </TextBlock>
     </Grid>
 </local:EditorElement>

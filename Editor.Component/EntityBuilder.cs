@@ -2,7 +2,7 @@
 
 public interface IEntityBuilder
 {
-    public IEntityBuilder AddComponent<TComponent>(Action<TComponent>? configure = null) where TComponent : ComponentBase, new();
+    public IEntityBuilder AddComponent<T>(T? component = null) where T : ComponentBase, new();
     public IEntityBuilder RemoveComponent<TComponent>() where TComponent : ComponentBase;
     public IEntity Build();
 }
@@ -18,16 +18,15 @@ public class EntityBuilder : IEntityBuilder
     }
     
     
-    public IEntityBuilder AddComponent<T>(Action<T>? configure = null) where T : ComponentBase, new()
+    public IEntityBuilder AddComponent<T>(T? component = null) where T : ComponentBase, new()
     {
         if (_components.Any(x => x is T))
         {
             return this;
         }
         
-        var component = new T();
+        component ??= new T();
         _components.Add(component);
-        configure?.Invoke(component);
         return this;
     }
 
