@@ -11,7 +11,6 @@ public abstract class OnClickTrigger : EditorComponentBase
     private ITinyMessengerHub _eventBus = default!;
     private TinyMessageSubscriptionToken _mouseDownToken = default!;
     
-    
     public override void Init(EditorWorld world, IEntity entity)
     {
         _hoverableComponent = entity.GetRequiredComponent<Hoverable>();
