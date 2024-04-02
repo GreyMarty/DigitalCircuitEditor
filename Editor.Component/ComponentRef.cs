@@ -16,5 +16,5 @@ public class ComponentRef<T> where T : ComponentBase
     public T? Component => _entity.Alive ? _component : null;
 
 
-    //public static implicit operator T?(ComponentRef<T> component) => component.Component;
+    public static implicit operator T?(ComponentRef<T> component) => component.Component;
 }

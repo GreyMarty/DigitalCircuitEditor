@@ -27,7 +27,7 @@ public class World : IWorld
     public ITinyMessengerHub EventBus { get; } = new TinyMessengerHub();
 
     
-    public void Init()
+    public virtual void Init()
     {
         if (Initialized)
         {
@@ -87,11 +87,11 @@ public class World : IWorld
             return;
         }
 
-        entity.Dispose();
         EventBus.Publish(new EntityDestroyed(this, entity));
+        entity.Destroy();
     }
     
-    public void Dispose()
+    public virtual void Dispose()
     {
         var entities = _entities.ToArray();
         

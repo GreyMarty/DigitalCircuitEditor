@@ -1,25 +1,45 @@
-﻿namespace Editor.Component;
+﻿using TinyMessenger;
 
-public abstract class ComponentBase : IDisposable
+namespace Editor.Component;
+
+public abstract class ComponentBase
 {
-    public event EventHandler? Disposed;
-    
-    
-    public virtual void Init(IWorld world, IEntity entity) { }
+    public bool Initialized { get; private set; }
 
-    public virtual void Dispose()
+
+    internal void Init(IWorld world, IEntity entity)
     {
-        Disposed?.Invoke(this, EventArgs.Empty);
+        if (Initialized)
+        {
+            return;
+        }
+        
+        OnInit(world, entity);
+        Initialized = true;
     }
+
+    internal void Destroy()
+    {
+        if (!Initialized)
+        {
+            return;
+        }
+        
+        OnDestroy();
+        Initialized = false;
+    }
+    
+    protected virtual void OnInit(IWorld world, IEntity entity) { }
+    protected virtual void OnDestroy() { }
 }
 
 public abstract class ComponentBase<TWorld> : ComponentBase 
     where TWorld : IWorld
 {
-    public sealed override void Init(IWorld world, IEntity entity)
+    protected sealed override void OnInit(IWorld world, IEntity entity)
     {
-        Init((TWorld)world, entity);
+        OnInit((TWorld)world, entity);
     }
 
-    public virtual void Init(TWorld world, IEntity entity) { }
+    protected virtual void OnInit(TWorld context, IEntity entity) { }
 }

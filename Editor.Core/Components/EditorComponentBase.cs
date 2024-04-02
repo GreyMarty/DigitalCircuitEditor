@@ -4,7 +4,7 @@ using Editor.Component;
 
 namespace Editor.Core.Components;
 
-public class EditorComponentBase : ComponentBase<EditorWorld>, INotifyPropertyChanged
+public class EditorComponentBase : ComponentBase<EditorContext>, INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
     

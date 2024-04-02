@@ -9,14 +9,11 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
+      <PackageReference Include="SkiaSharp.Views.WPF" Version="3.0.0-preview.2.1" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Editor.Core\Editor.Core.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Views\" />
     </ItemGroup>
 
 </Project>

@@ -2,28 +2,27 @@
 using Editor.Core.Events;
 using TinyMessenger;
 
-namespace Editor.Core.Components.Triggers;
+namespace Editor.Core.Components.Behaviors;
 
-public abstract class OnClickTrigger : EditorComponentBase
+public abstract class OnMouseButtonDownBehavior : EditorComponentBase
 {
     private ComponentRef<Hoverable> _hoverableComponent = default!;
     
     private ITinyMessengerHub _eventBus = default!;
     private TinyMessageSubscriptionToken _mouseDownToken = default!;
     
-    public override void Init(EditorWorld world, IEntity entity)
+    
+    protected override void OnInit(EditorContext context, IEntity entity)
     {
         _hoverableComponent = entity.GetRequiredComponent<Hoverable>();
 
-        _eventBus = world.EventBus;
+        _eventBus = context.EventBus;
         _mouseDownToken = _eventBus.Subscribe<MouseButtonDown>(World_OnMouseButtonDown);
     }
 
-    public override void Dispose()
+    protected override void OnDestroy()
     {
         _eventBus.Unsubscribe<MouseButtonDown>(_mouseDownToken);
-        
-        base.Dispose();
     }
 
     protected abstract void OnClick(MouseButtonDown e, bool hovered);

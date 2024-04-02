@@ -1,13 +1,15 @@
 ﻿using System.Numerics;
 using Editor.Core.Input;
+using Editor.Core.Rendering;
 using TinyMessenger;
 
 namespace Editor.Core.Events;
 
-public class MouseMove(object sender, Vector2 oldPosition, Vector2 newPosition, MouseButton button = 0, ModKeys modKeys = 0) : TinyMessageBase(sender)
-{
-    public Vector2 OldPosition { get; } = oldPosition;
-    public Vector2 NewPosition { get; } = newPosition;
-    public MouseButton Button { get; } = button;
-    public ModKeys ModKeys { get; } = modKeys;
-}
+public record MouseMove(
+    object Sender,
+    Vector2 OldPositionPixels,
+    Vector2 NewPositionPixels,
+    IPositionConverter PositionConverter,
+    MouseButton Button = 0,
+    ModKeys ModKeys = 0
+) : ITinyMessage;

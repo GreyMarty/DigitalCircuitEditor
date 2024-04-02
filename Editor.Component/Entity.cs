@@ -3,7 +3,7 @@ using Editor.Component.Exceptions;
 
 namespace Editor.Component;
 
-public interface IEntity : IDisposable
+public interface IEntity
 {
     public bool Initialized { get; }
     public bool Alive { get; }
@@ -11,6 +11,7 @@ public interface IEntity : IDisposable
     
     
     public void Init(IWorld world);
+    public void Destroy();
     public ComponentRef<T>? GetComponent<T>() where T : ComponentBase;
     public ComponentRef<T> GetRequiredComponent<T>() where T : ComponentBase;
 }
@@ -52,11 +53,11 @@ public sealed class Entity : IEntity
         }
     }
 
-    public void Dispose()
+    public void Destroy()
     {
         foreach (var component in Components)
         {
-            component.Dispose();
+            component.Destroy();
         }
         
         Initialized = false;

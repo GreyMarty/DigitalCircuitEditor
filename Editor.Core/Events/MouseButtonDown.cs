@@ -1,12 +1,14 @@
 ﻿using System.Numerics;
 using Editor.Core.Input;
+using Editor.Core.Rendering;
 using TinyMessenger;
 
 namespace Editor.Core.Events;
 
-public class MouseButtonDown(object sender, MouseButton button, Vector2 position, ModKeys modKeys = 0) : TinyMessageBase(sender)
-{
-    public MouseButton Button { get; } = button;
-    public Vector2 Position { get; } = position;
-    public ModKeys ModKeys { get; } = modKeys;
-}
+public record MouseButtonDown(
+    object Sender,
+    MouseButton Button,
+    Vector2 PositionPixels,
+    IPositionConverter PositionConverter,
+    ModKeys ModKeys = 0
+) : ITinyMessage;

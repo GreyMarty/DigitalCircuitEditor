@@ -2,23 +2,23 @@
 using System.Numerics;
 using Editor.Component;
 using Editor.Core.Converters;
+using PropertyChanged;
 
 namespace Editor.Core.Components;
 
 public class Position : EditorComponentBase
 {
-    private IUnitsToPixelsConverter _converter = default!;
-    private ComponentRef<Position>? _parent;
+    private ComponentRef<Position>? _parentRef;
     
         
     public Vector2 Local { get; set; }
 
     public Vector2 Value
     {
-        get => Local + (_parent?.Component?.Value ?? Vector2.Zero);
-        set => Local = value - (_parent?.Component?.Value ?? Vector2.Zero);
+        get => Local + (_parentRef?.Component?.Value ?? Vector2.Zero);
+        set => Local = value - (_parentRef?.Component?.Value ?? Vector2.Zero);
     }
-
+    
     public float X
     {
         get => Value.X;
@@ -30,45 +30,24 @@ public class Position : EditorComponentBase
         get => Value.Y;
         set => Value = Value with { Y = value };
     }
+  
 
-    public Vector2 ValuePixels
+    protected override void OnInit(EditorContext context, IEntity entity)
     {
-        get => _converter.ToPixels(Value);
-        set => Value = _converter.ToUnits(value);
-    }
+        _parentRef = entity.GetComponent<ChildOf>()?.Component?.Parent?.GetRequiredComponent<Position>();
 
-    public float PixelsX
-    {
-        get => ValuePixels.X;
-        set => ValuePixels = ValuePixels with { X = value };
-    }
-    
-    public float PixelsY
-    {
-        get => ValuePixels.Y;
-        set => ValuePixels = ValuePixels with { Y = value };
-    }
-
-
-    public override void Init(EditorWorld world, IEntity entity)
-    {
-        _converter = world.PositionConverter;
-        _parent = entity.GetComponent<ChildOf>()?.Component?.Parent?.GetRequiredComponent<Position>();
-
-        if (_parent?.Component is not null)
+        if (_parentRef?.Component is not null)
         {
-            _parent.Component.PropertyChanged += Parent_OnPropertyChanged;
+            _parentRef.Component.PropertyChanged += Parent_OnPropertyChanged;
         }
     }
 
-    public override void Dispose()
+    protected override void OnDestroy()
     {
-        if (_parent?.Component is not null)
+        if (_parentRef?.Component is not null)
         {
-            _parent.Component.PropertyChanged -= Parent_OnPropertyChanged;
+            _parentRef.Component.PropertyChanged -= Parent_OnPropertyChanged;
         }
-        
-        base.Dispose();
     }
 
     private void Parent_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -76,8 +55,5 @@ public class Position : EditorComponentBase
         OnPropertyChanged(nameof(Value));
         OnPropertyChanged(nameof(X));
         OnPropertyChanged(nameof(Y));
-        OnPropertyChanged(nameof(ValuePixels));
-        OnPropertyChanged(nameof(PixelsX));
-        OnPropertyChanged(nameof(PixelsY));
     }
 }

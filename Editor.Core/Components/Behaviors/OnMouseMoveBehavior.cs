@@ -2,25 +2,23 @@
 using Editor.Core.Events;
 using TinyMessenger;
 
-namespace Editor.Core.Components.Triggers;
+namespace Editor.Core.Components.Behaviors;
 
-public abstract class OnMouseMoveTrigger : EditorComponentBase
+public abstract class OnMouseMoveBehavior : EditorComponentBase
 {
     private ITinyMessengerHub _eventBus = default!;
     private TinyMessageSubscriptionToken _mouseMoveToken = default!;
     
     
-    public override void Init(EditorWorld world, IEntity entity)
+    protected override void OnInit(EditorContext context, IEntity entity)
     {
-        _eventBus = world.EventBus;
+        _eventBus = context.EventBus;
         _mouseMoveToken = _eventBus.Subscribe<MouseMove>(World_OnMouseMove);
     }
 
-    public override void Dispose()
+    protected override void OnDestroy()
     {
         _eventBus.Unsubscribe<MouseButtonDown>(_mouseMoveToken);
-
-        base.Dispose();
     }
 
     protected abstract void OnMouseMove(MouseMove e);

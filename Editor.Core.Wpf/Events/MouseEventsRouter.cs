@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
-using Editor.Core.Converters;
 using Editor.Core.Events;
+using Editor.Core.Rendering;
 using Editor.Core.Wpf.Converters;
 using TinyMessenger;
 using EditorMouseButton = Editor.Core.Input.MouseButton;
@@ -11,21 +11,18 @@ namespace Editor.Core.Wpf.Events;
 
 public class MouseEventsRouter
 {
-    private readonly UIElement _sourceContainer;
     private readonly UIElement _source;
     private readonly ITinyMessengerHub _target;
-    private readonly IUnitsToPixelsConverter _converter;
+    private readonly IPositionConverter _converter;
 
     private bool _bound = false;
     
     private EditorMouseButton _button = 0;
-    private Vector2? _sourcePosition;
     private Vector2 _position;
     
     
-    public MouseEventsRouter(UIElement sourceContainer, UIElement source, ITinyMessengerHub target, IUnitsToPixelsConverter converter)
+    public MouseEventsRouter(UIElement source, ITinyMessengerHub target, IPositionConverter converter)
     {
-        _sourceContainer = sourceContainer;
         _source = source;
         _target = target;
         _converter = converter;
@@ -44,10 +41,10 @@ public class MouseEventsRouter
             return;
         }
         
-        _sourceContainer.MouseDown += SourceContainer_OnMouseButtonDown;
-        _sourceContainer.MouseUp += SourceContainer_OnMouseButtonUp;
-        _sourceContainer.MouseMove += SourceContainer_OnMouseMove;
-        _sourceContainer.MouseWheel += SourceContainer_OnMouseWheel;
+        _source.MouseDown += SourceContainer_OnMouseButtonDown;
+        _source.MouseUp += SourceContainer_OnMouseButtonUp;
+        _source.MouseMove += SourceContainer_OnMouseMove;
+        _source.MouseWheel += SourceContainer_OnMouseWheel;
     }
 
     public void Unbind()
@@ -57,18 +54,18 @@ public class MouseEventsRouter
             return;
         }
         
-        _sourceContainer.MouseDown -= SourceContainer_OnMouseButtonDown;
-        _sourceContainer.MouseUp -= SourceContainer_OnMouseButtonUp;
-        _sourceContainer.MouseMove -= SourceContainer_OnMouseMove;
-        _sourceContainer.MouseWheel -= SourceContainer_OnMouseWheel;
+        _source.MouseDown -= SourceContainer_OnMouseButtonDown;
+        _source.MouseUp -= SourceContainer_OnMouseButtonUp;
+        _source.MouseMove -= SourceContainer_OnMouseMove;
+        _source.MouseWheel -= SourceContainer_OnMouseWheel;
     }
     
     private void SourceContainer_OnMouseButtonDown(object sender, MouseButtonEventArgs e)
     {
         _button = e.ChangedButton.ToEditor();
-        _position = _converter.ToUnits(e.GetPosition(_source).ToVector2());
+        _position = e.GetPosition(_source).ToVector2();
         
-        _target.Publish(new MouseButtonDown(_source, _button, _position));
+        _target.Publish(new MouseButtonDown(_source, _button, _position, _converter));
     }
     
     private void SourceContainer_OnMouseButtonUp(object sender, MouseButtonEventArgs e)
@@ -76,9 +73,9 @@ public class MouseEventsRouter
         var button = e.ChangedButton.ToEditor();
         
         _button = 0;
-        _position = _converter.ToUnits(e.GetPosition(_source).ToVector2());
+        _position = e.GetPosition(_source).ToVector2();
         
-        _target.Publish(new MouseButtonUp(_source, button, _position));
+        _target.Publish(new MouseButtonUp(_source, button, _position, _converter));
     }
 
     private void SourceContainer_OnMouseMove(object sender, MouseEventArgs e)
@@ -92,24 +89,15 @@ public class MouseEventsRouter
         };
 
         var oldPosition = _position;
-        _position = _converter.ToUnits(e.GetPosition(_source).ToVector2());
-
-        var newSourcePosition = _source.TranslatePoint(new Point(), _sourceContainer).ToVector2();
+        _position = e.GetPosition(_source).ToVector2();
         
-        if (_sourcePosition is not null && _sourcePosition != newSourcePosition)
-        {
-            oldPosition += _converter.ToUnits(_sourcePosition.Value - newSourcePosition);
-        }
-        
-        _sourcePosition = newSourcePosition;
-        
-        _target.Publish(new MouseMove(_source, oldPosition, _position, _button));
+        _target.Publish(new MouseMove(_source, oldPosition, _position, _converter, _button));
     }
     
     private void SourceContainer_OnMouseWheel(object sender, MouseWheelEventArgs e)
     {
-        _position = _converter.ToUnits(e.GetPosition(_source).ToVector2());
+        _position = e.GetPosition(_source).ToVector2();
         
-        _target.Publish(new MouseWheel(_source, e.Delta, _position));
+        _target.Publish(new MouseWheel(_source, e.Delta, _position, _converter));
     }
 }

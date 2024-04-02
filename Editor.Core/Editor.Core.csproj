@@ -17,6 +17,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" />
+      <PackageReference Include="SkiaSharp" Version="3.0.0-preview.2.1" />
     </ItemGroup>
 
 </Project>

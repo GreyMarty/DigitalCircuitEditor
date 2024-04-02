@@ -2,18 +2,16 @@
 using Editor.Core.Events;
 using Editor.Core.Input;
 
-namespace Editor.Core.Components.Triggers;
+namespace Editor.Core.Components.Behaviors;
 
-public class SelectOnClickTrigger : OnClickTrigger
+public class SelectOnMouseButtonDownBehavior : OnMouseButtonDownBehavior
 {
     private ComponentRef<Selectable> _selectableComponent = default!;
 
 
-    public override void Init(EditorWorld world, IEntity entity)
+    protected override void OnInit(EditorContext context, IEntity entity)
     {
         _selectableComponent = entity.GetRequiredComponent<Selectable>();
-        
-        base.Init(world, entity);
     }
 
     protected override void OnClick(MouseButtonDown e, bool hovered)
