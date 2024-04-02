@@ -9,6 +9,8 @@ public class EditorContext : World
     public Camera Camera { get; init; }
     public RendererCollection Renderers { get; init; } = new();
 
+    public bool MouseLocked { get; set; }
+    
     
     public override void Init()
     {

@@ -6,19 +6,21 @@ namespace Editor.Core.Components.Behaviors;
 
 public class SelectOnMouseButtonDownBehavior : OnMouseButtonDownBehavior
 {
-    private ComponentRef<Selectable> _selectableComponent = default!;
+    private Selectable _selectableComponent = default!;
 
 
     protected override void OnInit(EditorContext context, IEntity entity)
     {
-        _selectableComponent = entity.GetRequiredComponent<Selectable>();
+        base.OnInit(context, entity);
+        
+        _selectableComponent = entity.GetRequiredComponent<Selectable>()!;
     }
 
     protected override void OnClick(MouseButtonDown e, bool hovered)
     {
-        if (e.Button == MouseButton.Left)
+        if (e.Button == MouseButton.Right)
         {
-            _selectableComponent.Component!.Selected = hovered;
+            _selectableComponent.Selected = hovered;
         }
     }
 }

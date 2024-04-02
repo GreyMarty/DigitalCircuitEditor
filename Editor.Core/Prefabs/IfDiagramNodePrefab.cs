@@ -23,11 +23,13 @@ public static class IfDiagramNodePrefab
                 Radius = 2
             })
             .AddComponent<Hoverable>()
+            .AddComponent<Selectable>()
             .AddComponent<DragOnMouseMoveBehavior>()
             .AddComponent(new HighlightOnHoverBehavior
             {
                 HighlightColor = SKColors.LightGray
             })
+            .AddComponent<HighlightOnSelectBehavior>()
             .AddComponent<RequestRenderBehavior>()
             .AddComponent(new CircleRenderer
             {
