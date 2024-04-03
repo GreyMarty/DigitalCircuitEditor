@@ -1,45 +1,35 @@
 ﻿using System.Numerics;
-using Editor.Component;
+using Editor.Component.Events;
 using Editor.Core.Events;
 using Editor.Core.Shapes;
-using TinyMessenger;
 
 namespace Editor.Core.Components;
 
 public class SelectionArea : EditorComponentBase
 {
-    private EditorContext _context = default!;
-    private IEntity _entity = default!;
-
     private Position _positionComponent = default!;
     private RectangleShape _shapeComponent = default!;
 
-    private ITinyMessengerHub _eventBus = default!;
-    private TinyMessageSubscriptionToken _mouseMoveToken = default!;
-    private TinyMessageSubscriptionToken _mouseUpToken = default!;
+    private IEventBusSubscriber _eventBus = default!;
 
 
-    protected override void OnInit(EditorContext context, IEntity entity)
+    protected override void OnInit()
     {
-        _context = context;
-        _entity = entity;
+        _positionComponent = Entity.GetRequiredComponent<Position>().Component!;
+        _shapeComponent = Entity.GetRequiredComponent<RectangleShape>().Component!;
 
-        _positionComponent = entity.GetRequiredComponent<Position>().Component!;
-        _shapeComponent = entity.GetRequiredComponent<RectangleShape>().Component!;
+        _eventBus = Context.EventBus.Subscribe();
+        _eventBus.Subscribe<MouseMove>(OnMouseMove);
 
-        _eventBus = context.EventBus;
-        _mouseMoveToken = _eventBus.Subscribe<MouseMove>(OnMouseMove);
-        _mouseUpToken = _eventBus.Subscribe<MouseButtonUp>(OnMouseUp);
-
-        _context.MouseLocked = true;
+        Context.MouseLocked = true;
     }
 
     protected override void OnDestroy()
     {
-        _eventBus.Unsubscribe<MouseMove>(_mouseMoveToken);
-        _eventBus.Unsubscribe<MouseButtonUp>(_mouseUpToken);
+        Context.MouseLocked = false;
 
-        _context.MouseLocked = false;
+        _eventBus.Unsubscribe<MouseMove>();
+        _eventBus.Unsubscribe<MouseButtonUp>();
     }
 
     private void OnMouseMove(MouseMove e)
@@ -52,7 +42,7 @@ public class SelectionArea : EditorComponentBase
         _shapeComponent.Width = max.X - min.X;
         _shapeComponent.Height = max.Y - min.Y;
         
-        foreach (var entity in _context.Entities)
+        foreach (var entity in Context.Entities)
         {
             var positionComponent = entity.GetComponent<Position>()?.Component;
             var selectableComponent = entity.GetComponent<Selectable>()?.Component;
@@ -65,10 +55,5 @@ public class SelectionArea : EditorComponentBase
             var relativePosition = positionComponent.Value - _positionComponent.Value;
             selectableComponent.Selected = _shapeComponent.Contains(relativePosition);
         }
-    }
-
-    private void OnMouseUp(MouseButtonUp e)
-    {
-        _context.Destroy(_entity);
     }
 }

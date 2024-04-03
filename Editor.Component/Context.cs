@@ -3,11 +3,11 @@ using TinyMessenger;
 
 namespace Editor.Component;
 
-public interface IWorld : IDisposable
+public interface IContext : IDisposable
 {
     public bool Initialized { get; }
     public IEnumerable<IEntity> Entities { get; }
-    public ITinyMessengerHub EventBus { get; }
+    public IEventBus EventBus { get; }
     
     
     public void Init();
@@ -17,14 +17,14 @@ public interface IWorld : IDisposable
     public void Destroy(IEntity entity);
 }
 
-public class World : IWorld
+public class Context : IContext
 {
     private readonly List<IEntity> _entities = [];
 
 
     public bool Initialized { get; private set; }
     public IEnumerable<IEntity> Entities => _entities;
-    public ITinyMessengerHub EventBus { get; } = new TinyMessengerHub();
+    public IEventBus EventBus { get; } = new EventBus(new TinyMessengerHub());
 
     
     public virtual void Init()

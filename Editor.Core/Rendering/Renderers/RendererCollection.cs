@@ -12,10 +12,8 @@ public class RendererCollection : IDisposable
     private readonly OrderedCollection<Renderer> _renderers = new(x => x.ZIndex);
     private readonly OrderedCollection<Renderer> _postRenderers = new(x => x.ZIndex);
 
-    private bool _initialized = false;
-    private ITinyMessengerHub _eventBus = default!;
-    private TinyMessageSubscriptionToken? _entityInstantiatedToken;
-    private TinyMessageSubscriptionToken? _entityDestroyedToken;
+    private bool _initialized;
+    private IEventBusSubscriber _eventBus = default!;
 
     private Action _uiInvoker = default!;
     
@@ -28,9 +26,9 @@ public class RendererCollection : IDisposable
     
     public void Init(EditorContext context)
     {
-        _eventBus = context.EventBus;
-        _entityInstantiatedToken = context.EventBus.Subscribe<EntityInstantiated>(OnEntityInstantiated);
-        _entityDestroyedToken = context.EventBus.Subscribe<EntityDestroyed>(OnEntityDestroyed);
+        _eventBus = context.EventBus.Subscribe();
+        _eventBus.Subscribe<EntityInstantiated>(OnEntityInstantiated);
+        _eventBus.Subscribe<EntityDestroyed>(OnEntityDestroyed);
         _initialized = true;
     }
     
@@ -43,10 +41,8 @@ public class RendererCollection : IDisposable
         
         _renderCooldownTimer?.Dispose();
         
-        _eventBus.Unsubscribe<EntityInstantiated>(_entityInstantiatedToken!);
-        _eventBus.Unsubscribe<EntityDestroyed>(_entityDestroyedToken!);
-        _entityInstantiatedToken?.Dispose();
-        _entityDestroyedToken?.Dispose();
+        _eventBus.Unsubscribe<EntityInstantiated>();
+        _eventBus.Unsubscribe<EntityDestroyed>();
     }
 
     public void Render(Camera camera, SKCanvas canvas)

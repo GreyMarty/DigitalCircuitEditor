@@ -5,12 +5,14 @@ namespace Editor.Component;
 
 public interface IEntity
 {
+    public IContext Context { get; }
+    
     public bool Initialized { get; }
     public bool Alive { get; }
     public ComponentBase[] Components { get; init; }
     
     
-    public void Init(IWorld world);
+    public void Init(IContext context);
     public void Destroy();
     public ComponentRef<T>? GetComponent<T>() where T : ComponentBase;
     public ComponentRef<T> GetRequiredComponent<T>() where T : ComponentBase;
@@ -29,6 +31,8 @@ public sealed class Entity : IEntity
     }
     
     
+    public IContext Context { get; private set; }
+    
     public bool Alive { get; private set; }
     public bool Initialized { get; private set; }
     
@@ -37,19 +41,21 @@ public sealed class Entity : IEntity
 
     public static IEntityBuilder CreateBuilder() => new EntityBuilder();
         
-    public void Init(IWorld world)
+    public void Init(IContext context)
     {
         if (Initialized)
         {
             return;
         }
+
+        Context = context;
         
         Initialized = true;
         Alive = true;
         
         foreach (var component in Components)
         {
-            component.Init(world, this);
+            component.Init(this);
         }
     }
 

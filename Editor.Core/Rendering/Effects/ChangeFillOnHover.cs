@@ -4,9 +4,9 @@ using Editor.Core.Components;
 using Editor.Core.Rendering.Renderers;
 using SkiaSharp;
 
-namespace Editor.Core.Rendering.Behaviors;
+namespace Editor.Core.Rendering.Effects;
 
-public class HighlightOnHoverBehavior : EditorComponentBase
+public class ChangeFillOnHover : EditorComponentBase
 {
     private Hoverable _hoverableComponent = default!;
     private ShapeRenderer _shapeRenderer = default!;
@@ -17,10 +17,10 @@ public class HighlightOnHoverBehavior : EditorComponentBase
     public SKColor HighlightColor { get; set; }
     
     
-    protected override void OnInit(EditorContext context, IEntity entity)
+    protected override void OnInit()
     {
-        _hoverableComponent = entity.GetRequiredComponent<Hoverable>()!;
-        _shapeRenderer = entity.GetRequiredComponent<ShapeRenderer>()!;
+        _hoverableComponent = Entity.GetRequiredComponent<Hoverable>()!;
+        _shapeRenderer = Entity.GetRequiredComponent<ShapeRenderer>()!;
 
         _defaultFill = _shapeRenderer.Fill;
         

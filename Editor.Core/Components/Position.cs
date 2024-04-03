@@ -10,7 +10,7 @@ public class Position : EditorComponentBase
 {
     private ComponentRef<Position>? _parentRef;
     
-        
+    
     public Vector2 Local { get; set; }
 
     public Vector2 Value
@@ -32,9 +32,9 @@ public class Position : EditorComponentBase
     }
   
 
-    protected override void OnInit(EditorContext context, IEntity entity)
+    protected override void OnInit()
     {
-        _parentRef = entity.GetComponent<ChildOf>()?.Component?.Parent?.GetRequiredComponent<Position>();
+        _parentRef = Entity.GetComponent<ChildOf>()?.Component?.Parent?.GetRequiredComponent<Position>();
 
         if (_parentRef?.Component is not null)
         {

@@ -6,36 +6,29 @@ namespace Editor.Core.Components;
 
 public class Connection : EditorComponentBase
 {
-    private EditorContext _context = default!;
-    private IEntity _entity = default!;
-
-    private ITinyMessengerHub _eventBus = default!;
-    private TinyMessageSubscriptionToken _entityDestroyedToken = default!;
+    private IEventBusSubscriber _eventBus = default!;
     
         
     public IEntity? Target { get; set; }
     public virtual string? Label { get; set; }
 
 
-    protected override void OnInit(EditorContext context, IEntity entity)
+    protected override void OnInit()
     {
-        _context = context;
-        _entity = entity;
-
-        _eventBus = _context.EventBus;
-        _entityDestroyedToken = _eventBus.Subscribe<EntityDestroyed>(OnEntityDestroyed);
+        _eventBus = Context.EventBus.Subscribe();
+        _eventBus.Subscribe<EntityDestroyed>(OnEntityDestroyed);
     }
 
     protected override void OnDestroy()
     {
-        _eventBus.Unsubscribe<EntityDestroyed>(_entityDestroyedToken);
+        _eventBus.Unsubscribe<EntityDestroyed>();
     }
 
     private void OnEntityDestroyed(EntityDestroyed e)
     {
         if (e.Entity == Target)
         {
-            _context.Destroy(_entity);
+            Context.Destroy(Entity);
         }
     }
 }

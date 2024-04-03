@@ -1,4 +1,5 @@
-﻿using Editor.Component;
+﻿using System.Numerics;
+using Editor.Component;
 using Editor.Core.Components;
 using Editor.Core.Shapes;
 using SkiaSharp;
@@ -20,15 +21,15 @@ public class ConnectionRenderer : ShapeRenderer
     }
     
     
-    protected override void OnInit(EditorContext context, IEntity entity)
+    protected override void OnInit()
     {
-        base.OnInit(context, entity);
+        base.OnInit();
 
-        _connectionComponent = entity.GetRequiredComponent<Connection>()!;
-        _childOfComponent = entity.GetRequiredComponent<ChildOf>()!;
+        _connectionComponent = Entity.GetRequiredComponent<Connection>()!;
+        _childOfComponent = Entity.GetRequiredComponent<ChildOf>()!;
     }
 
-    public override void Render(Camera camera, SKCanvas canvas)
+    protected override void OnRender(Camera camera, SKCanvas canvas)
     {
         if (_connectionComponent.Target is null)
         {
@@ -40,8 +41,8 @@ public class ConnectionRenderer : ShapeRenderer
         var sourceShape = _childOfComponent.Parent?.GetComponent<Shape>()?.Component;
         var targetShape = _connectionComponent.Target.GetComponent<Shape>()?.Component;
         
-        var from = Position;
-        var to = targetPosition.Value;
+        var from = Vector2.Zero;
+        var to = targetPosition.Value - Position;
 
         if (sourceShape is not null)
         {

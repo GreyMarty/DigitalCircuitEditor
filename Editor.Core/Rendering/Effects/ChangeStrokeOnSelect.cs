@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel;
-using Editor.Component;
 using Editor.Core.Components;
 using Editor.Core.Rendering.Renderers;
 using SkiaSharp;
 
-namespace Editor.Core.Rendering.Behaviors;
+namespace Editor.Core.Rendering.Effects;
 
-public class HighlightOnSelectBehavior : EditorComponentBase
+public class ChangeStrokeOnSelect : EditorComponentBase
 {
     private Selectable _selectableComponent = default!;
     private ShapeRenderer _shapeRenderer = default!;
@@ -19,10 +18,10 @@ public class HighlightOnSelectBehavior : EditorComponentBase
     public float HighlightStrokeThickness { get; set; } = 0.3f;
     
     
-    protected override void OnInit(EditorContext context, IEntity entity)
+    protected override void OnInit()
     {
-        _selectableComponent = entity.GetRequiredComponent<Selectable>()!;
-        _shapeRenderer = entity.GetRequiredComponent<ShapeRenderer>()!;
+        _selectableComponent = Entity.GetRequiredComponent<Selectable>()!;
+        _shapeRenderer = Entity.GetRequiredComponent<ShapeRenderer>()!;
 
         _defaultStroke = _shapeRenderer.Stroke;
         _defaultStrokeThickness = _shapeRenderer.StrokeThickness;

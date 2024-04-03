@@ -4,7 +4,7 @@ using Editor.Core.Rendering.Renderers;
 
 namespace Editor.Core;
 
-public class EditorContext : World
+public class EditorContext : Context
 {
     public Camera Camera { get; init; }
     public RendererCollection Renderers { get; init; } = new();

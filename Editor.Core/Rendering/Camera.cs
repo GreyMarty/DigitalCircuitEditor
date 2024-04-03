@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Numerics;
+using Editor.Component.Events;
 using Editor.Core.Events;
 using Editor.Core.Input;
 using SkiaSharp;
@@ -12,9 +13,7 @@ public class Camera : INotifyPropertyChanged, IDisposable
     private readonly ICameraTarget<SKImageInfo> _target;
 
     private bool _initialized;
-    private ITinyMessengerHub _eventBus;
-    private TinyMessageSubscriptionToken? _mouseMoveToken;
-    private TinyMessageSubscriptionToken? _mouseWheelToken;
+    private IEventBusSubscriber _eventBus;
     
     
     public Camera(ICameraTarget<SKImageInfo> target)
@@ -39,9 +38,9 @@ public class Camera : INotifyPropertyChanged, IDisposable
 
     public void Init(EditorContext context)
     {
-        _eventBus = context.EventBus;
-        _mouseMoveToken = _eventBus.Subscribe<MouseMove>(OnMouseMove);
-        _mouseWheelToken = _eventBus.Subscribe<MouseWheel>(OnMouseWheel);
+        _eventBus = context.EventBus.Subscribe();
+        _eventBus.Subscribe<MouseMove>(OnMouseMove);
+        _eventBus.Subscribe<MouseWheel>(OnMouseWheel);
         _initialized = true;
     }
 
@@ -52,8 +51,8 @@ public class Camera : INotifyPropertyChanged, IDisposable
             return;
         }
         
-        _eventBus.Unsubscribe<MouseMove>(_mouseMoveToken!);
-        _eventBus.Unsubscribe<MouseWheel>(_mouseWheelToken!);
+        _eventBus.Unsubscribe<MouseMove>();
+        _eventBus.Unsubscribe<MouseWheel>();
     }
 
     private void OnMouseMove(MouseMove e)

@@ -20,4 +20,9 @@
       <PackageReference Include="SkiaSharp" Version="3.0.0-preview.2.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Rendering\Adapters\" />
+      <Folder Include="Rendering\Behaviors\" />
+    </ItemGroup>
+
 </Project>

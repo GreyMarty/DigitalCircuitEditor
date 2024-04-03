@@ -13,4 +13,10 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Include="..\..\..\..\.nuget\packages\tinymessenger\1.4.0-rc1\contentFiles\cs\any\TinyMessenger.cs">
+        <Link>Events\TinyMessenger.cs</Link>
+      </Compile>
+    </ItemGroup>
+
 </Project>

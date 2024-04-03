@@ -1,4 +1,5 @@
 ﻿using Editor.Component;
+using Editor.Component.Events;
 using Editor.Core.Events;
 using Editor.Core.Input;
 using Editor.Core.Prefabs;
@@ -8,23 +9,21 @@ namespace Editor.Core.Components;
 
 public class SelectionManager : EditorComponentBase
 {
-    private EditorContext _context = default!;
+    private IEventBusSubscriber _eventBus = default!;
 
-    private ITinyMessengerHub _eventBus = default!;
-    private TinyMessageSubscriptionToken _mouseDownToken = default!;
+
+    public IEntityBuilderFactory SelectionAreaFactory { get; set; } = new SelectionAreaFactory();
     
     
-    protected override void OnInit(EditorContext context, IEntity entity)
+    protected override void OnInit()
     {
-        _context = context;
-        
-        _eventBus = context.EventBus;
-        _mouseDownToken = _eventBus.Subscribe<MouseButtonDown>(OnMouseButtonDown);
+        _eventBus = Context.EventBus.Subscribe();
+        _eventBus.Subscribe<MouseButtonDown>(OnMouseButtonDown);
     }
 
     protected override void OnDestroy()
     {
-        _eventBus.Unsubscribe<MouseButtonDown>(_mouseDownToken);
+        _eventBus.Unsubscribe<MouseButtonDown>();
     }
 
     private void OnMouseButtonDown(MouseButtonDown e)
@@ -36,7 +35,7 @@ public class SelectionManager : EditorComponentBase
 
         Selectable? clickedOn = null;
         
-        foreach (var entity in _context.Entities)
+        foreach (var entity in Context.Entities)
         {
             var hoverableComponent = entity.GetComponent<Hoverable>()?.Component;
             var selectableComponent = entity.GetComponent<Selectable>()?.Component;
@@ -51,7 +50,7 @@ public class SelectionManager : EditorComponentBase
 
         if (clickedOn?.Selected != true)
         {
-            foreach (var entity in _context.Entities)
+            foreach (var entity in Context.Entities)
             {
                 var selectableComponent = entity.GetComponent<Selectable>()?.Component;
 
@@ -69,7 +68,13 @@ public class SelectionManager : EditorComponentBase
             clickedOn.Selected = true;
             return;
         }
+
+        var builder = SelectionAreaFactory.Create()
+            .ConfigureComponent<Position>(x =>
+            {
+                x.Value = e.PositionConverter.ScreenToWorldSpace(e.PositionPixels);
+            });
         
-        _context.Instantiate(SelectionAreaPrefab.CreateBuilder(e.PositionConverter.ScreenToWorldSpace(e.PositionPixels)));
+        Context.Instantiate(builder);
     }
 }

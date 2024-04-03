@@ -12,13 +12,23 @@ public abstract class Renderer : EditorComponentBase
     public RenderLayer Layer { get; init; }
     public int ZIndex { get; init; } = 0;
 
-    protected Vector2 Position => _positionComponent.Value;
+    public Vector2 Position => _positionComponent.Value;
     
 
-    protected override void OnInit(EditorContext context, IEntity entity)
+    protected override void OnInit()
     {
-        _positionComponent = entity.GetRequiredComponent<Position>()!;
+        _positionComponent = Entity.GetRequiredComponent<Position>()!;
     }
 
-    public abstract void Render(Camera camera, SKCanvas canvas);
+    public void Render(Camera camera, SKCanvas canvas)
+    {
+        canvas.Save();
+        
+        canvas.Translate(Position.X, Position.Y);
+        OnRender(camera, canvas);
+        
+        canvas.Restore();
+    }
+
+    protected abstract void OnRender(Camera camera, SKCanvas canvas);
 }

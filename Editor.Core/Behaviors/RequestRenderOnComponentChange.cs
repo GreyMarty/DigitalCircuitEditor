@@ -1,30 +1,34 @@
 ﻿using System.ComponentModel;
 using Editor.Component;
+using Editor.Component.Events;
 using Editor.Core.Components;
 using Editor.Core.Events;
 using Editor.Core.Rendering.Renderers;
 using TinyMessenger;
 
-namespace Editor.Core.Rendering.Behaviors;
+namespace Editor.Core.Behaviors;
 
-public class RequestRenderBehavior : EditorComponentBase
+public class RequestRenderOnComponentChange : EditorComponentBase
 {
-    private List<EditorComponentBase?> _components = [];
-    private ITinyMessengerHub _eventBus = default!;
+    private EditorComponentBase[] _components = [];
+    private IEventBus _eventBus = default!;
     
     
-    protected override void OnInit(EditorContext context, IEntity entity)
+    protected override void OnInit()
     {
-        _eventBus = context.EventBus;
-        
-        _components.Add(entity.GetComponent<Position>()?.Component);
-        _components.Add(entity.GetComponent<Hoverable>()?.Component);
-        _components.Add(entity.GetComponent<Selectable>()?.Component);
-        _components.Add(entity.GetComponent<Renderer>()?.Component);
-        
-        _components = _components
+        _eventBus = Context.EventBus;
+
+        var components = new List<EditorComponentBase?>
+        {
+            Entity.GetComponent<Position>()?.Component,
+            Entity.GetComponent<Hoverable>()?.Component,
+            Entity.GetComponent<Selectable>()?.Component,
+            Entity.GetComponent<Renderer>()?.Component
+        };
+
+        _components = components
             .Where(x => x is not null)
-            .ToList();
+            .ToArray()!;
         
         foreach (var component in _components)
         {

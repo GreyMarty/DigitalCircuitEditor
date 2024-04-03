@@ -6,9 +6,6 @@ namespace Editor.Core.Spawners;
 
 public abstract class Spawner : EditorComponentBase
 {
-    private EditorContext _context = default!;
-    private IEntity _entity = default!;
-    
     private Position _positionComponent = default!;
     
     public bool DestroyOnSpawn { get; set; }
@@ -18,25 +15,22 @@ public abstract class Spawner : EditorComponentBase
     
     public void Spawn()
     {
-        if (!_entity.Alive)
+        if (!Entity.Alive)
         {
             return;
         }
         
-        OnSpawn(_context);
+        OnSpawn(Context);
 
         if (DestroyOnSpawn)
         {
-            _context.Destroy(_entity);
+            Context.Destroy(Entity);
         }
     }
     
-    protected override void OnInit(EditorContext context, IEntity entity)
+    protected override void OnInit()
     {
-        _context = context;
-        _entity = entity;
-
-        _positionComponent = entity.GetRequiredComponent<Position>()!;
+        _positionComponent = Entity.GetRequiredComponent<Position>()!;
     }
 
     protected abstract void OnSpawn(EditorContext context);

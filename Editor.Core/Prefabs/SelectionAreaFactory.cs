@@ -1,27 +1,24 @@
-﻿using System.Numerics;
-using Editor.Component;
+﻿using Editor.Component;
+using Editor.Core.Behaviors;
 using Editor.Core.Components;
-using Editor.Core.Rendering.Adapters;
-using Editor.Core.Rendering.Behaviors;
+using Editor.Core.Rendering.Effects;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Shapes;
 using SkiaSharp;
 
 namespace Editor.Core.Prefabs;
 
-public static class SelectionAreaPrefab
+public class SelectionAreaFactory : IEntityBuilderFactory
 {
-    public static IEntityBuilder CreateBuilder(Vector2 position)
+    public IEntityBuilder Create()
     {
         return Entity.CreateBuilder()
-            .AddComponent(new Position()
-            {
-                Value = position
-            })
+            .AddComponent<Position>()
             .AddComponent<RectangleShape>()
             .AddComponent<SelectionArea>()
-            .AddComponent<RectangleShapeToRendererAdapter>()
-            .AddComponent<RequestRenderBehavior>()
+            .AddComponent<DestroyOnMouseButtonUp>()
+            .AddComponent<SyncRendererWithRectShape>()
+            .AddComponent<RequestRenderOnComponentChange>()
             .AddComponent(new RectangleRenderer
             {
                 ZIndex = 100,

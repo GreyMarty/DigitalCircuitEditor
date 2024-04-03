@@ -1,20 +1,23 @@
-﻿using TinyMessenger;
-
-namespace Editor.Component;
+﻿namespace Editor.Component;
 
 public abstract class ComponentBase
 {
+    public IEntity Entity { get; private set; } = default!;
+    public IContext Context => Entity.Context;
+    
     public bool Initialized { get; private set; }
 
 
-    internal void Init(IWorld world, IEntity entity)
+    internal void Init(IEntity entity)
     {
         if (Initialized)
         {
             return;
         }
+
+        Entity = entity;
         
-        OnInit(world, entity);
+        OnInit();
         Initialized = true;
     }
 
@@ -29,17 +32,12 @@ public abstract class ComponentBase
         Initialized = false;
     }
     
-    protected virtual void OnInit(IWorld world, IEntity entity) { }
+    protected virtual void OnInit() { }
     protected virtual void OnDestroy() { }
 }
 
-public abstract class ComponentBase<TWorld> : ComponentBase 
-    where TWorld : IWorld
+public abstract class ComponentBase<TContext> : ComponentBase 
+    where TContext : IContext
 {
-    protected sealed override void OnInit(IWorld world, IEntity entity)
-    {
-        OnInit((TWorld)world, entity);
-    }
-
-    protected virtual void OnInit(TWorld context, IEntity entity) { }
+    public new TContext Context => (TContext)base.Context;
 }

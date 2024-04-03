@@ -5,21 +5,14 @@ using SkiaSharp;
 
 namespace Editor.Core.Prefabs;
 
-public static class IfDiagramGhostConnectionPrefab
+public class IfDiagramGhostConnectionFactory : IEntityBuilderFactory
 {
-    public static IEntityBuilder CreateBuilder(IEntity source, IEntity target, IfDiagramConnectionType type)
+    public IEntityBuilder Create()
     {
         return Entity.CreateBuilder()
             .AddComponent<Position>()
-            .AddComponent(new ChildOf
-            {
-                Parent = source
-            })
-            .AddComponent(new IfDiagramConnection
-            {
-                Type = type,
-                Target = target
-            })
+            .AddComponent<ChildOf>()
+            .AddComponent<IfDiagramConnection>()
             .AddComponent(new ConnectionRenderer
             {
                 Stroke = new SKColor(125, 125, 125, 125),

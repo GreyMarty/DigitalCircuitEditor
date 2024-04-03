@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Editor.Core.Converters;
+using Editor.Component;
+using Editor.Core.Behaviors;
+using Editor.Core.Components;
 using Editor.Core.Events;
 using Editor.Core.Rendering;
 using Editor.Core.Rendering.Renderers;
@@ -44,7 +46,12 @@ public partial class EditorView : UserControl
         _mouseEventsRouter = new MouseEventsRouter(Canvas, Context.EventBus, _positionConverter);
         _mouseEventsRouter.Bind();
 
-        Context.EventBus.Subscribe<RenderRequested>(_ => Canvas.InvalidateVisual());
+        var eventBus = Context.EventBus.Subscribe();
+        eventBus.Subscribe<RenderRequested>(_ => Canvas.InvalidateVisual());
+
+        Context.Instantiate(Entity.CreateBuilder()
+            .AddComponent<SelectionManager>()
+        );
         
         Context.Init();
     }
@@ -61,7 +68,10 @@ public partial class EditorView : UserControl
         }
 
         var position = _positionConverter.ScreenToWorldSpace(e.GetPosition(Canvas).ToVector2());
-        Context?.Instantiate(viewModel.CreateBuilder(position));
+        var builder = viewModel.Factory.Create()
+            .ConfigureComponent<Position>(x => x.Value = position)
+            .AddComponent<SpawnOnInit>();
+        Context?.Instantiate(builder);
     }
 
     private void Canvas_OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)

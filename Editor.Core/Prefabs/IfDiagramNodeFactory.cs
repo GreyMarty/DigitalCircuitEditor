@@ -1,36 +1,33 @@
 ﻿using System.Numerics;
 using Editor.Component;
+using Editor.Core.Behaviors;
 using Editor.Core.Components;
-using Editor.Core.Components.Behaviors;
-using Editor.Core.Rendering.Behaviors;
+using Editor.Core.Rendering.Effects;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Shapes;
 using SkiaSharp;
 
 namespace Editor.Core.Prefabs;
 
-public static class IfDiagramNodePrefab
+public class IfDiagramNodeFactory : IEntityBuilderFactory
 {
-    public static IEntityBuilder CreateBuilder(Vector2? position = null)
+    public IEntityBuilder Create()
     {
         return Entity.CreateBuilder()
-            .AddComponent(new Position
-            {
-                Value = position ?? Vector2.Zero
-            })
+            .AddComponent<Position>()
             .AddComponent(new CircleShape
             {
                 Radius = 2
             })
             .AddComponent<Hoverable>()
             .AddComponent<Selectable>()
-            .AddComponent<DragOnMouseMoveBehavior>()
-            .AddComponent(new HighlightOnHoverBehavior
+            .AddComponent<DragOnMouseMove>()
+            .AddComponent(new ChangeFillOnHover
             {
                 HighlightColor = SKColors.LightGray
             })
-            .AddComponent<HighlightOnSelectBehavior>()
-            .AddComponent<RequestRenderBehavior>()
+            .AddComponent<ChangeStrokeOnSelect>()
+            .AddComponent<RequestRenderOnComponentChange>()
             .AddComponent(new CircleRenderer
             {
                 Radius = 2,

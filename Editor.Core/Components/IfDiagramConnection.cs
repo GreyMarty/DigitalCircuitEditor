@@ -1,6 +1,4 @@
-﻿using PropertyChanged;
-
-namespace Editor.Core.Components;
+﻿namespace Editor.Core.Components;
 
 public class IfDiagramConnection : Connection
 {
@@ -8,7 +6,7 @@ public class IfDiagramConnection : Connection
     
     public override string? Label
     {
-        get => Type.ToString();
+        get => Type != IfDiagramConnectionType.Direct ? Type.ToString() : null;
         set { }
     }
 }

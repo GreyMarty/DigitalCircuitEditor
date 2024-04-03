@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
+using Editor.Component.Events;
 using Editor.Core.Events;
 using Editor.Core.Rendering;
 using Editor.Core.Wpf.Converters;
@@ -12,7 +13,7 @@ namespace Editor.Core.Wpf.Events;
 public class MouseEventsRouter
 {
     private readonly UIElement _source;
-    private readonly ITinyMessengerHub _target;
+    private readonly IEventBus _target;
     private readonly IPositionConverter _converter;
 
     private bool _bound = false;
@@ -21,7 +22,7 @@ public class MouseEventsRouter
     private Vector2 _position;
     
     
-    public MouseEventsRouter(UIElement source, ITinyMessengerHub target, IPositionConverter converter)
+    public MouseEventsRouter(UIElement source, IEventBus target, IPositionConverter converter)
     {
         _source = source;
         _target = target;

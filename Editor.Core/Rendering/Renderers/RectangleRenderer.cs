@@ -9,11 +9,11 @@ public class RectangleRenderer : ShapeRenderer
     public float Height { get; set; }
     
     
-    public override void Render(Camera camera, SKCanvas canvas)
+    protected override void OnRender(Camera camera, SKCanvas canvas)
     {
-        var center = Position - new Vector2(Width / 2, Height / 2);
+        var topLeft = new Vector2(-Width / 2, -Height / 2);
         
-        canvas.DrawRect(center.X, center.Y, Width, Height, FillPaint);
-        canvas.DrawRect(center.X, center.Y, Width, Height, StrokePaint);
+        canvas.DrawRect(topLeft.X, topLeft.Y, Width, Height, FillPaint);
+        canvas.DrawRect(topLeft.X, topLeft.Y, Width, Height, StrokePaint);
     }
 }
