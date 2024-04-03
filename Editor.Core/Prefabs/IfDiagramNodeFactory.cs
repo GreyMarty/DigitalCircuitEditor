@@ -22,6 +22,7 @@ public class IfDiagramNodeFactory : IEntityBuilderFactory
             .AddComponent<Hoverable>()
             .AddComponent<Selectable>()
             .AddComponent<DragOnMouseMove>()
+            .AddComponent<ConnectToGhostNodeOnMouseButtonUp>()
             .AddComponent(new ChangeFillOnHover
             {
                 HighlightColor = SKColors.LightGray

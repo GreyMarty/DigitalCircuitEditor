@@ -31,6 +31,7 @@ public class IfDiagramNodeSpawner : Spawner
             
             var ghostNode = context.Instantiate(GhostNodeFactory.Create()
                 .ConfigureComponent<Position>(p => p.Value = offset)
+                .ConfigureComponent<IfDiagramGhostNode>(x => x.ConnectionType = type)
                 .AddComponent(new ChildOf
                 {
                     Parent = root

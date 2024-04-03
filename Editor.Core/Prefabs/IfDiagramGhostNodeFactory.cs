@@ -14,6 +14,7 @@ public class IfDiagramGhostNodeFactory : IEntityBuilderFactory
     {
         return Entity.CreateBuilder()
             .AddComponent<Position>()
+            .AddComponent<IfDiagramGhostNode>()
             .AddComponent(new CircleShape
             {
                 Radius = 1
