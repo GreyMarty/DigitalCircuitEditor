@@ -1,0 +1,4 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Geometry x:Key="IfDiagramNode">m33.475 16.933a16.542 16.541 0 0 1-16.542 16.541 16.542 16.541 0 0 1-16.542-16.541 16.542 16.541 0 0 1 16.542-16.541 16.542 16.541 0 0 1 16.542 16.541z</Geometry>
+</ResourceDictionary>

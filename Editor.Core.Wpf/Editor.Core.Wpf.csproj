@@ -8,12 +8,26 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
       <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
       <PackageReference Include="SkiaSharp.Views.WPF" Version="3.0.0-preview.2.1" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Editor.Core\Editor.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Images\const0.png" />
+      <Resource Include="Images\const0.png" />
+      <None Remove="Images\const1.png" />
+      <Resource Include="Images\const1.png" />
+      <None Remove="Images\ifd.png" />
+      <Resource Include="Images\ifd.png" />
+      <None Remove="Images\in.png" />
+      <Resource Include="Images\in.png" />
+      <None Remove="Images\out.png" />
+      <Resource Include="Images\out.png" />
     </ItemGroup>
 
 </Project>

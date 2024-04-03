@@ -21,7 +21,7 @@ public static class IfDiagramNodeSpawnerPrefab
             })
             .AddComponent(new CircleShape
             {
-                Radius = 2
+                Radius = 1
             })
             .AddComponent<Hoverable>()
             .AddComponent(new HighlightOnHoverBehavior
@@ -37,7 +37,7 @@ public static class IfDiagramNodeSpawnerPrefab
             .AddComponent<RequestRenderBehavior>()
             .AddComponent(new CircleRenderer
             {
-                Radius = 2,
+                Radius = 1,
                 Fill = 0,
                 StrokeThickness = 0.2f,
                 Stroke = new SKColor(125, 125, 125, 125)
