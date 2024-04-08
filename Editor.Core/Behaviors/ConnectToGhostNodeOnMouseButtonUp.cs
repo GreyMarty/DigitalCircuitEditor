@@ -1,9 +1,7 @@
 ﻿using Editor.Component;
 using Editor.Core.Components;
-using Editor.Core.Components.IfDiagrams;
 using Editor.Core.Events;
 using Editor.Core.Prefabs;
-using Editor.Core.Prefabs.IfDiagrams;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Shapes;
 
@@ -67,6 +65,8 @@ public class ConnectToGhostNodeOnMouseButtonUp<TConnection, TConnectionType> : O
 
             parentNode.Connections[connectionType] = connection;
             parentNode.Nodes[connectionType] = Entity;
+            
+            Entity.GetRequiredComponent<DiagramNode<TConnectionType>>().Component?.OnConnected(parentNode, connection.GetRequiredComponent<Connection<TConnectionType>>()!);
             break;
         }
     }

@@ -15,6 +15,8 @@ public class DiagramNode<TConnectionType> : EditorComponentBase
     public Dictionary<TConnectionType, IEntity> Connections { get; } = [];
     public Dictionary<TConnectionType, IEntity> Nodes { get; } = [];
 
+    public virtual void OnConnected(DiagramNode<TConnectionType> node, Connection<TConnectionType> connection) { }
+    
     protected override void OnInit()
     {
         _eventBus = Context.EventBus.Subscribe();
