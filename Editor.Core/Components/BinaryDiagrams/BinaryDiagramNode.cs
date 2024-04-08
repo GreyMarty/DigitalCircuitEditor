@@ -1,6 +1,6 @@
 ﻿namespace Editor.Core.Components.BinaryDiagrams;
 
-public class BinaryDiagramNode : EditorComponentBase
+public class BinaryDiagramNode : DiagramNode<BinaryDiagramConnectionType>
 {
     public BinaryDiagramConnectionType ConnectionType { get; set; }
     

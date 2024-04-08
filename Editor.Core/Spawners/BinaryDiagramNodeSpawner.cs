@@ -2,10 +2,8 @@
 using Editor.Component;
 using Editor.Core.Components;
 using Editor.Core.Components.BinaryDiagrams;
-using Editor.Core.Components.IfDiagrams;
 using Editor.Core.Prefabs;
 using Editor.Core.Prefabs.BinaryDiagrams;
-using Editor.Core.Prefabs.IfDiagrams;
 
 namespace Editor.Core.Spawners;
 
@@ -21,6 +19,8 @@ public class BinaryDiagramNodeSpawner : Spawner
         var root = context.Instantiate(NodeFactory.Create()
             .ConfigureComponent<Position>(p => p.Value = Position)
         );
+
+        var diagramNodeComponent = root.GetRequiredComponent<BinaryDiagramNode>().Component!;
         
         for (var i = 0; i < 2; i++)
         {
@@ -34,21 +34,32 @@ public class BinaryDiagramNodeSpawner : Spawner
             
             var ghostNode = context.Instantiate(GhostNodeFactory.Create()
                 .ConfigureComponent<Position>(p => p.Value = offset)
-                .ConfigureComponent<GhostNode<BinaryDiagramConnectionType>>(x => x.ConnectionType = type)
+                .ConfigureComponent<GhostNode<BinaryDiagramConnectionType>>(x =>
+                {
+                    x.ConnectionType = type;
+                    x.Active = true;
+                })
                 .AddComponent(new ChildOf
                 {
-                    Parent = root
+                    Parent = root,
+                    DestroyWithParent = true
                 })
             );
             
-            context.Instantiate(GhostConnectionFactory.Create()
-                .ConfigureComponent<ChildOf>(x => x.Parent = root)
+            var ghostConnection = context.Instantiate(GhostConnectionFactory.Create()
+                .ConfigureComponent<ChildOf>(x =>
+                {
+                    x.Parent = root;
+                })
                 .ConfigureComponent<BinaryDiagramConnection>(x =>
                 {
                     x.Target = ghostNode;
                     x.Type = type;
                 })
             );
+
+            diagramNodeComponent.GhostNodes[type] = ghostNode;
+            diagramNodeComponent.GhostConnections[type] = ghostConnection;
         }
     }
 }

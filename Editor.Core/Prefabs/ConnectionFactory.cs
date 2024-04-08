@@ -14,7 +14,10 @@ public class ConnectionFactory<TConnection> : IEntityBuilderFactory
     {
         return Entity.CreateBuilder()
             .AddComponent<Position>()
-            .AddComponent<ChildOf>()
+            .AddComponent(new ChildOf
+            {
+                DestroyWithParent = true
+            })
             .AddComponent<TConnection>()
             .AddComponent<ConnectionLabelToTextAdapter>()
             .AddComponent(new ConnectionRenderer

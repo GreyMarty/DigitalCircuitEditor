@@ -4,6 +4,7 @@ using Editor.Core.Components.IfDiagrams;
 using Editor.Core.Events;
 using Editor.Core.Prefabs;
 using Editor.Core.Prefabs.IfDiagrams;
+using Editor.Core.Rendering.Renderers;
 using Editor.Core.Shapes;
 
 namespace Editor.Core.Behaviors;
@@ -37,18 +38,21 @@ public class ConnectToGhostNodeOnMouseButtonUp<TConnection, TConnectionType> : O
             var childOfComponent = entity.GetComponent<ChildOf>()?.Component;
             var ghostNodeComponent = entity.GetComponent<GhostNode<TConnectionType>>()?.Component;
             
-            if (positionComponent is null || childOfComponent is null || ghostNodeComponent is null)
+            if (positionComponent is null || childOfComponent?.Parent is null || ghostNodeComponent?.Active != true)
             {
                 continue;
             }
-
+            
             var relativePosition = positionComponent.Value - _positionComponent.Value;
             if (!_shapeComponent.Contains(relativePosition))
             {
                 continue;
             }
 
-            Context.Instantiate(ConnectionFactory.Create()
+            var parentNode = childOfComponent.Parent.GetRequiredComponent<DiagramNode<TConnectionType>>().Component!;
+            var connectionType = ghostNodeComponent.ConnectionType;
+            
+            var connection = Context.Instantiate(ConnectionFactory.Create()
                 .ConfigureComponent<ChildOf>(x => x.Parent = childOfComponent.Parent)
                 .ConfigureComponent<TConnection>(x =>
                 {
@@ -56,8 +60,13 @@ public class ConnectToGhostNodeOnMouseButtonUp<TConnection, TConnectionType> : O
                     x.Type = ghostNodeComponent.ConnectionType;
                 })
             );
-            
-            Context.Destroy(entity);
+
+            ghostNodeComponent.Active = false;
+            ghostNodeComponent.Entity.GetRequiredComponent<Renderer>().Component!.Visible = false;
+            parentNode.GhostConnections[connectionType].GetRequiredComponent<Renderer>().Component!.Visible = false;
+
+            parentNode.Connections[connectionType] = connection;
+            parentNode.Nodes[connectionType] = Entity;
             break;
         }
     }

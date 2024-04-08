@@ -12,6 +12,10 @@ public class GhostConnectionFactory<TConnection> : ConnectionFactory<TConnection
     {
         return base
             .Create()
+            .ConfigureComponent<ChildOf>(x =>
+            {
+                x.DestroyWithParent = true;
+            })
             .ConfigureComponent<ConnectionRenderer>(x =>
             {
                 x.Stroke = new SKColor(125, 125, 125, 125);

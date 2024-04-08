@@ -12,6 +12,8 @@ public abstract class Renderer : EditorComponentBase
     public RenderLayer Layer { get; init; }
     public int ZIndex { get; init; } = 0;
 
+    public bool Visible { get; set; } = true;
+    
     public Vector2 Position => _positionComponent.Value;
     
 
@@ -22,6 +24,11 @@ public abstract class Renderer : EditorComponentBase
 
     public void Render(Camera camera, SKCanvas canvas)
     {
+        if (!Visible)
+        {
+            return;
+        }
+        
         canvas.Save();
         
         canvas.Translate(Position.X, Position.Y);

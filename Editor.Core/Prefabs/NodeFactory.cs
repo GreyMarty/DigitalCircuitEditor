@@ -2,6 +2,7 @@
 using Editor.Component;
 using Editor.Core.Behaviors;
 using Editor.Core.Components;
+using Editor.Core.Input;
 using Editor.Core.Rendering.Effects;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Shapes;
@@ -22,6 +23,10 @@ public class NodeFactory : IEntityBuilderFactory
             .AddComponent<Hoverable>()
             .AddComponent<Selectable>()
             .AddComponent<DragOnMouseMove>()
+            .AddComponent(new DestroyOnMouseButtonDown
+            {
+                Button = MouseButton.Right
+            })
             .AddComponent(new ChangeFillOnHover
             {
                 HighlightColor = SKColors.LightGray
