@@ -4,13 +4,14 @@ using Editor.Core.Spawners;
 
 namespace Editor.Core.Prefabs;
 
-public class IfDiagramNodeSpawnerFactory : IEntityBuilderFactory
+public class InstantSpawnerFactory<TSpawner> : IEntityBuilderFactory
+    where TSpawner : Spawner, new()
 {
     public IEntityBuilder Create()
     {
         return Entity.CreateBuilder()
             .AddComponent<Position>()
-            .AddComponent(new IfDiagramNodeSpawner
+            .AddComponent(new TSpawner
             {
                 DestroyOnSpawn = true,
             });

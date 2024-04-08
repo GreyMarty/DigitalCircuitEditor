@@ -58,8 +58,6 @@ public partial class EditorView : UserControl
 
     protected override void OnDrop(DragEventArgs e)
     {
-        base.OnDrop(e);
-
         var viewModel = e.Data.GetData("Object") as EditorEntitiesListItemViewModel;
 
         if (viewModel is null)
@@ -72,6 +70,8 @@ public partial class EditorView : UserControl
             .ConfigureComponent<Position>(x => x.Value = position)
             .AddComponent<SpawnOnInit>();
         Context?.Instantiate(builder);
+        
+        base.OnDrop(e);
     }
 
     private void Canvas_OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)

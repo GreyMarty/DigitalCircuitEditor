@@ -1,17 +1,19 @@
 ﻿using System.Numerics;
 using Editor.Component;
 using Editor.Core.Components;
+using Editor.Core.Components.BinaryDiagrams;
 using Editor.Core.Components.IfDiagrams;
 using Editor.Core.Prefabs;
+using Editor.Core.Prefabs.BinaryDiagrams;
 using Editor.Core.Prefabs.IfDiagrams;
 
 namespace Editor.Core.Spawners;
 
-public class IfDiagramNodeSpawner : Spawner
+public class BinaryDiagramNodeSpawner : Spawner
 {
-    public IEntityBuilderFactory NodeFactory { get; set; } = new IfDiagramNodeFactory();
-    public IEntityBuilderFactory GhostConnectionFactory { get; set; } = new GhostConnectionFactory<IfDiagramConnection>();
-    public IEntityBuilderFactory GhostNodeFactory { get; set; } = new IfDiagramGhostNodeFactory();
+    public IEntityBuilderFactory NodeFactory { get; set; } = new BinaryDiagramNodeFactory();
+    public IEntityBuilderFactory GhostConnectionFactory { get; set; } = new GhostConnectionFactory<BinaryDiagramConnection>();
+    public IEntityBuilderFactory GhostNodeFactory { get; set; } = new BinaryDiagramGhostNodeFactory();
     
 
     protected override void OnSpawn(EditorContext context)
@@ -20,20 +22,19 @@ public class IfDiagramNodeSpawner : Spawner
             .ConfigureComponent<Position>(p => p.Value = Position)
         );
         
-        for (var i = 0; i < 3; i++)
+        for (var i = 0; i < 2; i++)
         {
-            var offset = new Vector2(-8 + i * 8, 8);
+            var offset = new Vector2(-6 + i * 12, 6);
             
             var type = i switch
             {
-                0 => IfDiagramConnectionType.If,
-                1 => IfDiagramConnectionType.True,
-                2 => IfDiagramConnectionType.False,
+                0 => BinaryDiagramConnectionType.True,
+                1 => BinaryDiagramConnectionType.False,
             };
             
             var ghostNode = context.Instantiate(GhostNodeFactory.Create()
                 .ConfigureComponent<Position>(p => p.Value = offset)
-                .ConfigureComponent<GhostNode<IfDiagramConnectionType>>(x => x.ConnectionType = type)
+                .ConfigureComponent<GhostNode<BinaryDiagramConnectionType>>(x => x.ConnectionType = type)
                 .AddComponent(new ChildOf
                 {
                     Parent = root
@@ -42,7 +43,7 @@ public class IfDiagramNodeSpawner : Spawner
             
             context.Instantiate(GhostConnectionFactory.Create()
                 .ConfigureComponent<ChildOf>(x => x.Parent = root)
-                .ConfigureComponent<IfDiagramConnection>(x =>
+                .ConfigureComponent<BinaryDiagramConnection>(x =>
                 {
                     x.Target = ghostNode;
                     x.Type = type;

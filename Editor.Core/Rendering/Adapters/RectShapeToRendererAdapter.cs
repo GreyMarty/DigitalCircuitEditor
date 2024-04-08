@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel;
-using Editor.Component;
 using Editor.Core.Components;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Shapes;
 
-namespace Editor.Core.Rendering.Effects;
+namespace Editor.Core.Rendering.Adapters;
 
-public class SyncRendererWithRectShape : EditorComponentBase
+public class RectShapeToRendererAdapter : EditorComponentBase
 {
     private RectangleShape _shapeComponent = default!;
     private RectangleRenderer _rectangleRenderer = default!;

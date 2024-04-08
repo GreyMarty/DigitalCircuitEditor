@@ -1,24 +1,15 @@
 ﻿using System.Numerics;
-using Editor.Component;
 using Editor.Core.Components;
+using Editor.Core.Rendering.Helpers;
 using Editor.Core.Shapes;
 using SkiaSharp;
 
 namespace Editor.Core.Rendering.Renderers;
 
-public class ConnectionRenderer : ShapeRenderer
+public class ConnectionRenderer : LabeledShapeRenderer
 {
-    private readonly SKFont _font = new SKFont(SKTypeface.FromFamilyName("Consolas"), 1);
-    
     private Connection _connectionComponent = default!;
     private ChildOf _childOfComponent = default!;
-
-
-    public float FontSize
-    {
-        get => _font.Size;
-        set => _font.Size = value;
-    }
     
     
     protected override void OnInit()
@@ -63,44 +54,29 @@ public class ConnectionRenderer : ShapeRenderer
         canvas.RotateRadians(rotation);
         
         canvas.DrawLine(0, 0, distance, 0, StrokePaint);
-
-        var text = _connectionComponent.Label;
-
-        const float scaleFactor = 10;
         
-        if (!string.IsNullOrWhiteSpace(text))
+        if (!string.IsNullOrWhiteSpace(Text))
         {
-            _font.Size *= scaleFactor;
-            _font.MeasureText(text.Select(c => (ushort)c).ToArray(), out var rect);
-            
-            var origin = new SKPoint(
-                -rect.Left - rect.Width / 2,
-                -rect.Top - rect.Height / 2
-            );
-            
-            using var textBlob = SKTextBlob.Create(text, _font, origin);
-
             canvas.Save();
             
             if (Math.Abs(rotation) > Math.PI / 2)
             {
-                canvas.Translate(distance / 2, _font.Size / scaleFactor);
+                canvas.Translate(distance / 2, Font.Size);
                 canvas.RotateDegrees(180);
             }
             else 
             {
-                canvas.Translate(distance / 2, -_font.Size / scaleFactor);
+                canvas.Translate(distance / 2, -Font.Size);
             }
-            
-            canvas.Scale(1 / scaleFactor);
 
             var oldColor = FillPaint.Color;
             FillPaint.Color = StrokePaint.Color;
-            canvas.DrawText(textBlob, 0, 0, FillPaint);
+            
+            RenderingHelper.DrawText(camera, canvas, Text, Font, FillPaint, Anchor);
+            
             FillPaint.Color = oldColor;
             
             canvas.Restore();
-            _font.Size /= scaleFactor;
         }
         
         canvas.Restore();

@@ -9,9 +9,9 @@ using SkiaSharp;
 
 namespace Editor.Core.Prefabs;
 
-public class IfDiagramNodeFactory : IEntityBuilderFactory
+public class NodeFactory : IEntityBuilderFactory
 {
-    public IEntityBuilder Create()
+    public virtual IEntityBuilder Create()
     {
         return Entity.CreateBuilder()
             .AddComponent<Position>()
@@ -22,19 +22,20 @@ public class IfDiagramNodeFactory : IEntityBuilderFactory
             .AddComponent<Hoverable>()
             .AddComponent<Selectable>()
             .AddComponent<DragOnMouseMove>()
-            .AddComponent<ConnectToGhostNodeOnMouseButtonUp>()
             .AddComponent(new ChangeFillOnHover
             {
                 HighlightColor = SKColors.LightGray
             })
             .AddComponent<ChangeStrokeOnSelect>()
             .AddComponent<RequestRenderOnComponentChange>()
-            .AddComponent(new CircleRenderer
+            .AddComponent(new LabeledCircleRenderer
             {
                 Radius = 2,
                 Fill = SKColors.White,
                 StrokeThickness = 0.2f,
-                Stroke = SKColors.Black
+                Stroke = SKColors.Black,
+                FontSize = 2,
+                Anchor = Vector2.One * 0.5f
             });
     }
 }

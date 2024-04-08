@@ -44,6 +44,7 @@ public class MouseEventsRouter
         
         _source.MouseDown += SourceContainer_OnMouseButtonDown;
         _source.MouseUp += SourceContainer_OnMouseButtonUp;
+        _source.Drop += SourceContainer_OnDrop;
         _source.MouseMove += SourceContainer_OnMouseMove;
         _source.MouseWheel += SourceContainer_OnMouseWheel;
     }
@@ -57,6 +58,7 @@ public class MouseEventsRouter
         
         _source.MouseDown -= SourceContainer_OnMouseButtonDown;
         _source.MouseUp -= SourceContainer_OnMouseButtonUp;
+        _source.Drop -= SourceContainer_OnDrop;
         _source.MouseMove -= SourceContainer_OnMouseMove;
         _source.MouseWheel -= SourceContainer_OnMouseWheel;
     }
@@ -77,6 +79,14 @@ public class MouseEventsRouter
         _position = e.GetPosition(_source).ToVector2();
         
         _target.Publish(new MouseButtonUp(_source, button, _position, _converter));
+    }
+    
+    private void SourceContainer_OnDrop(object sender, DragEventArgs e)
+    {
+        _button = 0;
+        _position = e.GetPosition(_source).ToVector2();
+        
+        _target.Publish(new MouseButtonUp(_source, EditorMouseButton.Left, _position, _converter));
     }
 
     private void SourceContainer_OnMouseMove(object sender, MouseEventArgs e)

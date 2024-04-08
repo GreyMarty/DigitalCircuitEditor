@@ -1,6 +1,7 @@
 ﻿using Editor.Component;
 using Editor.Core.Behaviors;
 using Editor.Core.Components;
+using Editor.Core.Rendering.Adapters;
 using Editor.Core.Rendering.Effects;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Shapes;
@@ -17,7 +18,7 @@ public class SelectionAreaFactory : IEntityBuilderFactory
             .AddComponent<RectangleShape>()
             .AddComponent<SelectionArea>()
             .AddComponent<DestroyOnMouseButtonUp>()
-            .AddComponent<SyncRendererWithRectShape>()
+            .AddComponent<RectShapeToRendererAdapter>()
             .AddComponent<RequestRenderOnComponentChange>()
             .AddComponent(new RectangleRenderer
             {

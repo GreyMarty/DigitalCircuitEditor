@@ -21,7 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Rendering\Adapters\" />
       <Folder Include="Rendering\Behaviors\" />
     </ItemGroup>
 

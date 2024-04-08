@@ -1,6 +1,5 @@
 ﻿using Editor.Component;
 using Editor.Component.Events;
-using TinyMessenger;
 
 namespace Editor.Core.Components;
 
@@ -31,4 +30,10 @@ public class Connection : EditorComponentBase
             Context.Destroy(Entity);
         }
     }
+}
+
+public class Connection<TConnectionType> : Connection
+    where TConnectionType: notnull
+{
+    public TConnectionType Type { get; set; }
 }

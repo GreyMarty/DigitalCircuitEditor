@@ -8,13 +8,12 @@ using SkiaSharp;
 
 namespace Editor.Core.Prefabs;
 
-public class IfDiagramGhostNodeFactory : IEntityBuilderFactory
+public class GhostNodeFactory : IEntityBuilderFactory
 {
-    public IEntityBuilder Create()
+    public virtual IEntityBuilder Create()
     {
         return Entity.CreateBuilder()
             .AddComponent<Position>()
-            .AddComponent<IfDiagramGhostNode>()
             .AddComponent(new CircleShape
             {
                 Radius = 1
