@@ -3,7 +3,7 @@ using Editor.Core.Components;
 using Editor.Core.Components.BinaryDiagrams;
 using Editor.Core.Rendering.Renderers;
 
-namespace Editor.Core.Rendering.Adapters;
+namespace Editor.Core.Adapters;
 
 public class BinaryDiagramNodeVariableIdToTextAdapter : EditorComponentBase
 {

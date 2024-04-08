@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel;
-using System.Reflection.Metadata.Ecma335;
 using Editor.Core.Components;
 using Editor.Core.Rendering.Renderers;
 
-namespace Editor.Core.Rendering.Adapters;
+namespace Editor.Core.Adapters;
 
 public class ConnectionLabelToTextAdapter : EditorComponentBase
 {

@@ -1,7 +1,7 @@
 ﻿using Editor.Component;
+using Editor.Core.Adapters;
 using Editor.Core.Behaviors;
 using Editor.Core.Components.BinaryDiagrams;
-using Editor.Core.Rendering.Adapters;
 
 namespace Editor.Core.Prefabs.BinaryDiagrams;
 

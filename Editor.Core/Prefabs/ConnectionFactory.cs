@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Editor.Component;
+using Editor.Core.Adapters;
 using Editor.Core.Components;
-using Editor.Core.Rendering.Adapters;
 using Editor.Core.Rendering.Renderers;
 using SkiaSharp;
 

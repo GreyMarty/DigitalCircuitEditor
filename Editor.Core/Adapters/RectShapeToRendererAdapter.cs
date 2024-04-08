@@ -3,7 +3,7 @@ using Editor.Core.Components;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Shapes;
 
-namespace Editor.Core.Rendering.Adapters;
+namespace Editor.Core.Adapters;
 
 public class RectShapeToRendererAdapter : EditorComponentBase
 {
