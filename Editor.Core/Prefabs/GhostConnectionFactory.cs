@@ -1,5 +1,7 @@
 ﻿using Editor.Component;
+using Editor.Core.Behaviors;
 using Editor.Core.Components;
+using Editor.Core.Rendering.Effects;
 using Editor.Core.Rendering.Renderers;
 using SkiaSharp;
 
@@ -12,11 +14,14 @@ public class GhostConnectionFactory<TConnection> : ConnectionFactory<TConnection
     {
         return base
             .Create()
+            .RemoveComponent<Selectable>()
+            .RemoveComponent<ChangeStrokeOnSelect>()
+            .RemoveComponent<DestroyOnMouseButtonDown>()
             .ConfigureComponent<ChildOf>(x =>
             {
                 x.DestroyWithParent = true;
             })
-            .ConfigureComponent<ConnectionRenderer>(x =>
+            .ConfigureComponent<LabeledLineRenderer>(x =>
             {
                 x.Stroke = new SKColor(125, 125, 125, 125);
             });
