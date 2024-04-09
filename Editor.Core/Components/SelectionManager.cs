@@ -26,6 +26,21 @@ public class SelectionManager : EditorComponentBase
         _eventBus.Unsubscribe<MouseButtonDown>();
     }
 
+    public void UnselectAll()
+    {
+        foreach (var entity in Context.Entities)
+        {
+            var selectableComponent = entity.GetComponent<Selectable>()?.Component;
+
+            if (selectableComponent is null)
+            {
+                continue;
+            }
+
+            selectableComponent.Selected = false;
+        }
+    }
+    
     private void OnMouseButtonDown(MouseButtonDown e)
     {
         if (e.Button != MouseButton.Left)
@@ -39,8 +54,14 @@ public class SelectionManager : EditorComponentBase
         {
             var hoverableComponent = entity.GetComponent<Hoverable>()?.Component;
             var selectableComponent = entity.GetComponent<Selectable>()?.Component;
+
+            if (hoverableComponent?.Hovered == true && selectableComponent is null)
+            {
+                UnselectAll();
+                return;
+            }
             
-            if (hoverableComponent is null || selectableComponent is null || !hoverableComponent.Hovered)
+            if (hoverableComponent?.Hovered != true || selectableComponent is null)
             {
                 continue;
             }
@@ -50,17 +71,7 @@ public class SelectionManager : EditorComponentBase
 
         if (clickedOn?.Selected != true)
         {
-            foreach (var entity in Context.Entities)
-            {
-                var selectableComponent = entity.GetComponent<Selectable>()?.Component;
-
-                if (selectableComponent is null)
-                {
-                    continue;
-                }
-
-                selectableComponent.Selected = false;
-            }
+            UnselectAll();
         }
 
         if (clickedOn is not null)

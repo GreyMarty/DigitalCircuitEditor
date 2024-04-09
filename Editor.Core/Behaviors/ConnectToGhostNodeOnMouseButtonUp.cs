@@ -59,10 +59,6 @@ public class ConnectToGhostNodeOnMouseButtonUp<TConnection, TConnectionType> : O
                 })
             );
 
-            ghostNodeComponent.Active = false;
-            ghostNodeComponent.Entity.GetRequiredComponent<Renderer>().Component!.Visible = false;
-            parentNode.GhostConnections[connectionType].GetRequiredComponent<Renderer>().Component!.Visible = false;
-
             parentNode.Connections[connectionType] = connection;
             parentNode.Nodes[connectionType] = Entity;
             

@@ -7,16 +7,14 @@ namespace Editor.Core.Behaviors;
 public class DragOnMouseMove : OnMouseMoveBehavior
 {
     private Position _positionComponent = default!;
-    private Hoverable _hoverableComponent = default!;
     private Selectable? _selectableComponent;
-    
+
     
     protected override void OnInit()
     {
         base.OnInit();
         
         _positionComponent = Entity.GetRequiredComponent<Position>()!;
-        _hoverableComponent = Entity.GetRequiredComponent<Hoverable>()!;
         _selectableComponent = Entity.GetComponent<Selectable>()?.Component;
     }
 
@@ -27,9 +25,7 @@ public class DragOnMouseMove : OnMouseMoveBehavior
             return;
         }
         
-        var hoveredOrSelected = _hoverableComponent.Hovered || _selectableComponent?.Selected == true;
-        
-        if (!hoveredOrSelected || e.Button != MouseButton.Left)
+        if (_selectableComponent?.Selected != true || e.Button != MouseButton.Left)
         {
             return;
         }

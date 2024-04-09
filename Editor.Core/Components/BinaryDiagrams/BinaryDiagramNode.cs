@@ -15,4 +15,24 @@ public class BinaryDiagramNode : DiagramNode<BinaryDiagramConnectionType>
 
         VariableId = Math.Max(VariableId, binaryNode.VariableId + 1);
     }
+
+    protected override void OnPropertyChanged(string? propertyName = null)
+    {
+        base.OnPropertyChanged(propertyName);
+
+        if (propertyName == nameof(VariableId))
+        {
+            foreach (var (_, entity) in Nodes)
+            {
+                var node = entity.GetComponent<BinaryDiagramNode>()?.Component;
+
+                if (node is null)
+                {
+                    continue;
+                }
+                
+                node.VariableId = Math.Max(node.VariableId, VariableId + 1);
+            }
+        }
+    }
 }
