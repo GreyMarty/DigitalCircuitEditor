@@ -34,6 +34,7 @@ public class ConnectionFactory<TConnection> : IEntityBuilderFactory
             {
                 Button = MouseButton.Right
             })
+            .AddComponent<CreateJointOnMouseDoubleClick>()
             .AddComponent<ConnectionLabelToTextAdapter>()
             .AddComponent<ConnectionToLineShapeAdapter>()
             .AddComponent<LineShapeToRendererAdapter>()

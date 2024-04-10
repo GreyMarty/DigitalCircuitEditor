@@ -53,6 +53,11 @@ public class SelectionManager : EditorComponentBase
         
         foreach (var entity in Context.Entities)
         {
+            if (!entity.Active)
+            {
+                continue;
+            }
+            
             var hoverableComponent = entity.GetComponent<Hoverable>()?.Component;
             var selectableComponent = entity.GetComponent<Selectable>()?.Component;
 
