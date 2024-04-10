@@ -1,7 +1,9 @@
 ﻿using Editor.Component;
 using Editor.Core.Components;
+using Editor.Core.Components.Diagrams;
 using Editor.Core.Events;
 using Editor.Core.Prefabs;
+using Editor.Core.Prefabs.Factories;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Shapes;
 
@@ -36,7 +38,7 @@ public class ConnectToGhostNodeOnMouseButtonUp<TConnection, TConnectionType> : O
             var childOfComponent = entity.GetComponent<ChildOf>()?.Component;
             var ghostNodeComponent = entity.GetComponent<GhostNode<TConnectionType>>()?.Component;
             
-            if (positionComponent is null || childOfComponent?.Parent is null || ghostNodeComponent?.Active != true)
+            if (positionComponent is null || childOfComponent?.Parent is null || entity.Active != true)
             {
                 continue;
             }
@@ -47,7 +49,7 @@ public class ConnectToGhostNodeOnMouseButtonUp<TConnection, TConnectionType> : O
                 continue;
             }
 
-            var parentNode = childOfComponent.Parent.GetRequiredComponent<DiagramNode<TConnectionType>>().Component!;
+            var parentNode = childOfComponent.Parent.GetRequiredComponent<BranchNode<TConnectionType>>().Component!;
             var connectionType = ghostNodeComponent.ConnectionType;
             
             var connection = Context.Instantiate(ConnectionFactory.Create()
@@ -62,7 +64,7 @@ public class ConnectToGhostNodeOnMouseButtonUp<TConnection, TConnectionType> : O
             parentNode.Connections[connectionType] = connection;
             parentNode.Nodes[connectionType] = Entity;
             
-            Entity.GetRequiredComponent<DiagramNode<TConnectionType>>().Component?.OnConnected(parentNode, connection.GetRequiredComponent<Connection<TConnectionType>>()!);
+            Entity.GetRequiredComponent<BranchNode<TConnectionType>>().Component?.OnConnected(parentNode, connection.GetRequiredComponent<Connection<TConnectionType>>()!);
             break;
         }
     }

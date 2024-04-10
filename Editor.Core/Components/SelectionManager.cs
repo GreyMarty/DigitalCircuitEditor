@@ -3,6 +3,7 @@ using Editor.Component.Events;
 using Editor.Core.Events;
 using Editor.Core.Input;
 using Editor.Core.Prefabs;
+using Editor.Core.Prefabs.Factories;
 using TinyMessenger;
 
 namespace Editor.Core.Components;

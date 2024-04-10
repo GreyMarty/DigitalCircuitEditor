@@ -1,6 +1,6 @@
 ﻿using Editor.Core.Components;
 using Editor.Core.Events;
-using Editor.Core.Spawners;
+using Editor.Core.Prefabs.Spawners;
 
 namespace Editor.Core.Behaviors;
 
@@ -20,7 +20,7 @@ public class SpawnOnMouseButtonDown : OnMouseButtonDownBehavior
 
     protected override void OnMouseButtonDown(MouseButtonDown e)
     {
-        if (!_hoverableComponent.Hovered)
+        if (!Entity.Active || !_hoverableComponent.Hovered)
         {
             return;
         }

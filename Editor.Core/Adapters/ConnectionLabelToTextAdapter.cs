@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Editor.Core.Components;
+using Editor.Core.Components.Diagrams;
 using Editor.Core.Rendering.Renderers;
 
 namespace Editor.Core.Adapters;

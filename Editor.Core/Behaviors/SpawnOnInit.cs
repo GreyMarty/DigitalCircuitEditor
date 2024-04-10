@@ -1,5 +1,5 @@
 ﻿using Editor.Core.Components;
-using Editor.Core.Spawners;
+using Editor.Core.Prefabs.Spawners;
 
 namespace Editor.Core.Behaviors;
 

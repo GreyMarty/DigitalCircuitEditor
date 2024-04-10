@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Numerics;
 using Editor.Core.Components;
+using Editor.Core.Components.Diagrams;
 using Editor.Core.Extensions;
 using Editor.Core.Shapes;
 

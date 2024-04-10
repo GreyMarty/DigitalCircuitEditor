@@ -10,8 +10,9 @@ public interface IEntity
     public bool Initialized { get; }
     public bool Alive { get; }
     public ComponentBase[] Components { get; init; }
-    
-    
+    public bool Active { get; set; }
+
+
     public void Init(IContext context);
     public void Destroy();
     public ComponentRef<T>? GetComponent<T>() where T : ComponentBase;
@@ -35,6 +36,7 @@ public sealed class Entity : IEntity
     
     public bool Alive { get; private set; }
     public bool Initialized { get; private set; }
+    public bool Active { get; set; } = true;
     
     public ComponentBase[] Components { get; init; }
 
