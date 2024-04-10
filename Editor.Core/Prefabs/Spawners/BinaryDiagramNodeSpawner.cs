@@ -21,7 +21,7 @@ public class BinaryDiagramNodeSpawner : Spawner
             .ConfigureComponent<Position>(p => p.Value = Position)
         );
 
-        var diagramNodeComponent = root.GetRequiredComponent<BinaryBranchNode>().Component!;
+        var diagramNodeComponent = root.GetRequiredComponent<BinaryDiagramNode>().Component!;
         
         for (var i = 0; i < 2; i++)
         {

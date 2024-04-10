@@ -10,7 +10,7 @@ public class BinaryDiagramNodeFactory : NodeFactory
     public override IEntityBuilder Create()
     {
         return base.Create()
-            .AddComponent<BinaryBranchNode>()
+            .AddComponent<BinaryDiagramNode>()
             .AddComponent<ConnectToGhostNodeOnMouseButtonUp<BinaryDiagramConnection, BinaryDiagramConnectionType>>()
             .AddComponent<NodeLabelToTextAdapter<BinaryDiagramConnectionType>>();
     }

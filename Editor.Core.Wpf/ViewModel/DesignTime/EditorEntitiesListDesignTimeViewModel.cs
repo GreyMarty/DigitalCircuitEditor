@@ -20,6 +20,11 @@ public class EditorEntitiesListDesignTimeViewModel : EditorEntitiesListViewModel
                 Images.Const0,
                 new InstantSpawnerFactory<SimpleSpawner<ConstNodeFactory<BinaryDiagramConnectionType>>>(),
                 "Const node"
+            ),
+            new EditorEntitiesListItemViewModel(
+                Images.Const0,
+                new InstantSpawnerFactory<BinaryDiagramOutputNodeSpawner>(),
+                "Output"
             )
         ];
     }

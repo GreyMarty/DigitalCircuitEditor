@@ -50,7 +50,7 @@ public class DraggableConnector<TConnectionType> : EditorComponentBase
                 continue;
             }
 
-            if (entity.GetComponent<Node<TConnectionType>>() is not { } node)
+            if (entity.GetComponent<Node<TConnectionType>>() is not { } node || node?.Component is OutputNode<TConnectionType>)
             {
                 continue;
             }
