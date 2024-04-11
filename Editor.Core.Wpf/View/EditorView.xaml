@@ -7,9 +7,11 @@
              xmlns:skia="clr-namespace:SkiaSharp.Views.WPF;assembly=SkiaSharp.Views.WPF"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             AllowDrop="True">
+             AllowDrop="True"
+             Focusable="True">
     <Grid>
-        <skia:SKElement x:Name="Canvas"
-                        PaintSurface="Canvas_OnPaintSurface"/>
+        <skia:SKElement 
+            x:Name="Canvas"
+            PaintSurface="Canvas_OnPaintSurface"/>
     </Grid>
 </UserControl>

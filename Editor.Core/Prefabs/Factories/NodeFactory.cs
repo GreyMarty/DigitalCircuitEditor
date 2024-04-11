@@ -23,10 +23,7 @@ public class NodeFactory : IEntityBuilderFactory
             .AddComponent<Hoverable>()
             .AddComponent<Selectable>()
             .AddComponent<DragOnMouseMove>()
-            .AddComponent(new DestroyOnMouseButtonDown
-            {
-                Button = MouseButton.Right
-            })
+            .AddComponent<DestroyOnRequested>()
             .AddComponent(new ChangeFillOnHover
             {
                 HighlightColor = SKColors.LightGray

@@ -28,10 +28,7 @@ public class ConstNodeFactory<TConnectionType> : IEntityBuilderFactory
             .AddComponent<Selectable>()
             .AddComponent<ConstNode<TConnectionType>>()
             .AddComponent<DragOnMouseMove>()
-            .AddComponent(new DestroyOnMouseButtonDown
-            {
-                Button = MouseButton.Right
-            })
+            .AddComponent<DestroyOnRequested>()
             .AddComponent(new ChangeFillOnHover
             {
                 HighlightColor = SKColors.LightGray

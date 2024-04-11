@@ -17,7 +17,7 @@ public class GhostConnectionFactory<TConnection> : ConnectionFactory<TConnection
             .Create()
             .RemoveComponent<Selectable>()
             .RemoveComponent<ChangeStrokeOnSelect>()
-            .RemoveComponent<DestroyOnMouseButtonDown>()
+            .RemoveComponent<DestroyOnRequested>()
             .RemoveComponent<CreateJointOnMouseDoubleClick>()
             .ConfigureComponent<ChildOf>(x =>
             {

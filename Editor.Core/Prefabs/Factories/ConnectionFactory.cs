@@ -30,10 +30,7 @@ public class ConnectionFactory<TConnection> : IEntityBuilderFactory
                 DestroyWithParent = true
             })
             .AddComponent<TConnection>()
-            .AddComponent(new DestroyOnMouseButtonDown
-            {
-                Button = MouseButton.Right
-            })
+            .AddComponent<DestroyOnRequested>()
             .AddComponent<CreateJointOnMouseDoubleClick>()
             .AddComponent<ConnectionLabelToTextAdapter>()
             .AddComponent<ConnectionToLineShapeAdapter>()

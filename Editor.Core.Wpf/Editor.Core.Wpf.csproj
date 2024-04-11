@@ -30,4 +30,8 @@
       <Resource Include="Images\out.png" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="View\Inspector\" />
+    </ItemGroup>
+
 </Project>

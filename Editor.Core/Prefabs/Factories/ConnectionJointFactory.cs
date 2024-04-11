@@ -23,10 +23,7 @@ public class ConnectionJointFactory : IEntityBuilderFactory
             .AddComponent<Selectable>()
             .AddComponent<ConnectionJoint>()
             .AddComponent<DragOnMouseMove>()
-            .AddComponent(new DestroyOnMouseButtonDown
-            {
-                Button = MouseButton.Right
-            })
+            .AddComponent<DestroyOnRequested>()
             .AddComponent<DestroyWith>()
             .AddComponent<ChangeStrokeOnSelect>()
             .AddComponent<RequestRenderOnComponentChange>()

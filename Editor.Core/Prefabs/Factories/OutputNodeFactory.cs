@@ -27,10 +27,7 @@ public class OutputNodeFactory<TConnectionType> : IEntityBuilderFactory where TC
             .AddComponent<Selectable>()
             .AddComponent<OutputNode<TConnectionType>>()
             .AddComponent<DragOnMouseMove>()
-            .AddComponent(new DestroyOnMouseButtonDown
-            {
-                Button = MouseButton.Right
-            })
+            .AddComponent<DestroyOnRequested>()
             .AddComponent(new ChangeFillOnHover
             {
                 HighlightColor = SKColors.LightGray

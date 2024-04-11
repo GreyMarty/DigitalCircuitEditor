@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Editor.Component;
 using Editor.Core.Behaviors;
 using Editor.Core.Components;
@@ -18,11 +19,21 @@ public partial class EditorView : UserControl
     private readonly SKCameraTarget _cameraTarget = new();
     private MouseEventsRouter _mouseEventsRouter;
     private IPositionConverter _positionConverter;
+
+    private Window? _window;
     
     
     public EditorView()
     {
         InitializeComponent();
+    }
+
+    ~EditorView()
+    {
+        if (_window is not null)
+        {
+            _window.KeyDown -= Window_OnKeyDown;
+        }
     }
     
     
@@ -32,6 +43,9 @@ public partial class EditorView : UserControl
     protected override void OnInitialized(EventArgs e)
     {
         base.OnInitialized(e);
+
+        _window = Application.Current.MainWindow;
+        _window.KeyDown += Window_OnKeyDown;
         
         Context = new EditorContext
         {
@@ -78,5 +92,15 @@ public partial class EditorView : UserControl
     {
         _cameraTarget.Update(e.Info);
         Context?.Renderers.Render(Context.Camera, e.Surface.Canvas);
+    }
+    
+    private void Window_OnKeyDown(object sender, KeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case Key.Delete:
+                Context?.EventBus.Publish(new DestroyRequested(this));
+                break;
+        }
     }
 }
