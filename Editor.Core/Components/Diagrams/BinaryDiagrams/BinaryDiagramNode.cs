@@ -3,7 +3,8 @@
 public class BinaryDiagramNode : BranchNode<BinaryDiagramConnectionType>
 {
     public BinaryDiagramConnectionType ConnectionType { get; set; }
-    
+
+    public int MinVariableId { get; set; } = 0;
     public int VariableId { get; set; }
 
     public override string? Label
@@ -19,7 +20,8 @@ public class BinaryDiagramNode : BranchNode<BinaryDiagramConnectionType>
             return;
         }
 
-        VariableId = Math.Max(VariableId, binaryNode.VariableId + 1);
+        MinVariableId = binaryNode.VariableId + 1;
+        VariableId = Math.Max(VariableId, MinVariableId);
     }
 
     protected override void OnPropertyChanged(string? propertyName = null)
@@ -36,8 +38,9 @@ public class BinaryDiagramNode : BranchNode<BinaryDiagramConnectionType>
                 {
                     continue;
                 }
-                
-                node.VariableId = Math.Max(node.VariableId, VariableId + 1);
+
+                node.MinVariableId = VariableId + 1;
+                node.VariableId = Math.Max(node.VariableId, node.MinVariableId);
             }
         }
     }

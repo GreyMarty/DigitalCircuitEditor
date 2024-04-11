@@ -2,6 +2,7 @@
 using Editor.Core.Adapters;
 using Editor.Core.Behaviors;
 using Editor.Core.Components.Diagrams.BinaryDiagrams;
+using Editor.Core.Input;
 
 namespace Editor.Core.Prefabs.Factories.BinaryDiagrams;
 
@@ -12,6 +13,10 @@ public class BinaryDiagramNodeFactory : NodeFactory
         return base.Create()
             .AddComponent<BinaryDiagramNode>()
             .AddComponent<ConnectToGhostNodeOnMouseButtonUp<BinaryDiagramConnection, BinaryDiagramConnectionType>>()
-            .AddComponent<NodeLabelToTextAdapter<BinaryDiagramConnectionType>>();
+            .AddComponent<NodeLabelToTextAdapter<BinaryDiagramConnectionType>>()
+            .AddComponent(new RequestPropertiesInspectorOnMouseButtonDown
+            {
+                Button = MouseButton.Right
+            });
     }
 }

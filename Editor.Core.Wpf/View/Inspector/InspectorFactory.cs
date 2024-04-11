@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using Editor.Component;
 using Editor.Core.Components.Diagrams;
+using Editor.Core.Components.Diagrams.BinaryDiagrams;
 
 namespace Editor.Core.Wpf.View.Inspector;
 
@@ -19,6 +20,12 @@ public class InspectorFactory : IInspectorFactory
             {
                 case IConstNode:
                     return new ConstNodeInspector
+                    {
+                        DataContext = component
+                    };
+                
+                case BinaryDiagramNode:
+                    return new BinaryDiagramNodeInspector
                     {
                         DataContext = component
                     };

@@ -36,6 +36,7 @@ public class ConnectionFactory<TConnection> : IEntityBuilderFactory
             .AddComponent<ConnectionToLineShapeAdapter>()
             .AddComponent<LineShapeToRendererAdapter>()
             .AddComponent<ChangeStrokeOnSelect>()
+            .AddComponent<RequestRenderOnComponentChange>()
             .AddComponent(new LabeledLineRenderer
             {
                 Stroke = SKColors.Black,
