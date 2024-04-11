@@ -9,6 +9,7 @@ using Editor.Core.Rendering;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Wpf.Converters;
 using Editor.Core.Wpf.Events;
+using Editor.Core.Wpf.View.Inspector;
 using Editor.Core.Wpf.ViewModel;
 using SkiaSharp.Views.Desktop;
 
@@ -17,6 +18,7 @@ namespace Editor.Core.Wpf.View;
 public partial class EditorView : UserControl
 {
     private readonly SKCameraTarget _cameraTarget = new();
+    private readonly IInspectorFactory _inspectorFactory = new InspectorFactory();
     private MouseEventsRouter _mouseEventsRouter;
     private IPositionConverter _positionConverter;
 
@@ -85,6 +87,8 @@ public partial class EditorView : UserControl
             .AddComponent<SpawnOnInit>();
         Context?.Instantiate(builder);
         
+        Context?.EventBus.Subscribe().Subscribe<RequestPropertiesInspector>(Context_OnPropertiesInspectorRequested);
+        
         base.OnDrop(e);
     }
 
@@ -92,6 +96,11 @@ public partial class EditorView : UserControl
     {
         _cameraTarget.Update(e.Info);
         Context?.Renderers.Render(Context.Camera, e.Surface.Canvas);
+    }
+    
+    private void Canvas_OnMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        Popup.IsOpen = false;
     }
     
     private void Window_OnKeyDown(object sender, KeyEventArgs e)
@@ -102,5 +111,24 @@ public partial class EditorView : UserControl
                 Context?.EventBus.Publish(new DestroyRequested(this));
                 break;
         }
+    }
+
+    private void Popup_OnMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        e.Handled = true;
+    }
+
+    private void Context_OnPropertiesInspectorRequested(RequestPropertiesInspector e)
+    {
+        var control = _inspectorFactory.Create((IEntity)e.Sender);
+
+        if (control is null)
+        {
+            return;
+        }
+        
+        PopupContainer.Children.Clear();
+        PopupContainer.Children.Add(control);
+        Popup.IsOpen = true;
     }
 }

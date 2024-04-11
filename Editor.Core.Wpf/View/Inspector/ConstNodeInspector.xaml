@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="Editor.Core.Wpf.View.Inspector.ConstNodeInspector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:components="clr-namespace:Editor.Core.Components.Diagrams;assembly=Editor.Core"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance {x:Type components:ConstNode`1}}"
+             Width="200">
+    
+    <UserControl.Resources>
+        <ResourceDictionary Source="../../Resources/Resources.xaml"/>
+    </UserControl.Resources>
+    
+    <DockPanel LastChildFill="False">
+        <TextBlock
+            DockPanel.Dock="Left"
+            VerticalAlignment="Center"
+            FontSize="14"
+            Text="Value"/>
+        <mah:ToggleSwitch
+            DockPanel.Dock="Right"
+            Margin="0,0,-90,0"
+            OnContent="1"
+            OffContent="0"
+            IsOn="{Binding Value, Mode=TwoWay}"/>
+    </DockPanel>
+</UserControl>

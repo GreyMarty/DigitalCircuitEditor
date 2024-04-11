@@ -4,6 +4,7 @@ using Editor.Core.Adapters;
 using Editor.Core.Behaviors;
 using Editor.Core.Components;
 using Editor.Core.Components.Diagrams;
+using Editor.Core.Events;
 using Editor.Core.Input;
 using Editor.Core.Rendering.Effects;
 using Editor.Core.Rendering.Renderers;
@@ -35,6 +36,10 @@ public class ConstNodeFactory<TConnectionType> : IEntityBuilderFactory
             })
             .AddComponent<ChangeStrokeOnSelect>()
             .AddComponent<NodeLabelToTextAdapter<TConnectionType>>()
+            .AddComponent(new RequestPropertiesInspectorOnMouseButtonDown
+            {
+                Button = MouseButton.Right
+            })
             .AddComponent<RequestRenderOnComponentChange>()
             .AddComponent(new LabeledRectangleRenderer()
             {

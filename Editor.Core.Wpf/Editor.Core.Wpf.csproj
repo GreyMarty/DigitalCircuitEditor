@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
+      <PackageReference Include="MahApps.Metro" Version="3.0.0-alpha0492" />
       <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
       <PackageReference Include="SkiaSharp.Views.WPF" Version="3.0.0-preview.2.1" />
     </ItemGroup>
@@ -28,10 +29,6 @@
       <Resource Include="Images\in.png" />
       <None Remove="Images\out.png" />
       <Resource Include="Images\out.png" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="View\Inspector\" />
     </ItemGroup>
 
 </Project>

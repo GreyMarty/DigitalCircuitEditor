@@ -1,6 +1,12 @@
 ﻿namespace Editor.Core.Components.Diagrams;
 
-public class ConstNode<TConnectionType> : Node<TConnectionType> where TConnectionType : notnull
+public interface IConstNode
+{
+    public bool Value { get; set; }
+}
+
+public class ConstNode<TConnectionType> : Node<TConnectionType>, IConstNode 
+    where TConnectionType : notnull
 {
     public bool Value { get; set; }
     public override string? Label 

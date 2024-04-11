@@ -1,25 +1,28 @@
-﻿using Editor.Core.Components;
+﻿using Editor.Component.Events;
+using Editor.Core.Components;
 using Editor.Core.Events;
-using Editor.Core.Input;
 
 namespace Editor.Core.Behaviors;
 
-public class SelectOnMouseButtonDown : OnMouseButtonDownBehavior
+public class RequestPropertiesInspectorOnMouseButtonDown : OnMouseButtonDownBehavior
 {
     private Hoverable _hoverableComponent = default!;
-    private Selectable _selectableComponent = default!;
     
 
     protected override void OnInit()
     {
         base.OnInit();
-        
+
         _hoverableComponent = Entity.GetRequiredComponent<Hoverable>()!;
-        _selectableComponent = Entity.GetRequiredComponent<Selectable>()!;
     }
 
     protected override void OnMouseButtonDown(MouseButtonDown e)
     {
-        _selectableComponent.Selected = _hoverableComponent.Hovered;
+        if (!_hoverableComponent.Hovered)
+        {
+            return;
+        }
+        
+        Context.EventBus.Publish(new RequestPropertiesInspector(Entity));
     }
 }
