@@ -10,16 +10,13 @@ public class SelectionArea : EditorComponentBase
     private Position _positionComponent = default!;
     private RectangleShape _shapeComponent = default!;
 
-    private IEventBusSubscriber _eventBus = default!;
-
-
+    
     protected override void OnInit()
     {
         _positionComponent = Entity.GetRequiredComponent<Position>().Component!;
         _shapeComponent = Entity.GetRequiredComponent<RectangleShape>().Component!;
 
-        _eventBus = Context.EventBus.Subscribe();
-        _eventBus.Subscribe<MouseMove>(OnMouseMove);
+        Events.Subscribe<MouseMove>(Context_OnMouseMove);
 
         Context.MouseLocked = true;
     }
@@ -27,12 +24,11 @@ public class SelectionArea : EditorComponentBase
     protected override void OnDestroy()
     {
         Context.MouseLocked = false;
-
-        _eventBus.Unsubscribe<MouseMove>();
-        _eventBus.Unsubscribe<MouseButtonUp>();
+        
+        Events.Unsubscribe<MouseMove>();
     }
 
-    private void OnMouseMove(MouseMove e)
+    private void Context_OnMouseMove(MouseMove e)
     {
         var halfSize = new Vector2(_shapeComponent.Width / 2, _shapeComponent.Height / 2);
         var min = _positionComponent.Value - halfSize;

@@ -7,26 +7,32 @@ namespace Editor.Core.Adapters;
 
 public class ConnectionLabelToTextAdapter : EditorComponentBase
 {
-    private Connection _connectionComponent = default!;
     private LabeledShapeRenderer _rendererComponent = default!;
 
 
     protected override void OnInit()
     {
-        _connectionComponent = Entity.GetRequiredComponent<Connection>()!;
         _rendererComponent = Entity.GetRequiredComponent<LabeledShapeRenderer>()!;
         
-        _connectionComponent.PropertyChanged += ConnectionComponent_OnPropertyChanged;
-        ConnectionComponent_OnPropertyChanged(this, new PropertyChangedEventArgs(null));
+        Entity.ComponentChanged += Entity_OnComponentChanged;
+        OnConnectionComponentChanged(Entity.GetRequiredComponent<Connection>()!);
     }
 
     protected override void OnDestroy()
     {
-        _connectionComponent.PropertyChanged -= ConnectionComponent_OnPropertyChanged;
+        Entity.ComponentChanged -= Entity_OnComponentChanged;
     }
 
-    private void ConnectionComponent_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void OnConnectionComponentChanged(Connection connectionComponent)
     {
-        _rendererComponent.Text = _connectionComponent.Label;
+        _rendererComponent.Text = connectionComponent.Label;
+    }
+    
+    private void Entity_OnComponentChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (sender is Connection component)
+        {
+            OnConnectionComponentChanged(component);
+        }
     }
 }

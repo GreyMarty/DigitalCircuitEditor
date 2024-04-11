@@ -6,7 +6,7 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:components="clr-namespace:Editor.Core.Components.Diagrams;assembly=Editor.Core"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type components:ConstNode`1}}"
+             d:DataContext="{d:DesignInstance components:ConstNode}"
              Width="200">
     
     <UserControl.Resources>

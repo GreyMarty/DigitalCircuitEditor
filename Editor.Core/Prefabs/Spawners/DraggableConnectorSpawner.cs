@@ -5,16 +5,14 @@ using Editor.Core.Prefabs.Factories;
 
 namespace Editor.Core.Prefabs.Spawners;
 
-public class DraggableConnectorSpawner<TConnection, TConnectionType> : Spawner 
-    where TConnectionType : notnull 
-    where TConnection : Connection<TConnectionType>, new()
+public class DraggableConnectorSpawner : Spawner 
 {
     private ChildOf _childOfComponent = default!;
-    private GhostNode<TConnectionType> _ghostNode = default!;
+    private GhostNode _ghostNode = default!;
 
 
-    public IEntityBuilderFactory ConnectorFactory = new DraggableConnectorFactory<TConnectionType>();
-    public IEntityBuilderFactory ConnectionFactory = new ConnectionFactory<TConnection>();
+    public IEntityBuilderFactory ConnectorFactory = new DraggableConnectorFactory();
+    public IEntityBuilderFactory ConnectionFactory = new ConnectionFactory();
 
 
     protected override void OnInit()
@@ -22,7 +20,7 @@ public class DraggableConnectorSpawner<TConnection, TConnectionType> : Spawner
         base.OnInit();
         
         _childOfComponent = Entity.GetRequiredComponent<ChildOf>()!;
-        _ghostNode = Entity.GetRequiredComponent<GhostNode<TConnectionType>>()!;
+        _ghostNode = Entity.GetRequiredComponent<GhostNode>()!;
     }
 
     protected override void OnSpawn(EditorContext context)
@@ -32,14 +30,14 @@ public class DraggableConnectorSpawner<TConnection, TConnectionType> : Spawner
             return;
         }
 
-        var parentNode = _childOfComponent.Parent.GetRequiredComponent<BranchNode<TConnectionType>>();
+        var parentNode = _childOfComponent.Parent.GetRequiredComponent<BranchNode>();
         
         var connection = Context.Instantiate(ConnectionFactory.Create()
             .ConfigureComponent<ChildOf>(x =>
             {
                 x.Parent = _childOfComponent.Parent;
             })
-            .ConfigureComponent<TConnection>(x =>
+            .ConfigureComponent<Connection>(x =>
             {
                 x.Target = _childOfComponent.Parent;
                 x.Type = _ghostNode.ConnectionType;
@@ -48,14 +46,14 @@ public class DraggableConnectorSpawner<TConnection, TConnectionType> : Spawner
         
         parentNode.Component!.Connections[_ghostNode.ConnectionType] = connection;
 
-        var connectionComponent = connection.GetRequiredComponent<Connection<TConnectionType>>();
+        var connectionComponent = connection.GetRequiredComponent<Connection>();
         
         var connector = context.Instantiate(ConnectorFactory.Create()
             .ConfigureComponent<Position>(x =>
             {
                 x.Value = Position;
             })
-            .ConfigureComponent<DraggableConnector<TConnectionType>>(x =>
+            .ConfigureComponent<DraggableConnector>(x =>
             {
                 x.Parent = parentNode;
                 x.Connection = connectionComponent;

@@ -5,20 +5,16 @@ namespace Editor.Core.Components;
 
 public class ConnectionJoint : EditorComponentBase
 {
-    private IEventBusSubscriber _eventBus = default!;
-    
-    
     public IEntity Connection1 { get; set; } = default!;
     public IEntity Connection2 { get; set; } = default!;
 
 
     protected override void OnInit()
     {
-        _eventBus = Context.EventBus.Subscribe();
-        _eventBus.Subscribe<EntityDestroyed>(OnEntityDestroyed);
+        Events.Subscribe<EntityDestroyed>(Context_OnEntityDestroyed);
     }
 
-    private void OnEntityDestroyed(EntityDestroyed e)
+    private void Context_OnEntityDestroyed(EntityDestroyed e)
     {
         if (!Entity.Alive)
         {

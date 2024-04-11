@@ -7,19 +7,21 @@ namespace Editor.Core.Behaviors;
 public class DestroyOnRequested : EditorComponentBase
 {
     private Selectable _selectableComponent = default!;
-
-    private IEventBusSubscriber _eventBus = default!;
     
     
     protected override void OnInit()
     {
         _selectableComponent = Entity.GetRequiredComponent<Selectable>()!;
 
-        _eventBus = Context.EventBus.Subscribe();
-        _eventBus.Subscribe<DestroyRequested>(OnDestroyRequested);
+        Events.Subscribe<DestroyRequested>(Context_OnDestroyRequested, true);
     }
 
-    private void OnDestroyRequested(DestroyRequested e)
+    protected override void OnDestroy()
+    {
+        Events.Unsubscribe<DestroyRequested>();
+    }
+
+    private void Context_OnDestroyRequested(DestroyRequested e)
     {
         if (!_selectableComponent.Selected)
         {

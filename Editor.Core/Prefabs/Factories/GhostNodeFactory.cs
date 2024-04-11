@@ -1,6 +1,8 @@
 ﻿using Editor.Component;
 using Editor.Core.Behaviors;
 using Editor.Core.Components;
+using Editor.Core.Components.Diagrams;
+using Editor.Core.Prefabs.Spawners;
 using Editor.Core.Rendering.Effects;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Shapes;
@@ -14,6 +16,7 @@ public class GhostNodeFactory : IEntityBuilderFactory
     {
         return Entity.CreateBuilder()
             .AddComponent<Position>()
+            .AddComponent<GhostNode>()
             .AddComponent(new CircleShape
             {
                 Radius = 1
@@ -23,6 +26,8 @@ public class GhostNodeFactory : IEntityBuilderFactory
             {
                 HighlightColor = SKColors.LightGray
             })
+            .AddComponent<DraggableConnectorSpawner>()
+            .AddComponent<SpawnOnMouseButtonDown>()
             .AddComponent<RequestRenderOnComponentChange>()
             .AddComponent(new CircleRenderer
             {

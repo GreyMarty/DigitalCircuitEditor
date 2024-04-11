@@ -13,7 +13,8 @@ public class Camera : INotifyPropertyChanged, IDisposable
     private readonly ICameraTarget<SKImageInfo> _target;
 
     private bool _initialized;
-    private IEventBusSubscriber _eventBus;
+    private IEventBusSubscriber _eventBus = default!;
+    private EditorContext _context = default!;
     
     
     public Camera(ICameraTarget<SKImageInfo> target)
@@ -38,6 +39,8 @@ public class Camera : INotifyPropertyChanged, IDisposable
 
     public void Init(EditorContext context)
     {
+        _context = context;
+        
         _eventBus = context.EventBus.Subscribe();
         _eventBus.Subscribe<MouseMove>(OnMouseMove);
         _eventBus.Subscribe<MouseWheel>(OnMouseWheel);
@@ -65,7 +68,7 @@ public class Camera : INotifyPropertyChanged, IDisposable
         var delta = e.PositionConverter.ScreenToWorldSpace(e.NewPositionPixels) - e.PositionConverter.ScreenToWorldSpace(e.OldPositionPixels);
         Position += delta * Scale;
         
-        _eventBus.Publish(new RenderRequested(this));
+        _context.EventBus.Publish(new RenderRequested(this));
     }
     
     private void OnMouseWheel(MouseWheel e)
@@ -78,6 +81,6 @@ public class Camera : INotifyPropertyChanged, IDisposable
         Scale = Math.Clamp(Scale * factor, 0.1f, 10f);
         Position = mousePosition + relativeMousePosition * Scale;
         
-        _eventBus.Publish(new RenderRequested(this));
+        _context.EventBus.Publish(new RenderRequested(this));
     }
 }

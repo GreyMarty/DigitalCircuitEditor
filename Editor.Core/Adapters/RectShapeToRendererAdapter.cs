@@ -7,26 +7,32 @@ namespace Editor.Core.Adapters;
 
 public class RectShapeToRendererAdapter : EditorComponentBase
 {
-    private RectangleShape _shapeComponent = default!;
     private RectangleRenderer _rectangleRenderer = default!;
     
     
     protected override void OnInit()
     {
-        _shapeComponent = Entity.GetRequiredComponent<RectangleShape>()!;
         _rectangleRenderer = Entity.GetRequiredComponent<RectangleRenderer>()!;
-        
-        _shapeComponent.PropertyChanged += ShapeComponent_OnPropertyChanged;
+     
+        Entity.ComponentChanged += Entity_OnComponentChanged;
     }
 
     protected override void OnDestroy()
     {
-        _shapeComponent.PropertyChanged -= ShapeComponent_OnPropertyChanged;
+        Entity.ComponentChanged -= Entity_OnComponentChanged;
+    }
+
+    private void OnShapeComponentChanged(RectangleShape shapeComponent)
+    {
+        _rectangleRenderer.Width = shapeComponent.Width;
+        _rectangleRenderer.Height = shapeComponent.Height;
     }
     
-    private void ShapeComponent_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void Entity_OnComponentChanged(object? sender, PropertyChangedEventArgs e)
     {
-        _rectangleRenderer.Width = _shapeComponent.Width;
-        _rectangleRenderer.Height = _shapeComponent.Height;
+        if (sender is RectangleShape component)
+        {
+            OnShapeComponentChanged(component);
+        }
     }
 }

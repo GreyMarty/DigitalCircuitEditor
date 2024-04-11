@@ -11,8 +11,8 @@ namespace Editor.Core.Prefabs.Spawners;
 public class BinaryDiagramNodeSpawner : Spawner
 {
     public IEntityBuilderFactory NodeFactory { get; set; } = new BinaryDiagramNodeFactory();
-    public IEntityBuilderFactory GhostConnectionFactory { get; set; } = new GhostConnectionFactory<BinaryDiagramConnection>();
-    public IEntityBuilderFactory GhostNodeFactory { get; set; } = new BinaryDiagramGhostNodeFactory();
+    public IEntityBuilderFactory GhostConnectionFactory { get; set; } = new GhostConnectionFactory();
+    public IEntityBuilderFactory GhostNodeFactory { get; set; } = new GhostNodeFactory();
     
 
     protected override void OnSpawn(EditorContext context)
@@ -29,13 +29,13 @@ public class BinaryDiagramNodeSpawner : Spawner
             
             var type = i switch
             {
-                0 => BinaryDiagramConnectionType.True,
-                1 => BinaryDiagramConnectionType.False,
+                0 => ConnectionType.True,
+                1 => ConnectionType.False,
             };
             
             var ghostNode = context.Instantiate(GhostNodeFactory.Create()
                 .ConfigureComponent<Position>(p => p.Value = offset)
-                .ConfigureComponent<GhostNode<BinaryDiagramConnectionType>>(x =>
+                .ConfigureComponent<GhostNode>(x =>
                 {
                     x.ConnectionType = type;
                 })
@@ -51,7 +51,7 @@ public class BinaryDiagramNodeSpawner : Spawner
                 {
                     x.Parent = root;
                 })
-                .ConfigureComponent<BinaryDiagramConnection>(x =>
+                .ConfigureComponent<Connection>(x =>
                 {
                     x.Target = ghostNode;
                     x.Type = type;

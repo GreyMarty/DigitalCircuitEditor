@@ -1,6 +1,6 @@
 ﻿namespace Editor.Core.Components.Diagrams;
 
-public class OutputNode<TConnectionType> : BranchNode<TConnectionType> where TConnectionType : notnull
+public class OutputNode : BranchNode
 {
     public int OutputId { get; private set; }
 
@@ -17,7 +17,7 @@ public class OutputNode<TConnectionType> : BranchNode<TConnectionType> where TCo
 
         var ids = Context.Entities
             .Where(x => x != Entity)
-            .Select(x => x.GetComponent<OutputNode<TConnectionType>>()?.Component)
+            .Select(x => x.GetComponent<OutputNode>()?.Component)
             .Where(x => x is not null)
             .Select(x => x.OutputId)
             .ToList();

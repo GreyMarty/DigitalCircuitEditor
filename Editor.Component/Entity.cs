@@ -1,4 +1,5 @@
-﻿using Editor.Component.Events;
+﻿using System.ComponentModel;
+using Editor.Component.Events;
 using Editor.Component.Exceptions;
 
 namespace Editor.Component;
@@ -9,9 +10,12 @@ public interface IEntity
     
     public bool Initialized { get; }
     public bool Alive { get; }
-    public ComponentBase[] Components { get; init; }
     public bool Active { get; set; }
+    public ComponentBase[] Components { get; init; }
 
+
+    public event PropertyChangedEventHandler? ComponentChanged;
+    
 
     public void Init(IContext context);
     public void Destroy();
@@ -29,6 +33,19 @@ public sealed class Entity : IEntity
     internal Entity(IEnumerable<ComponentBase> components)
     {
         Components = components.ToArray();
+
+        foreach (var component in Components)
+        {
+            component.PropertyChanged += Component_OnPropertyChanged;
+        }
+    }
+
+    ~Entity()
+    {
+        foreach (var component in Components)
+        {
+            component.PropertyChanged -= Component_OnPropertyChanged;
+        }
     }
     
     
@@ -39,6 +56,9 @@ public sealed class Entity : IEntity
     public bool Active { get; set; } = true;
     
     public ComponentBase[] Components { get; init; }
+
+
+    public event PropertyChangedEventHandler? ComponentChanged;
 
 
     public static IEntityBuilder CreateBuilder() => new EntityBuilder();
@@ -82,5 +102,10 @@ public sealed class Entity : IEntity
     public ComponentRef<T> GetRequiredComponent<T>() where T : ComponentBase
     {
         return GetComponent<T>() ?? throw new ComponentRequiredException(typeof(T));
+    }
+
+    private void Component_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        ComponentChanged?.Invoke(sender, e);
     }
 }

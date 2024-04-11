@@ -6,18 +6,14 @@ namespace Editor.Core.Behaviors;
 
 public abstract class OnMouseMoveBehavior : EditorComponentBase
 {
-    private IEventBusSubscriber _eventBus = default!;
-    
-    
     protected override void OnInit()
     {
-        _eventBus = Context.EventBus.Subscribe();
-        _eventBus.Subscribe<MouseMove>(OnMouseMove);
+        Events.Subscribe<MouseMove>(OnMouseMove);
     }
 
     protected override void OnDestroy()
     {
-        _eventBus.Unsubscribe<MouseMove>();
+        Events.Unsubscribe<MouseMove>();
     }
     
     protected abstract void OnMouseMove(MouseMove e);

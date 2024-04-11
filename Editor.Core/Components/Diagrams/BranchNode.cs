@@ -6,16 +6,15 @@ using Editor.Core.Rendering.Renderers;
 
 namespace Editor.Core.Components.Diagrams;
 
-public abstract class BranchNode<TConnectionType> : Node<TConnectionType>
-    where TConnectionType : notnull
+public abstract class BranchNode : Node
 {
     private IEventBusSubscriber _eventBus = default!;
     
-    public Dictionary<TConnectionType, IEntity> GhostConnections { get; } = [];
-    public Dictionary<TConnectionType, IEntity> GhostNodes { get; } = [];
+    public Dictionary<ConnectionType, IEntity> GhostConnections { get; } = [];
+    public Dictionary<ConnectionType, IEntity> GhostNodes { get; } = [];
 
-    public ObservableDictionary<TConnectionType, IEntity> Connections { get; } = [];
-    public ObservableDictionary<TConnectionType, IEntity> Nodes { get; } = [];
+    public ObservableDictionary<ConnectionType, IEntity> Connections { get; } = [];
+    public ObservableDictionary<ConnectionType, IEntity> Nodes { get; } = [];
     
     protected override void OnInit()
     {
@@ -36,7 +35,7 @@ public abstract class BranchNode<TConnectionType> : Node<TConnectionType>
 
     private void OnEntityDestroyed(EntityDestroyed e)
     {
-        foreach (var dict in (ReadOnlySpan<ObservableDictionary<TConnectionType, IEntity>>)[ Connections, Nodes ])
+        foreach (var dict in (ReadOnlySpan<ObservableDictionary<ConnectionType, IEntity>>)[ Connections, Nodes ])
         {
             var key = dict.First(x => x.Value == e.Entity).Key;
             Connections.Remove(key);
@@ -53,7 +52,7 @@ public abstract class BranchNode<TConnectionType> : Node<TConnectionType>
             {
                 foreach (var item in e.NewItems)
                 {
-                    var (key, value) = (KeyValuePair<TConnectionType, IEntity>)item;
+                    var (key, value) = (KeyValuePair<ConnectionType, IEntity>)item;
                 
                     GhostNodes[key].Active = false;
                     GhostNodes[key].GetRequiredComponent<Renderer>().Component!.Visible = false;
@@ -66,7 +65,7 @@ public abstract class BranchNode<TConnectionType> : Node<TConnectionType>
             {
                 foreach (var item in e.OldItems)
                 {
-                    var (key, value) = (KeyValuePair<TConnectionType, IEntity>)item;
+                    var (key, value) = (KeyValuePair<ConnectionType, IEntity>)item;
                 
                     GhostNodes[key].Active = true;
                     GhostNodes[key].GetRequiredComponent<Renderer>().Component!.Visible = true;

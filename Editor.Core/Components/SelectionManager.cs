@@ -10,21 +10,17 @@ namespace Editor.Core.Components;
 
 public class SelectionManager : EditorComponentBase
 {
-    private IEventBusSubscriber _eventBus = default!;
-
-
     public IEntityBuilderFactory SelectionAreaFactory { get; set; } = new SelectionAreaFactory();
     
     
     protected override void OnInit()
     {
-        _eventBus = Context.EventBus.Subscribe();
-        _eventBus.Subscribe<MouseButtonDown>(OnMouseButtonDown);
+        Events.Subscribe<MouseButtonDown>(Context_OnMouseButtonDown);
     }
 
     protected override void OnDestroy()
     {
-        _eventBus.Unsubscribe<MouseButtonDown>();
+        Events.Unsubscribe<MouseButtonDown>();
     }
 
     public void UnselectAll()
@@ -42,7 +38,7 @@ public class SelectionManager : EditorComponentBase
         }
     }
     
-    private void OnMouseButtonDown(MouseButtonDown e)
+    private void Context_OnMouseButtonDown(MouseButtonDown e)
     {
         if (e.Button != MouseButton.Left)
         {

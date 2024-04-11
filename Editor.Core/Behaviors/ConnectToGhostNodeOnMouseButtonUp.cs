@@ -9,16 +9,14 @@ using Editor.Core.Shapes;
 
 namespace Editor.Core.Behaviors;
 
-public class ConnectToGhostNodeOnMouseButtonUp<TConnection, TConnectionType> : OnMouseButtonUpBehavior
-    where TConnectionType : notnull
-    where TConnection : Connection<TConnectionType>, new()
+public class ConnectToGhostNodeOnMouseButtonUp : OnMouseButtonUpBehavior
 {
     private Position _positionComponent = default!;
     private Hoverable _hoverableComponent = default!;
     private Shape _shapeComponent = default!;
 
 
-    public IEntityBuilderFactory ConnectionFactory { get; set; } = new ConnectionFactory<TConnection>();
+    public IEntityBuilderFactory ConnectionFactory { get; set; } = new ConnectionFactory();
     
 
     protected override void OnInit()
@@ -36,7 +34,7 @@ public class ConnectToGhostNodeOnMouseButtonUp<TConnection, TConnectionType> : O
         {
             var positionComponent = entity.GetComponent<Position>()?.Component;
             var childOfComponent = entity.GetComponent<ChildOf>()?.Component;
-            var ghostNodeComponent = entity.GetComponent<GhostNode<TConnectionType>>()?.Component;
+            var ghostNodeComponent = entity.GetComponent<GhostNode>()?.Component;
             
             if (positionComponent is null || childOfComponent?.Parent is null || entity.Active != true)
             {
@@ -49,12 +47,12 @@ public class ConnectToGhostNodeOnMouseButtonUp<TConnection, TConnectionType> : O
                 continue;
             }
 
-            var parentNode = childOfComponent.Parent.GetRequiredComponent<BranchNode<TConnectionType>>().Component!;
+            var parentNode = childOfComponent.Parent.GetRequiredComponent<BranchNode>().Component!;
             var connectionType = ghostNodeComponent.ConnectionType;
             
             var connection = Context.Instantiate(ConnectionFactory.Create()
                 .ConfigureComponent<ChildOf>(x => x.Parent = childOfComponent.Parent)
-                .ConfigureComponent<TConnection>(x =>
+                .ConfigureComponent<Connection>(x =>
                 {
                     x.Target = Entity;
                     x.Type = ghostNodeComponent.ConnectionType;
@@ -64,7 +62,7 @@ public class ConnectToGhostNodeOnMouseButtonUp<TConnection, TConnectionType> : O
             parentNode.Connections[connectionType] = connection;
             parentNode.Nodes[connectionType] = Entity;
             
-            Entity.GetRequiredComponent<BranchNode<TConnectionType>>().Component?.OnConnected(parentNode, connection.GetRequiredComponent<Connection<TConnectionType>>()!);
+            Entity.GetRequiredComponent<BranchNode>().Component?.OnConnected(parentNode, connection.GetRequiredComponent<Connection>()!);
             break;
         }
     }

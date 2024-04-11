@@ -1,8 +1,8 @@
 ﻿namespace Editor.Core.Components.Diagrams;
 
-public abstract class Node<TConnectionType> : EditorComponentBase where TConnectionType : notnull
+public abstract class Node : EditorComponentBase
 {
     public virtual string? Label { get; set; }
     
-    public virtual void OnConnected(BranchNode<TConnectionType> parent, Connection<TConnectionType> connection) { }
+    public virtual void OnConnected(BranchNode parent, Connection connection) { }
 }

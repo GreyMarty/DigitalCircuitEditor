@@ -11,13 +11,10 @@ namespace Editor.Core.Behaviors;
 public class RequestRenderOnComponentChange : EditorComponentBase
 {
     private EditorComponentBase[] _components = [];
-    private IEventBus _eventBus = default!;
     
     
     protected override void OnInit()
     {
-        _eventBus = Context.EventBus;
-
         var components = new List<EditorComponentBase?>
         {
             Entity.GetComponent<Position>()?.Component,
@@ -46,6 +43,6 @@ public class RequestRenderOnComponentChange : EditorComponentBase
 
     private void Component_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        _eventBus.Publish(new RenderRequested(this));
+        Context.EventBus.Publish(new RenderRequested(this));
     }
 }

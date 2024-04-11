@@ -1,7 +1,6 @@
 ﻿namespace Editor.Core.Components.Diagrams;
 
-public class GhostNode<TConnectionType> : EditorComponentBase
-    where TConnectionType : notnull
+public class GhostNode : EditorComponentBase
 {
-    public TConnectionType ConnectionType { get; set; }
+    public ConnectionType ConnectionType { get; set; }
 }

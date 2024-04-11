@@ -13,6 +13,7 @@ public class RendererCollection : IDisposable
     private readonly OrderedCollection<Renderer> _postRenderers = new(x => x.ZIndex);
 
     private bool _initialized;
+    private EditorContext _context = default!;
     private IEventBusSubscriber _eventBus = default!;
 
     private Action _uiInvoker = default!;
@@ -26,6 +27,8 @@ public class RendererCollection : IDisposable
     
     public void Init(EditorContext context)
     {
+        _context = context;
+        
         _eventBus = context.EventBus.Subscribe();
         _eventBus.Subscribe<EntityInstantiated>(OnEntityInstantiated);
         _eventBus.Subscribe<EntityDestroyed>(OnEntityDestroyed);
@@ -65,7 +68,7 @@ public class RendererCollection : IDisposable
                 return;
             }
             
-            Invoker.Invoke(() => _eventBus.Publish(new RenderRequested(this)));
+            Invoker.Invoke(() => _context.EventBus.Publish(new RenderRequested(this)));
             _renderRequested = false;
         }, null, 33, Timeout.Infinite);
     }
@@ -116,7 +119,7 @@ public class RendererCollection : IDisposable
         var renderer = e.Entity.GetComponent<Renderer>()?.Component;
         ResolveCollection(renderer?.Layer)?.Add(renderer!);
         
-        _eventBus.Publish(new RenderRequested(this));
+        _context.EventBus.Publish(new RenderRequested(this));
     }
     
     private void OnEntityDestroyed(EntityDestroyed e)
@@ -126,6 +129,6 @@ public class RendererCollection : IDisposable
         var renderer = e.Entity.GetComponent<Renderer>()?.Component;
         ResolveCollection(renderer?.Layer)?.Remove(renderer!);
         
-        _eventBus.Publish(new RenderRequested(this));
+        _context.EventBus.Publish(new RenderRequested(this));
     }
 }

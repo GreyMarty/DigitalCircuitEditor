@@ -11,8 +11,6 @@ public class Hoverable : EditorComponentBase
     private Position _positionComponent = default!;
     private Shape _shapeComponent = default!;
     
-    private IEventBusSubscriber _eventBus = default!;
-    
     
     public bool Hovered { get; set; }
 
@@ -22,16 +20,15 @@ public class Hoverable : EditorComponentBase
         _positionComponent = Entity.GetRequiredComponent<Position>()!;
         _shapeComponent = Entity.GetRequiredComponent<Shape>()!;
 
-        _eventBus = Context.EventBus.Subscribe();
-        _eventBus.Subscribe<MouseMove>(OnMouseMove);
+        Events.Subscribe<MouseMove>(Context_OnMouseMove);
     }
 
     protected override void OnDestroy()
     {
-        _eventBus.Unsubscribe<MouseMove>();
+        Events.Unsubscribe<MouseMove>();
     }
 
-    private void OnMouseMove(MouseMove e)
+    private void Context_OnMouseMove(MouseMove e)
     {
         var mousePosition = e.PositionConverter.ScreenToWorldSpace(e.NewPositionPixels);
         var relativeMousePosition = mousePosition - _positionComponent.Value;

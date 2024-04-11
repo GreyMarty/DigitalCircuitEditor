@@ -12,8 +12,7 @@ using SkiaSharp;
 
 namespace Editor.Core.Prefabs.Factories;
 
-public class ConnectionFactory<TConnection> : IEntityBuilderFactory
-    where TConnection : Connection, new()
+public class ConnectionFactory : IEntityBuilderFactory
 {
     public virtual IEntityBuilder Create()
     {
@@ -29,7 +28,7 @@ public class ConnectionFactory<TConnection> : IEntityBuilderFactory
             {
                 DestroyWithParent = true
             })
-            .AddComponent<TConnection>()
+            .AddComponent<Connection>()
             .AddComponent<DestroyOnRequested>()
             .AddComponent<CreateJointOnMouseDoubleClick>()
             .AddComponent<ConnectionLabelToTextAdapter>()

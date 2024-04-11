@@ -8,8 +8,7 @@ using SkiaSharp;
 
 namespace Editor.Core.Prefabs.Factories;
 
-public class GhostConnectionFactory<TConnection> : ConnectionFactory<TConnection> 
-    where TConnection : Connection, new()
+public class GhostConnectionFactory : ConnectionFactory 
 {
     public override IEntityBuilder Create()
     {

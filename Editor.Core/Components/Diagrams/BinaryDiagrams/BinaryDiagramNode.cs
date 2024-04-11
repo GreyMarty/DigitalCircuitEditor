@@ -1,8 +1,8 @@
 ﻿namespace Editor.Core.Components.Diagrams.BinaryDiagrams;
 
-public class BinaryDiagramNode : BranchNode<BinaryDiagramConnectionType>
+public class BinaryDiagramNode : BranchNode
 {
-    public BinaryDiagramConnectionType ConnectionType { get; set; }
+    public ConnectionType ConnectionType { get; set; }
 
     public int MinVariableId { get; set; } = 0;
     public int VariableId { get; set; }
@@ -13,7 +13,7 @@ public class BinaryDiagramNode : BranchNode<BinaryDiagramConnectionType>
         set { }
     }
 
-    public override void OnConnected(BranchNode<BinaryDiagramConnectionType> parent, Connection<BinaryDiagramConnectionType> connection)
+    public override void OnConnected(BranchNode parent, Connection connection)
     {
         if (parent as BinaryDiagramNode is not { } binaryNode)
         {

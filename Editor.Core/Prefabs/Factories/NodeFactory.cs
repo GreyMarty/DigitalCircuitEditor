@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Editor.Component;
+using Editor.Core.Adapters;
 using Editor.Core.Behaviors;
 using Editor.Core.Components;
 using Editor.Core.Input;
@@ -16,6 +17,12 @@ public class NodeFactory : IEntityBuilderFactory
     {
         return Entity.CreateBuilder()
             .AddComponent<Position>()
+            .AddComponent<ConnectToGhostNodeOnMouseButtonUp>()
+            .AddComponent<NodeLabelToTextAdapter>()
+            .AddComponent(new RequestPropertiesInspectorOnMouseButtonDown
+            {
+                Button = MouseButton.Right
+            })
             .AddComponent(new CircleShape
             {
                 Radius = 2

@@ -5,25 +5,21 @@ namespace Editor.Core.Components;
 
 public class ChildOf : EditorComponentBase
 {
-    private IEventBusSubscriber _eventBus = default!;
-    
-    
     public bool DestroyWithParent { get; set; }
     public IEntity? Parent { get; set; }
 
 
     protected override void OnInit()
     {
-        _eventBus = Context.EventBus.Subscribe();
-        _eventBus.Subscribe<EntityDestroyed>(OnEntityDestroyed);
+        Events.Subscribe<EntityDestroyed>(Context_OnEntityDestroyed, true);
     }
 
     protected override void OnDestroy()
     {
-        _eventBus.Unsubscribe<EntityDestroyed>();
+        Events.Unsubscribe<EntityDestroyed>();
     }
 
-    private void OnEntityDestroyed(EntityDestroyed e)
+    private void Context_OnEntityDestroyed(EntityDestroyed e)
     {
         if (DestroyWithParent && e.Entity == Parent)
         {

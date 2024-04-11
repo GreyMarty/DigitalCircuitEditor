@@ -10,9 +10,9 @@ namespace Editor.Core.Prefabs.Spawners;
 
 public class BinaryDiagramOutputNodeSpawner : Spawner 
 {
-    public IEntityBuilderFactory NodeFactory { get; set; } = new OutputNodeFactory<BinaryDiagramConnectionType>();
-    public IEntityBuilderFactory GhostConnectionFactory { get; set; } = new GhostConnectionFactory<BinaryDiagramConnection>();
-    public IEntityBuilderFactory GhostNodeFactory { get; set; } = new BinaryDiagramGhostNodeFactory();
+    public IEntityBuilderFactory NodeFactory { get; set; } = new OutputNodeFactory();
+    public IEntityBuilderFactory GhostConnectionFactory { get; set; } = new GhostConnectionFactory();
+    public IEntityBuilderFactory GhostNodeFactory { get; set; } = new GhostNodeFactory();
     
     protected override void OnSpawn(EditorContext context)
     {
@@ -20,13 +20,13 @@ public class BinaryDiagramOutputNodeSpawner : Spawner
             .ConfigureComponent<Position>(p => p.Value = Position)
         );
         
-        var diagramNodeComponent = root.GetRequiredComponent<BranchNode<BinaryDiagramConnectionType>>().Component!;
+        var diagramNodeComponent = root.GetRequiredComponent<BranchNode>().Component!;
 
-        var type = BinaryDiagramConnectionType.Direct;
+        var type = ConnectionType.Direct;
         
         var ghostNode = context.Instantiate(GhostNodeFactory.Create()
             .ConfigureComponent<Position>(p => p.Value = new Vector2(0, 6))
-            .ConfigureComponent<GhostNode<BinaryDiagramConnectionType>>(x =>
+            .ConfigureComponent<GhostNode>(x =>
             {
                 x.ConnectionType = type;
             })
@@ -42,7 +42,7 @@ public class BinaryDiagramOutputNodeSpawner : Spawner
             {
                 x.Parent = root;
             })
-            .ConfigureComponent<BinaryDiagramConnection>(x =>
+            .ConfigureComponent<Connection>(x =>
             {
                 x.Target = ghostNode;
                 x.Type = type;

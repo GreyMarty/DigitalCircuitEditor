@@ -1,41 +1,36 @@
 ﻿using Editor.Component;
-using Editor.Component.Events;
 using Editor.Core.Events;
 
 namespace Editor.Core.Components.Diagrams;
 
-public class DraggableConnector<TConnectionType> : EditorComponentBase 
-    where TConnectionType : notnull
+public class DraggableConnector : EditorComponentBase 
 {
     private Position _positionComponent = default!;
     
-    private IEventBusSubscriber _eventBus = default!;
-    
-    public ComponentRef<Connection<TConnectionType>> Connection { get; set; } = default!;
-    public ComponentRef<BranchNode<TConnectionType>> Parent { get; set; } = default!;
+    public ComponentRef<Connection> Connection { get; set; } = default!;
+    public ComponentRef<BranchNode> Parent { get; set; } = default!;
     
     
     protected override void OnInit()
     {
         _positionComponent = Entity.GetRequiredComponent<Position>()!;
         
-        _eventBus = Context.EventBus.Subscribe();
-        _eventBus.Subscribe<MouseMove>(OnMouseMove);
-        _eventBus.Subscribe<MouseButtonUp>(OnMouseButtonUp);
+        Events.Subscribe<MouseMove>(Context_OnMouseMove);
+        Events.Subscribe<MouseButtonUp>(Context_OnMouseButtonUp);
     }
 
     protected override void OnDestroy()
     {
-        _eventBus.Unsubscribe<MouseMove>();
-        _eventBus.Unsubscribe<MouseButtonUp>();
+        Events.Unsubscribe<MouseMove>();
+        Events.Unsubscribe<MouseButtonUp>();
     }
 
-    private void OnMouseMove(MouseMove e)
+    private void Context_OnMouseMove(MouseMove e)
     {
         _positionComponent.Value = e.PositionConverter.ScreenToWorldSpace(e.NewPositionPixels);
     }
 
-    private void OnMouseButtonUp(MouseButtonUp e)
+    private void Context_OnMouseButtonUp(MouseButtonUp e)
     {
         if (Parent.Component is null || Connection.Component is null)
         {
@@ -50,7 +45,7 @@ public class DraggableConnector<TConnectionType> : EditorComponentBase
                 continue;
             }
 
-            if (entity.GetComponent<Node<TConnectionType>>() is not { } node || node?.Component is OutputNode<TConnectionType>)
+            if (entity.GetComponent<Node>() is not { } node || node?.Component is OutputNode)
             {
                 continue;
             }

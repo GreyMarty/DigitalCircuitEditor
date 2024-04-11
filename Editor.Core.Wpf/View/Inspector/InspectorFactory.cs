@@ -18,7 +18,7 @@ public class InspectorFactory : IInspectorFactory
         {
             switch (component)
             {
-                case IConstNode:
+                case ConstNode:
                     return new ConstNodeInspector
                     {
                         DataContext = component

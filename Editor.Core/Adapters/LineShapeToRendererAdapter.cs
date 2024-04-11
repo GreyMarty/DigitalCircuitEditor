@@ -7,26 +7,32 @@ namespace Editor.Core.Adapters;
 
 public class LineShapeToRendererAdapter : EditorComponentBase
 {
-    private LineShape _shapeComponent = default!;
     private LabeledLineRenderer _rendererComponent = default!;
 
     protected override void OnInit()
     {
-        _shapeComponent = Entity.GetRequiredComponent<LineShape>()!;
         _rendererComponent = Entity.GetRequiredComponent<LabeledLineRenderer>()!;
         
-        _shapeComponent.PropertyChanged += ShapeComponent_OnPropertyChanged;
-        ShapeComponent_OnPropertyChanged(this, new PropertyChangedEventArgs(null));
+        Entity.ComponentChanged += Entity_OnComponentChanged;
+        OnShapeComponentChanged(Entity.GetRequiredComponent<LineShape>()!);
     }
 
     protected override void OnDestroy()
     {
-        _shapeComponent.PropertyChanged -= ShapeComponent_OnPropertyChanged;
+        Entity.ComponentChanged -= Entity_OnComponentChanged;
+    }
+
+    private void OnShapeComponentChanged(LineShape shapeComponent)
+    {
+        _rendererComponent.Start = shapeComponent.Start;
+        _rendererComponent.End = shapeComponent.End;
     }
     
-    private void ShapeComponent_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void Entity_OnComponentChanged(object? sender, PropertyChangedEventArgs e)
     {
-        _rendererComponent.Start = _shapeComponent.Start;
-        _rendererComponent.End = _shapeComponent.End;
+        if (sender is LineShape component)
+        {
+            OnShapeComponentChanged(component);
+        }
     }
 }

@@ -5,14 +5,13 @@ using Editor.Core.Components.Diagrams;
 
 namespace Editor.Core.Prefabs.Factories;
 
-public class DraggableConnectorFactory<TConnectionType> : IEntityBuilderFactory 
-    where TConnectionType : notnull
+public class DraggableConnectorFactory : IEntityBuilderFactory 
 {
     public IEntityBuilder Create()
     {
         return Entity.CreateBuilder()
             .AddComponent<Position>()
-            .AddComponent<DraggableConnector<TConnectionType>>()
+            .AddComponent<DraggableConnector>()
             .AddComponent<RequestRenderOnComponentChange>();
     }
 }

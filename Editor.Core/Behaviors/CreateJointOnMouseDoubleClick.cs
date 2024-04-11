@@ -13,7 +13,7 @@ public class CreateJointOnMouseDoubleClick : OnMouseDoubleClickBehavior
     
     
     public IEntityBuilderFactory JointFactory = new ConnectionJointFactory();
-    public IEntityBuilderFactory ConnectionFactory = new ConnectionFactory<Connection>();
+    public IEntityBuilderFactory ConnectionFactory = new ConnectionFactory();
     
 
     protected override void OnInit()

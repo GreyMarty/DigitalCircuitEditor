@@ -1,16 +1,7 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Editor.Component;
+﻿using Editor.Component;
 
 namespace Editor.Core.Components;
 
-public class EditorComponentBase : ComponentBase<EditorContext>, INotifyPropertyChanged
+public class EditorComponentBase : ComponentBase<EditorContext>
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-    
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
 }

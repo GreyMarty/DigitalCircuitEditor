@@ -12,7 +12,7 @@ using SkiaSharp;
 
 namespace Editor.Core.Prefabs.Factories;
 
-public class OutputNodeFactory<TConnectionType> : IEntityBuilderFactory where TConnectionType : notnull
+public class OutputNodeFactory : IEntityBuilderFactory
 {
     public IEntityBuilder Create()
     {
@@ -25,7 +25,7 @@ public class OutputNodeFactory<TConnectionType> : IEntityBuilderFactory where TC
             })
             .AddComponent<Hoverable>()
             .AddComponent<Selectable>()
-            .AddComponent<OutputNode<TConnectionType>>()
+            .AddComponent<OutputNode>()
             .AddComponent<DragOnMouseMove>()
             .AddComponent<DestroyOnRequested>()
             .AddComponent(new ChangeFillOnHover
@@ -33,7 +33,7 @@ public class OutputNodeFactory<TConnectionType> : IEntityBuilderFactory where TC
                 HighlightColor = SKColors.LightGray
             })
             .AddComponent<ChangeStrokeOnSelect>()
-            .AddComponent<NodeLabelToTextAdapter<TConnectionType>>()
+            .AddComponent<NodeLabelToTextAdapter>()
             .AddComponent<RequestRenderOnComponentChange>()
             .AddComponent(new LabeledRectangleRenderer()
             {
