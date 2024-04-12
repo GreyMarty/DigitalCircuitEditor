@@ -7,7 +7,6 @@ public class SpawnOnInit : EditorComponentBase
 {
     protected override void OnInit()
     {
-        var spawnerComponent = Entity.GetRequiredComponent<Spawner>().Component!;
-        spawnerComponent.Spawn();
+        Entity.GetRequiredComponent<Spawner>().Component!.Spawn();
     }
 }

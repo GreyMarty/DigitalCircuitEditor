@@ -1,7 +1,10 @@
 ﻿using Editor.Component;
 using Editor.Core.Behaviors;
+using Editor.Core.Behaviors.Filters;
+using Editor.Core.Behaviors.Triggers;
 using Editor.Core.Components;
 using Editor.Core.Components.Diagrams;
+using Editor.Core.Input;
 using Editor.Core.Prefabs.Spawners;
 using Editor.Core.Rendering.Effects;
 using Editor.Core.Rendering.Renderers;
@@ -14,7 +17,7 @@ public class GhostNodeFactory : IEntityBuilderFactory
 {
     public virtual IEntityBuilder Create()
     {
-        return Entity.CreateBuilder()
+        var builder = Entity.CreateBuilder()
             .AddComponent<Position>()
             .AddComponent<GhostNode>()
             .AddComponent(new CircleShape
@@ -27,8 +30,6 @@ public class GhostNodeFactory : IEntityBuilderFactory
                 HighlightColor = SKColors.LightGray
             })
             .AddComponent<DraggableConnectorSpawner>()
-            .AddComponent<SpawnOnMouseButtonDown>()
-            .AddComponent<RequestRenderOnComponentChange>()
             .AddComponent(new CircleRenderer
             {
                 Radius = 1,
@@ -36,5 +37,20 @@ public class GhostNodeFactory : IEntityBuilderFactory
                 Stroke = new SKColor(125, 125, 125, 125),
                 StrokeThickness = 0.2f
             });
+
+        builder
+            .AddBehavior<SpawnBehavior, ITriggerArgs>(
+                new MouseButtonDownTrigger()
+                {
+                    Button = MouseButton.Left,
+                    Filters = [ new HoveredFilter() ]
+                }
+            )
+            .AddBehavior<RequestRenderBehavior, ITriggerArgs>(
+                new ComponentChangedTrigger<Position>(),
+                new ComponentChangedTrigger<Renderer>()
+            );
+
+        return builder;
     }
 }

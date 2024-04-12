@@ -16,8 +16,8 @@ public class GhostConnectionFactory : ConnectionFactory
             .Create()
             .RemoveComponent<Selectable>()
             .RemoveComponent<ChangeStrokeOnSelect>()
-            .RemoveComponent<DestroyOnRequested>()
-            .RemoveComponent<CreateJointOnMouseDoubleClick>()
+            .RemoveComponent<DestroyBehavior>()
+            .RemoveComponent<CreateJointBehavior>()
             .ConfigureComponent<ChildOf>(x =>
             {
                 x.DestroyWithParent = true;

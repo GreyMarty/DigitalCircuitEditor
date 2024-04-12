@@ -1,6 +1,10 @@
 ﻿using Editor.Component;
 using Editor.Core.Behaviors;
+using Editor.Core.Behaviors.Filters;
+using Editor.Core.Behaviors.Triggers;
+using Editor.Core.Behaviors.Triggers.Args;
 using Editor.Core.Components;
+using Editor.Core.Events;
 using Editor.Core.Input;
 using Editor.Core.Rendering.Effects;
 using Editor.Core.Rendering.Renderers;
@@ -13,7 +17,7 @@ public class ConnectionJointFactory : IEntityBuilderFactory
 {
     public IEntityBuilder Create()
     {
-        return Entity.CreateBuilder()
+        var builder = Entity.CreateBuilder()
             .AddComponent<Position>()
             .AddComponent(new CircleShape
             {
@@ -22,11 +26,8 @@ public class ConnectionJointFactory : IEntityBuilderFactory
             .AddComponent<Hoverable>()
             .AddComponent<Selectable>()
             .AddComponent<ConnectionJoint>()
-            .AddComponent<DragOnMouseMove>()
-            .AddComponent<DestroyOnRequested>()
             .AddComponent<DestroyWith>()
             .AddComponent<ChangeStrokeOnSelect>()
-            .AddComponent<RequestRenderOnComponentChange>()
             .AddComponent(new CircleRenderer
             {
                 Radius = 0.5f,
@@ -34,5 +35,26 @@ public class ConnectionJointFactory : IEntityBuilderFactory
                 StrokeThickness = 0.2f,
                 Stroke = SKColors.Black,
             });
+
+        builder
+            .AddBehavior<FollowMouseBehavior, IMovePositionArgs>(
+                new MouseMoveTrigger
+                {
+                    Button = MouseButton.Left,
+                    Filters = [ new SelectedFilter() ]
+                }
+            )
+            .AddBehavior<DestroyBehavior, ITriggerArgs>(
+                new EventTrigger<DestroyRequested>
+                {
+                    Filters = [ new SelectedFilter() ]
+                }
+            )
+            .AddBehavior<RequestRenderBehavior, ITriggerArgs>(
+                new ComponentChangedTrigger<Position>(),
+                new ComponentChangedTrigger<Renderer>()
+            );
+
+        return builder;
     }
 }

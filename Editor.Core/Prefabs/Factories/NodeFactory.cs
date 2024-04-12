@@ -2,7 +2,11 @@
 using Editor.Component;
 using Editor.Core.Adapters;
 using Editor.Core.Behaviors;
+using Editor.Core.Behaviors.Filters;
+using Editor.Core.Behaviors.Triggers;
+using Editor.Core.Behaviors.Triggers.Args;
 using Editor.Core.Components;
+using Editor.Core.Events;
 using Editor.Core.Input;
 using Editor.Core.Rendering.Effects;
 using Editor.Core.Rendering.Renderers;
@@ -15,28 +19,20 @@ public class NodeFactory : IEntityBuilderFactory
 {
     public virtual IEntityBuilder Create()
     {
-        return Entity.CreateBuilder()
+        var builder = Entity.CreateBuilder()
             .AddComponent<Position>()
-            .AddComponent<ConnectToGhostNodeOnMouseButtonUp>()
-            .AddComponent<NodeLabelToTextAdapter>()
-            .AddComponent(new RequestPropertiesInspectorOnMouseButtonDown
-            {
-                Button = MouseButton.Right
-            })
             .AddComponent(new CircleShape
             {
                 Radius = 2
             })
             .AddComponent<Hoverable>()
             .AddComponent<Selectable>()
-            .AddComponent<DragOnMouseMove>()
-            .AddComponent<DestroyOnRequested>()
             .AddComponent(new ChangeFillOnHover
             {
                 HighlightColor = SKColors.LightGray
             })
             .AddComponent<ChangeStrokeOnSelect>()
-            .AddComponent<RequestRenderOnComponentChange>()
+            .AddComponent<NodeLabelToTextAdapter>()
             .AddComponent(new LabeledCircleRenderer
             {
                 Radius = 2,
@@ -46,5 +42,39 @@ public class NodeFactory : IEntityBuilderFactory
                 FontSize = 2,
                 Anchor = Vector2.One * 0.5f
             });
+
+        builder
+            .AddBehavior<ConnectToGhostNodeBehavior, ITriggerArgs>(
+                new MouseButtonUpTrigger()
+                {
+                    Button = MouseButton.Left
+                }
+            )
+            .AddBehavior<RequestPropertiesInspectorBehavior, ITriggerArgs>(
+                new MouseButtonDownTrigger()
+                {
+                    Button = MouseButton.Right,
+                    Filters = [ new HoveredFilter() ]
+                }
+            )
+            .AddBehavior<FollowMouseBehavior, IMovePositionArgs>(
+                new MouseMoveTrigger()
+                {
+                    Button = MouseButton.Left,
+                    Filters = [ new SelectedFilter() ]
+                }
+            )
+            .AddBehavior<DestroyBehavior, ITriggerArgs>(
+                new EventTrigger<DestroyRequested>
+                {
+                    Filters = [ new SelectedFilter() ]
+                }
+            )
+            .AddBehavior<RequestRenderBehavior, ITriggerArgs>(
+                new ComponentChangedTrigger<Position>(),
+                new ComponentChangedTrigger<Renderer>()
+            );
+
+        return builder;
     }
 }

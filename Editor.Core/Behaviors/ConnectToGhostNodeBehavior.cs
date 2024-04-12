@@ -1,15 +1,12 @@
 ﻿using Editor.Component;
 using Editor.Core.Components;
 using Editor.Core.Components.Diagrams;
-using Editor.Core.Events;
-using Editor.Core.Prefabs;
 using Editor.Core.Prefabs.Factories;
-using Editor.Core.Rendering.Renderers;
 using Editor.Core.Shapes;
 
 namespace Editor.Core.Behaviors;
 
-public class ConnectToGhostNodeOnMouseButtonUp : OnMouseButtonUpBehavior
+public class ConnectToGhostNodeBehavior : BehaviorBase<EditorContext, ITriggerArgs>
 {
     private Position _positionComponent = default!;
     private Hoverable _hoverableComponent = default!;
@@ -28,7 +25,7 @@ public class ConnectToGhostNodeOnMouseButtonUp : OnMouseButtonUpBehavior
         _shapeComponent = Entity.GetRequiredComponent<Shape>()!;
     }
 
-    protected override void OnMouseButtonUp(MouseButtonUp e)
+    protected override void Perform(ITriggerArgs e)
     {
         foreach (var entity in Context.Entities)
         {

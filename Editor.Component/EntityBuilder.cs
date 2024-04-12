@@ -3,9 +3,13 @@
 public interface IEntityBuilder
 {
     public IEntityBuilder AddComponent<T>(T? component = null) where T : ComponentBase, new();
+    public IEntityBuilder AddBehavior<TBehavior, TArgs>(params ITrigger<TArgs>[] triggers) 
+        where TBehavior : ComponentBase, IBehavior<TArgs>, new() 
+        where TArgs : ITriggerArgs;
     public IEntityBuilder RemoveComponent<T>() where T : ComponentBase;
     public IEntityBuilder ConfigureComponent<T>(Action<T> configure) where T : ComponentBase;
     public IEntity Build();
+
 }
 
 public class EntityBuilder : IEntityBuilder
@@ -31,6 +35,23 @@ public class EntityBuilder : IEntityBuilder
         return this;
     }
 
+    public IEntityBuilder AddBehavior<TBehavior, TArgs>(params ITrigger<TArgs>[] triggers) 
+        where TBehavior : ComponentBase, IBehavior<TArgs>, new() 
+        where TArgs : ITriggerArgs
+    {
+        if (_components.Any(x => x is TBehavior))
+        {
+            return this;
+        }
+
+        var component = new TBehavior
+        {
+            Triggers = triggers
+        };
+        _components.Add(component);
+        return this;
+    }
+    
     public IEntityBuilder RemoveComponent<TComponent>() where TComponent : ComponentBase
     {
         _components.RemoveAll(x => x is TComponent);

@@ -2,8 +2,12 @@
 using Editor.Component;
 using Editor.Core.Adapters;
 using Editor.Core.Behaviors;
+using Editor.Core.Behaviors.Filters;
+using Editor.Core.Behaviors.Triggers;
+using Editor.Core.Behaviors.Triggers.Args;
 using Editor.Core.Components;
 using Editor.Core.Components.Diagrams;
+using Editor.Core.Events;
 using Editor.Core.Input;
 using Editor.Core.Rendering.Effects;
 using Editor.Core.Rendering.Renderers;
@@ -16,7 +20,7 @@ public class OutputNodeFactory : IEntityBuilderFactory
 {
     public IEntityBuilder Create()
     {
-        return Entity.CreateBuilder()
+        var builder = Entity.CreateBuilder()
             .AddComponent<Position>()
             .AddComponent(new RectangleShape
             {
@@ -26,15 +30,12 @@ public class OutputNodeFactory : IEntityBuilderFactory
             .AddComponent<Hoverable>()
             .AddComponent<Selectable>()
             .AddComponent<OutputNode>()
-            .AddComponent<DragOnMouseMove>()
-            .AddComponent<DestroyOnRequested>()
             .AddComponent(new ChangeFillOnHover
             {
                 HighlightColor = SKColors.LightGray
             })
             .AddComponent<ChangeStrokeOnSelect>()
             .AddComponent<NodeLabelToTextAdapter>()
-            .AddComponent<RequestRenderOnComponentChange>()
             .AddComponent(new LabeledRectangleRenderer()
             {
                 Width = 3,
@@ -45,5 +46,26 @@ public class OutputNodeFactory : IEntityBuilderFactory
                 FontSize = 2,
                 Anchor = Vector2.One * 0.5f
             });
+
+        builder
+            .AddBehavior<FollowMouseBehavior, IMovePositionArgs>(
+                new MouseMoveTrigger()
+                {
+                    Button = MouseButton.Left,
+                    Filters = [ new SelectedFilter() ]
+                }
+            )
+            .AddBehavior<DestroyBehavior, ITriggerArgs>(
+                new EventTrigger<DestroyRequested>
+                {
+                    Filters = [ new SelectedFilter() ]
+                }
+            )
+            .AddBehavior<RequestRenderBehavior, ITriggerArgs>(
+                new ComponentChangedTrigger<Position>(),
+                new ComponentChangedTrigger<Renderer>()
+            );
+
+        return builder;
     }
 }
