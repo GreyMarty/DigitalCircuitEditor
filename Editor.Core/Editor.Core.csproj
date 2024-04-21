@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Editor.Component\Editor.Component.csproj" />
+      <ProjectReference Include="..\Editor.DecisionDiagrams\Editor.DecisionDiagrams.csproj" />
     </ItemGroup>
 
     <ItemGroup>
