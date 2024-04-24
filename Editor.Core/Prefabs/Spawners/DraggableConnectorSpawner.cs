@@ -23,11 +23,13 @@ public class DraggableConnectorSpawner : Spawner
         _ghostNode = Entity.GetRequiredComponent<GhostNode>()!;
     }
 
-    protected override void OnSpawn(EditorContext context)
+    protected override IEnumerable<IEntity> OnSpawn(EditorContext context)
     {
+        var result = new List<IEntity>();
+        
         if (_childOfComponent.Parent is null)
         {
-            return;
+            return Enumerable.Empty<IEntity>();
         }
 
         var parentNode = _childOfComponent.Parent.GetRequiredComponent<BranchNode>();
@@ -43,6 +45,8 @@ public class DraggableConnectorSpawner : Spawner
                 x.Type = _ghostNode.ConnectionType;
             })
         );
+        
+        result.Add(connection);
         
         parentNode.Component!.Connections[_ghostNode.ConnectionType] = connection;
 
@@ -60,6 +64,10 @@ public class DraggableConnectorSpawner : Spawner
             })
         );
         
+        result.Add(connector);
+        
         connectionComponent.Component!.Target = connector;
+
+        return result;
     }
 }

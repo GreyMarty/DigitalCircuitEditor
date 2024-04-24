@@ -15,12 +15,16 @@ public class BinaryDiagramNodeSpawner : Spawner
     public IEntityBuilderFactory GhostNodeFactory { get; set; } = new GhostNodeFactory();
     
 
-    protected override void OnSpawn(EditorContext context)
+    protected override IEnumerable<IEntity> OnSpawn(EditorContext context)
     {
+        var result = new List<IEntity>();
+        
         var root = context.Instantiate(NodeFactory.Create()
             .ConfigureComponent<Position>(p => p.Value = Position)
         );
 
+        result.Add(root);
+        
         var diagramNodeComponent = root.GetRequiredComponent<BinaryDiagramNode>().Component!;
         
         for (var i = 0; i < 2; i++)
@@ -46,6 +50,8 @@ public class BinaryDiagramNodeSpawner : Spawner
                 })
             );
             
+            result.Add(ghostNode);
+            
             var ghostConnection = context.Instantiate(GhostConnectionFactory.Create()
                 .ConfigureComponent<ChildOf>(x =>
                 {
@@ -58,8 +64,12 @@ public class BinaryDiagramNodeSpawner : Spawner
                 })
             );
 
+            result.Add(ghostConnection);
+            
             diagramNodeComponent.GhostNodes[type] = ghostNode;
             diagramNodeComponent.GhostConnections[type] = ghostConnection;
         }
+
+        return result;
     }
 }

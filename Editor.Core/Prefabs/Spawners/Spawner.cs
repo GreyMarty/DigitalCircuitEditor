@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Editor.Component;
 using Editor.Core.Components;
 
 namespace Editor.Core.Prefabs.Spawners;
@@ -32,5 +33,5 @@ public abstract class Spawner : EditorComponentBase
         _positionComponent = Entity.GetRequiredComponent<Position>()!;
     }
 
-    protected abstract void OnSpawn(EditorContext context);
+    protected abstract IEnumerable<IEntity> OnSpawn(EditorContext context);
 }

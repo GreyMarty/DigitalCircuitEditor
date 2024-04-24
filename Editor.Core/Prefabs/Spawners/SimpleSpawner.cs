@@ -7,9 +7,9 @@ public class SimpleSpawner<TFactory> : Spawner where TFactory : IEntityBuilderFa
 {
     public IEntityBuilderFactory Factory { get; set; } = new TFactory();
     
-    protected override void OnSpawn(EditorContext context)
+    protected override IEnumerable<IEntity> OnSpawn(EditorContext context)
     {
-        context.Instantiate(Factory.Create()
+        yield return context.Instantiate(Factory.Create()
             .ConfigureComponent<Position>(x => x.Value = Position)
         );
     }
