@@ -11,7 +11,8 @@ public class ConnectToGhostNodeBehavior : BehaviorBase<EditorContext, ITriggerAr
     private Position _positionComponent = default!;
     private Hoverable _hoverableComponent = default!;
     private Shape _shapeComponent = default!;
-
+    private Node _nodeComponent = default!;
+    
 
     public IEntityBuilderFactory ConnectionFactory { get; set; } = new ConnectionFactory();
     
@@ -23,6 +24,7 @@ public class ConnectToGhostNodeBehavior : BehaviorBase<EditorContext, ITriggerAr
         _positionComponent = Entity.GetRequiredComponent<Position>()!;
         _hoverableComponent = Entity.GetRequiredComponent<Hoverable>()!;
         _shapeComponent = Entity.GetRequiredComponent<Shape>()!;
+        _nodeComponent = Entity.GetRequiredComponent<Node>()!;
     }
 
     protected override void Perform(ITriggerArgs e)
@@ -46,20 +48,8 @@ public class ConnectToGhostNodeBehavior : BehaviorBase<EditorContext, ITriggerAr
 
             var parentNode = childOfComponent.Parent.GetRequiredComponent<BranchNode>().Component!;
             var connectionType = ghostNodeComponent.ConnectionType;
-            
-            var connection = Context.Instantiate(ConnectionFactory.Create()
-                .ConfigureComponent<ChildOf>(x => x.Parent = childOfComponent.Parent)
-                .ConfigureComponent<Connection>(x =>
-                {
-                    x.Target = Entity;
-                    x.Type = ghostNodeComponent.ConnectionType;
-                })
-            );
 
-            parentNode.Connections[connectionType] = connection;
-            parentNode.Nodes[connectionType] = Entity;
-            
-            Entity.GetRequiredComponent<BranchNode>().Component?.OnConnected(parentNode, connection.GetRequiredComponent<Connection>()!);
+            parentNode.Connect(connectionType, _nodeComponent);
             break;
         }
     }

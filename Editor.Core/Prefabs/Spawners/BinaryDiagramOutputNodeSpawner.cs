@@ -43,22 +43,7 @@ public class BinaryDiagramOutputNodeSpawner : Spawner
             
         result.Add(ghostNode);
         
-        var ghostConnection = context.Instantiate(GhostConnectionFactory.Create()
-            .ConfigureComponent<ChildOf>(x =>
-            {
-                x.Parent = root;
-            })
-            .ConfigureComponent<Connection>(x =>
-            {
-                x.Target = ghostNode;
-                x.Type = type;
-            })
-        );
-
-        result.Add(ghostConnection);
-        
-        diagramNodeComponent.GhostNodes[type] = ghostNode;
-        diagramNodeComponent.GhostConnections[type] = ghostConnection;
+        diagramNodeComponent.AddGhost(ghostNode.GetRequiredComponent<GhostNode>()!);
 
         return result;
     }

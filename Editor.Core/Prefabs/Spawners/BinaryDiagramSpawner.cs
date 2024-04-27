@@ -103,5 +103,7 @@ public class BinaryDiagramSpawner : Spawner
         // parentNode.Nodes[connectionType] = Entity;
         //     
         // Entity.GetRequiredComponent<BranchNode>().Component?.OnConnected(parentNode, connection.GetRequiredComponent<Connection>()!);
+
+        return null;
     }
 }

@@ -48,8 +48,6 @@ public class DraggableConnectorSpawner : Spawner
         
         result.Add(connection);
         
-        parentNode.Component!.Connections[_ghostNode.ConnectionType] = connection;
-
         var connectionComponent = connection.GetRequiredComponent<Connection>();
         
         var connector = context.Instantiate(ConnectorFactory.Create()

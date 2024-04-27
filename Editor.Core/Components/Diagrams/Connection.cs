@@ -1,5 +1,7 @@
-﻿using Editor.Component;
+﻿using System.Numerics;
+using Editor.Component;
 using Editor.Component.Events;
+using Editor.Core.Prefabs.Factories;
 
 namespace Editor.Core.Components.Diagrams;
 
@@ -14,6 +16,38 @@ public class Connection : EditorComponentBase
         set { }
     }
 
+    public IEntityBuilderFactory ConnectionJointFactory { get; set; } = new ConnectionJointFactory();
+    public IEntityBuilderFactory ConnectionFactory { get; set; } = new ConnectionFactory();
+    
+
+    public ConnectionJoint Split(Vector2 position)
+    {
+        var joint = Context.Instantiate(ConnectionJointFactory.Create()
+            .ConfigureComponent<Position>(x =>
+            {
+                x.Value = position;
+            })
+        );
+        var jointComponent = joint.GetRequiredComponent<ConnectionJoint>().Component!;
+        
+        var connection = Context.Instantiate(ConnectionFactory.Create()
+            .ConfigureComponent<ChildOf>(x =>
+            {
+                x.Parent = joint;
+            })
+            .ConfigureComponent<Connection>(x =>
+            {
+                x.Target = Target;
+            })
+        );
+        
+        Target = joint;
+
+        jointComponent.Connection1 = Entity;
+        jointComponent.Connection2 = connection;
+
+        return jointComponent;
+    }
 
     protected override void OnInit()
     {

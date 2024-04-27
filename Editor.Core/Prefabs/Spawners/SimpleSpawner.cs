@@ -9,8 +9,8 @@ public class SimpleSpawner<TFactory> : Spawner where TFactory : IEntityBuilderFa
     
     protected override IEnumerable<IEntity> OnSpawn(EditorContext context)
     {
-        yield return context.Instantiate(Factory.Create()
+        return [ context.Instantiate(Factory.Create()
             .ConfigureComponent<Position>(x => x.Value = Position)
-        );
+        ) ];
     }
 }

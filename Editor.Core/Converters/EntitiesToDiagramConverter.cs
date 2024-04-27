@@ -11,7 +11,7 @@ public static class EntitiesToDiagramConverter
     {
         return new DecisionDiagram(
             nodeComponent.OutputId,
-            Convert(nodeComponent.Nodes[ConnectionType.Direct].GetRequiredComponent<Node>()!)
+            Convert(nodeComponent.Nodes[ConnectionType.Direct])
         );
     }
     
@@ -24,8 +24,8 @@ public static class EntitiesToDiagramConverter
             
             case BinaryDiagramNode binaryNodeComponent:
             {
-                var trueNodeComponent = binaryNodeComponent.Nodes[ConnectionType.True].GetRequiredComponent<Node>();
-                var falseNodeComponent = binaryNodeComponent.Nodes[ConnectionType.False].GetRequiredComponent<Node>();
+                var trueNodeComponent = binaryNodeComponent.Nodes[ConnectionType.True];
+                var falseNodeComponent = binaryNodeComponent.Nodes[ConnectionType.False];
                 return new BranchNode(
                     binaryNodeComponent.VariableId,
                     Convert(trueNodeComponent!),

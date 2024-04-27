@@ -16,7 +16,7 @@ public class MouseDoubleClickTrigger : TriggerBase<EditorContext, MouseButtonTri
     
     protected override void OnInit()
     {
-        Events.Subscribe<MouseButtonUp>(e =>
+        Events.Subscribe<MouseButtonDown>(e =>
         {
             if (Button is not null && e.Button != Button)
             {

@@ -14,6 +14,8 @@ public class DraggableConnector : EditorComponentBase
     protected override void OnInit()
     {
         _positionComponent = Entity.GetRequiredComponent<Position>()!;
+
+        Parent.Component!.SetGhostActive(Connection.Component!.Type, false);
         
         Events.Subscribe<MouseMove>(Context_OnMouseMove);
         Events.Subscribe<MouseButtonUp>(Context_OnMouseButtonUp);
@@ -50,15 +52,11 @@ public class DraggableConnector : EditorComponentBase
                 continue;
             }
 
-            Connection.Component.Target = entity;
-            
-            Parent.Component.Connections[Connection.Component.Type] = Connection.Component.Entity;
-            Parent.Component.Nodes[Connection.Component.Type] = entity;
-            
-            node.Component?.OnConnected(Parent.Component, Connection.Component);
+            Parent.Component.Connect(Connection.Component.Type, node!);
             break;
         }
         
+        Parent.Component!.SetGhostActive(Connection.Component!.Type, true);
         Context.Destroy(Entity);
     }
 }

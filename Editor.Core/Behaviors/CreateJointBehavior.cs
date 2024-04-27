@@ -24,29 +24,6 @@ public class CreateJointBehavior : BehaviorBase<EditorContext, IPositionArgs>
 
     protected override void Perform(IPositionArgs e)
     {
-        var joint = Context.Instantiate(JointFactory.Create()
-            .ConfigureComponent<Position>(x =>
-            {
-                x.Value = e.Position;
-            })
-        );
-
-        var jointComponent = joint.GetRequiredComponent<ConnectionJoint>().Component!;
-        
-        var connection = Context.Instantiate(ConnectionFactory.Create()
-            .ConfigureComponent<ChildOf>(x =>
-            {
-                x.Parent = joint;
-            })
-            .ConfigureComponent<Connection>(x =>
-            {
-                x.Target = _connectionComponent.Target;
-            })
-        );
-        
-        _connectionComponent.Target = joint;
-
-        jointComponent.Connection1 = _connectionComponent.Entity;
-        jointComponent.Connection2 = connection;
+        _connectionComponent.Split(e.Position);
     }
 }

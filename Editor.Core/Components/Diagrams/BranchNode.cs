@@ -2,78 +2,136 @@
 using Editor.Component;
 using Editor.Component.Events;
 using Editor.Core.Collections;
+using Editor.Core.Layout;
+using Editor.Core.Prefabs.Factories;
 using Editor.Core.Rendering.Renderers;
 
 namespace Editor.Core.Components.Diagrams;
 
 public abstract class BranchNode : Node
 {
-    private IEventBusSubscriber _eventBus = default!;
+    private Dictionary<ConnectionType, Connection> _ghostConnections = [];
+    private Dictionary<ConnectionType, GhostNode> _ghostNodes = [];
+    private Dictionary<ConnectionType, Connection> _connections = [];
+    private Dictionary<ConnectionType, Node> _nodes = [];
     
-    public Dictionary<ConnectionType, IEntity> GhostConnections { get; } = [];
-    public Dictionary<ConnectionType, IEntity> GhostNodes { get; } = [];
+    private IEventBusSubscriber _eventBus = default!;
 
-    public ObservableDictionary<ConnectionType, IEntity> Connections { get; } = [];
-    public ObservableDictionary<ConnectionType, IEntity> Nodes { get; } = [];
+
+    public IEntityBuilderFactory ConnectionFactory { get; set; } = new ConnectionFactory();
+    public IEntityBuilderFactory GhostConnectionFactory { get; set; } = new GhostConnectionFactory();
+    
+    public IReadOnlyDictionary<ConnectionType, Connection> GhostConnections => _ghostConnections;
+    public IReadOnlyDictionary<ConnectionType, GhostNode> GhostNodes => _ghostNodes;
+
+    public IReadOnlyDictionary<ConnectionType, Connection> Connections => _connections;
+    public IReadOnlyDictionary<ConnectionType, Node> Nodes => _nodes;
+
+
+    public virtual void AddGhost(GhostNode node)
+    {
+        var connectionType = node.ConnectionType;
+        _ghostNodes[connectionType] = node;
+
+        if (!_ghostConnections.TryGetValue(connectionType, out var connection))
+        {
+            var connectionEntity = Context.Instantiate(GhostConnectionFactory.Create()
+                .ConfigureComponent<ChildOf>(x => x.Parent = Entity)
+                .ConfigureComponent<Connection>(x =>
+                {
+                    x.Type = connectionType;
+                    x.Target = node.Entity;
+                })
+            );
+            connection = connectionEntity.GetRequiredComponent<Connection>();
+            _ghostConnections[connectionType] = connection!;
+        }
+        
+        SetGhostActive(connectionType, true);
+    }
+
+    public virtual void SetGhostActive(ConnectionType connectionType, bool active)
+    {
+        active &= !(_nodes.ContainsKey(connectionType) || _connections.ContainsKey(connectionType));
+        
+        _ghostNodes[connectionType].Entity.Active = active;
+        _ghostNodes[connectionType].Entity.GetRequiredComponent<Renderer>().Component!.Visible = active;
+            
+        _ghostConnections[connectionType].Entity.Active = active;
+        _ghostConnections[connectionType].Entity.GetRequiredComponent<Renderer>().Component!.Visible = active;
+    }
+    
+    public virtual Connection? Connect(ConnectionType connectionType, Node? node)
+    {
+        if (node is null)
+        {
+            _nodes.Remove(connectionType);
+
+            if (_connections.TryGetValue(connectionType, out var connectionToDestroy))
+            {
+                Context.Destroy(connectionToDestroy.Entity);
+                _connections.Remove(connectionType);
+            }
+
+            SetGhostActive(connectionType, true);
+            return null;
+        }
+        
+        _nodes[connectionType] = node;
+
+        if (!_connections.TryGetValue(connectionType, out var connection))
+        {
+            var connectionEntity = Context.Instantiate(ConnectionFactory.Create()
+                .ConfigureComponent<ChildOf>(x => x.Parent = Entity)
+                .ConfigureComponent<Connection>(x =>
+                {
+                    x.Type = connectionType;
+                    x.Target = node.Entity;
+                })
+            );
+            connection = connectionEntity.GetRequiredComponent<Connection>();
+            _connections[connectionType] = connection!;
+        }
+        
+        SetGhostActive(connectionType, false);
+        node.OnConnected(this, connection!);
+        
+        return connection;
+    }
     
     protected override void OnInit()
     {
         _eventBus = Context.EventBus.Subscribe();
         _eventBus.Subscribe<EntityDestroyed>(OnEntityDestroyed);
-        
-        Connections.CollectionChanged += Nodes_OnCollectionChanged;
-        Nodes.CollectionChanged += Nodes_OnCollectionChanged;
     }
 
     protected override void OnDestroy()
     {
         _eventBus.Unsubscribe<EntityDestroyed>();
-        
-        Connections.CollectionChanged -= Nodes_OnCollectionChanged;
-        Nodes.CollectionChanged -= Nodes_OnCollectionChanged;
     }
 
     private void OnEntityDestroyed(EntityDestroyed e)
     {
-        foreach (var dict in (ReadOnlySpan<ObservableDictionary<ConnectionType, IEntity>>)[ Connections, Nodes ])
-        {
-            var key = dict.First(x => x.Value == e.Entity).Key;
-            Connections.Remove(key);
-            Nodes.Remove(key);
-            break;
-        }
-    }
-    
-    private void Nodes_OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        switch (e.Action)
-        {
-            case NotifyCollectionChangedAction.Add or NotifyCollectionChangedAction.Replace:
-            {
-                foreach (var item in e.NewItems)
-                {
-                    var (key, value) = (KeyValuePair<ConnectionType, IEntity>)item;
-                
-                    GhostNodes[key].Active = false;
-                    GhostNodes[key].GetRequiredComponent<Renderer>().Component!.Visible = false;
-                    GhostConnections[key].GetRequiredComponent<Renderer>().Component!.Visible = false;
-                }
+        var nodePair = _nodes.FirstOrDefault(x => x.Value.Entity == e.Entity);
+        var connectionPair = nodePair.Equals(default(KeyValuePair<ConnectionType, Node>))
+            ? _connections.FirstOrDefault(x => x.Value.Entity == e.Entity)
+            : default;
 
-                break;
-            }
-            case NotifyCollectionChangedAction.Remove:
-            {
-                foreach (var item in e.OldItems)
-                {
-                    var (key, value) = (KeyValuePair<ConnectionType, IEntity>)item;
-                
-                    GhostNodes[key].Active = true;
-                    GhostNodes[key].GetRequiredComponent<Renderer>().Component!.Visible = true;
-                    GhostConnections[key].GetRequiredComponent<Renderer>().Component!.Visible = true;
-                }
-
-                break;
-            }
+        var connectionType = default(ConnectionType);
+        
+        if (!nodePair.Equals(default(KeyValuePair<ConnectionType, Node>)))
+        {
+            connectionType = nodePair.Key;
         }
+        else if (!connectionPair.Equals(default(KeyValuePair<ConnectionType, Connection>)))
+        {
+            connectionType = connectionPair.Key;
+        }
+        else
+        {
+            return;
+        }
+
+        Connect(connectionType, null);
     }
 }

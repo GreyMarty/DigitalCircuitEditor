@@ -28,20 +28,20 @@ public class BinaryDiagramNode : BranchNode
     {
         base.OnPropertyChanged(propertyName);
 
-        if (propertyName == nameof(VariableId))
+        if (propertyName != nameof(VariableId))
         {
-            foreach (var (_, entity) in Nodes)
+            return;
+        }
+        
+        foreach (var (_, node) in Nodes)
+        {
+            if (node is not BinaryDiagramNode binaryNode)
             {
-                var node = entity.GetComponent<BinaryDiagramNode>()?.Component;
-
-                if (node is null)
-                {
-                    continue;
-                }
-
-                node.MinVariableId = VariableId + 1;
-                node.VariableId = Math.Max(node.VariableId, node.MinVariableId);
+                continue;
             }
+
+            binaryNode.MinVariableId = VariableId + 1;
+            binaryNode.VariableId = Math.Max(binaryNode.VariableId, binaryNode.MinVariableId);
         }
     }
 }
