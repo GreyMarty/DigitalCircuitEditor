@@ -6,6 +6,7 @@ using Editor.Core.Layout;
 using Editor.Core.Prefabs.Factories;
 using Editor.DecisionDiagrams;
 using BranchNode = Editor.DecisionDiagrams.BranchNode;
+using EditorBranchNode = Editor.Core.Components.Diagrams.BranchNode;
 
 namespace Editor.Core.Prefabs.Spawners;
 
@@ -13,97 +14,68 @@ public class BinaryDiagramSpawner : Spawner
 {
     public IEntityBuilderFactory NodeSpawnerFactory { get; set; } = new InstantSpawnerFactory<BinaryDiagramNodeSpawner>();
     public IEntityBuilderFactory ConstNodeFactory { get; set; } = new ConstNodeFactory();
-    public IEntityBuilderFactory ConnectionFactory { get; set; } = new ConnectionFactory();
-    public IEntityBuilderFactory JointFactory { get; set; } = new ConnectionJointFactory();
+    
     public BranchNode Diagram { get; set; } = default!;
     public ILayout Layout { get; set; } = new ForceDirectedLayout();
     
     
     protected override IEnumerable<IEntity> OnSpawn(EditorContext context)
     {
-        var result = new List<IEntity>();
-
+        var nodes = new Dictionary<int, Node>();
+        Spawn(Diagram, Layout.Arrange(Diagram), nodes);
         
-        
-        return result;
+        return nodes.Values.Select(x => x.Entity);
     }
 
-    private IEntity Spawn(INode node, NodeLayoutInfo layout, Dictionary<INode, IEntity> nodes)
+    private Node Spawn(INode node, NodeLayoutInfo layout, Dictionary<int, Node> nodes)
     {
-        if (nodes.TryGetValue(node, out var nodeEntity))
+        if (nodes.TryGetValue(node.Id, out var nodeComponent))
         {
-            return nodeEntity;
+            return nodeComponent;
         }
+
+        var nodeEntity = default(IEntity);
         
         if (node is TerminalNode terminalNode)
         {
             nodeEntity = Context.Instantiate(ConstNodeFactory
                 .Create()
+                .ConfigureComponent<Position>(x => x.Value = layout.Position(node)!.Value + Position)
                 .ConfigureComponent<ConstNode>(x => x.Value = terminalNode.Value)
             );
-            nodes[node] = nodeEntity;
+            
+            nodeComponent = nodeEntity.GetRequiredComponent<Node>()!;
+            nodes[node.Id] = nodeComponent;
+            return nodeComponent;
         }
 
         var branchNode = (BranchNode)node;
 
-        nodeEntity = Context.Instantiate(NodeSpawnerFactory
+        var nodeSpawnerEntity = Context.Instantiate(NodeSpawnerFactory
             .Create()
-            .ConfigureComponent<Position>(x => x.Value = layout.Position(node)!.Value)
-            .ConfigureComponent<BinaryDiagramNode>(x => x.VariableId = branchNode.VariableId)
+            .ConfigureComponent<Position>(x => x.Value = layout.Position(node)!.Value + Position)
         );
-        nodes[node] = nodeEntity;
+
+        nodeEntity = nodeSpawnerEntity.GetRequiredComponent<Spawner>().Component!.Spawn().First();
+        
+        var branchNodeComponent = nodeEntity.GetRequiredComponent<EditorBranchNode>().Component!;
+        nodeComponent = branchNodeComponent;
+        nodes[node.Id] = branchNodeComponent;
 
         var trueNode = Spawn(branchNode.True, layout, nodes);
         var falseNode = Spawn(branchNode.False, layout, nodes);
 
-        var firstJoint = default(IEntity);
-        var lastConnection = default(Connection);
-        
-        foreach (var jointPosition in layout.Joints(node, branchNode.True))
+        foreach (var (t, n, ne) in new[] { (ConnectionType.True, branchNode.True, trueNode), (ConnectionType.False, branchNode.False, falseNode) })
         {
-            var jointEntity = Context.Instantiate(JointFactory.Create()
-                .ConfigureComponent<Position>(x =>
-                {
-                    x.Value = jointPosition;
-                })
-            );
-            firstJoint ??= jointEntity;
+            var connection = branchNodeComponent.Connect(t, ne)!;
 
-            if (lastConnection is not null)
+            foreach (var joint in layout.Joints(branchNode, n))
             {
-                lastConnection.Target = jointEntity;
+                var jointComponent = connection.Split(joint + Position);
+                connection = jointComponent.Connection2.GetRequiredComponent<Connection>()!;
             }
-            
-            var jointComponent = jointEntity.GetRequiredComponent<ConnectionJoint>().Component!;
-            
-            var connectionEntity = Context.Instantiate(ConnectionFactory.Create()
-                .ConfigureComponent<ChildOf>(x =>
-                {
-                    x.Parent = jointEntity;
-                })
-            );
-
-            jointComponent.Connection1 = lastConnection?.Entity;
-            lastConnection = connectionEntity.GetRequiredComponent<Connection>();
-            jointComponent.Connection2 = lastConnection!.Entity;
         }
-
-        lastConnection.Target = trueNode;
-
-        // var connection = Context.Instantiate(ConnectionFactory.Create()
-        //     .ConfigureComponent<ChildOf>(x => x.Parent = childOfComponent.Parent)
-        //     .ConfigureComponent<Connection>(x =>
-        //     {
-        //         x.Target = Entity;
-        //         x.Type = ghostNodeComponent.ConnectionType;
-        //     })
-        // );
-        //
-        // parentNode.Connections[connectionType] = connection;
-        // parentNode.Nodes[connectionType] = Entity;
-        //     
-        // Entity.GetRequiredComponent<BranchNode>().Component?.OnConnected(parentNode, connection.GetRequiredComponent<Connection>()!);
-
-        return null;
+        
+        return nodeComponent!;
     }
 }

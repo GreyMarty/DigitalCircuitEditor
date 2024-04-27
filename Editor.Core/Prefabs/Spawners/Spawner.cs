@@ -13,19 +13,21 @@ public abstract class Spawner : EditorComponentBase
     protected Vector2 Position => _positionComponent.Value;
     
     
-    public void Spawn()
+    public IEnumerable<IEntity> Spawn()
     {
         if (!Entity.Alive)
         {
-            return;
+            return Enumerable.Empty<IEntity>();
         }
         
-        OnSpawn(Context);
+        var result = OnSpawn(Context);
 
         if (DestroyOnSpawn)
         {
             Context.Destroy(Entity);
         }
+
+        return result;
     }
     
     protected override void OnInit()

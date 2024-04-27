@@ -1,10 +1,16 @@
-﻿using System.Windows;
+﻿using System.Numerics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Editor.Component;
 using Editor.Core.Behaviors;
 using Editor.Core.Components;
+using Editor.Core.Components.Diagrams;
+using Editor.Core.Converters;
 using Editor.Core.Events;
+using Editor.Core.Layout;
+using Editor.Core.Prefabs.Factories;
+using Editor.Core.Prefabs.Spawners;
 using Editor.Core.Rendering;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Wpf.Converters;
@@ -12,6 +18,7 @@ using Editor.Core.Wpf.Events;
 using Editor.Core.Wpf.View.Inspector;
 using Editor.Core.Wpf.ViewModel;
 using SkiaSharp.Views.Desktop;
+using BranchNode = Editor.DecisionDiagrams.BranchNode;
 
 namespace Editor.Core.Wpf.View;
 
@@ -41,7 +48,6 @@ public partial class EditorView : UserControl
     
     public EditorContext? Context { get; private set; }
     
-
     protected override void OnInitialized(EventArgs e)
     {
         base.OnInitialized(e);
@@ -64,7 +70,8 @@ public partial class EditorView : UserControl
 
         var eventBus = Context.EventBus.Subscribe();
         eventBus.Subscribe<RenderRequested>(_ => Canvas.InvalidateVisual());
-
+        eventBus.Subscribe<RequestPropertiesInspector>(Context_OnPropertiesInspectorRequested);
+        
         Context.Instantiate(Entity.CreateBuilder()
             .AddComponent<SelectionManager>()
         );
@@ -87,11 +94,37 @@ public partial class EditorView : UserControl
             .AddComponent<SpawnOnInit>();
         Context?.Instantiate(builder);
         
-        Context?.EventBus.Subscribe().Subscribe<RequestPropertiesInspector>(Context_OnPropertiesInspectorRequested);
-        
         base.OnDrop(e);
     }
 
+    private void TestConvert()
+    {
+        var rootEntity = Context.Entities
+            .Where(x => x.GetComponent<Selectable>()?.Component?.Selected == true)
+            .FirstOrDefault(x => x.GetComponent<Node>() is not null);
+
+        if (rootEntity is null)
+        {
+            return;
+        }
+        
+        var diagram = EntitiesToDiagramConverter.Convert(rootEntity.GetRequiredComponent<Node>()!);
+
+        var builder = new InstantSpawnerFactory<BinaryDiagramSpawner>()
+            .Create()
+            .ConfigureComponent<Position>(x => x.Value = new Vector2(20, 0))
+            .ConfigureComponent<BinaryDiagramSpawner>(x =>
+            {
+                x.Diagram = (BranchNode)diagram.Root;
+                x.Layout = new ForceDirectedLayout
+                {
+                        
+                };
+            })
+            .AddComponent<SpawnOnInit>();
+        Context.Instantiate(builder);
+    }
+    
     private void Canvas_OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
     {
         _cameraTarget.Update(e.Info);
@@ -109,6 +142,10 @@ public partial class EditorView : UserControl
         {
             case Key.Delete:
                 Context?.EventBus.Publish(new DestroyRequested(this));
+                break;
+            
+            case Key.C:
+                TestConvert();
                 break;
         }
     }
