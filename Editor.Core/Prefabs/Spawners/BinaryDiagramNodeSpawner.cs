@@ -33,8 +33,8 @@ public class BinaryDiagramNodeSpawner : Spawner
             
             var type = i switch
             {
-                0 => ConnectionType.True,
-                1 => ConnectionType.False,
+                0 => ConnectionType.False,
+                1 => ConnectionType.True,
             };
             
             var ghostNode = context.Instantiate(GhostNodeFactory.Create()

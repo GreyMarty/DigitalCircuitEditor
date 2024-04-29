@@ -1,4 +1,5 @@
 ﻿using Editor.Component;
+using Editor.Core.Adapters;
 using Editor.Core.Behaviors;
 using Editor.Core.Components;
 using Editor.Core.Components.Diagrams;
@@ -18,6 +19,8 @@ public class GhostConnectionFactory : ConnectionFactory
             .RemoveComponent<ChangeStrokeOnSelect>()
             .RemoveComponent<DestroyBehavior>()
             .RemoveComponent<CreateJointBehavior>()
+            .RemoveComponent<ConnectionTypeToStrokeStyleAdapter>()
+            .AddComponent<ConnectionLabelToTextAdapter>()
             .ConfigureComponent<ChildOf>(x =>
             {
                 x.DestroyWithParent = true;

@@ -15,14 +15,14 @@ public class BinaryDiagramSpawner : Spawner
     public IEntityBuilderFactory NodeSpawnerFactory { get; set; } = new InstantSpawnerFactory<BinaryDiagramNodeSpawner>();
     public IEntityBuilderFactory ConstNodeFactory { get; set; } = new ConstNodeFactory();
     
-    public BranchNode Diagram { get; set; } = default!;
+    public INode Root { get; set; } = default!;
     public ILayout Layout { get; set; } = new ForceDirectedLayout();
     
     
     protected override IEnumerable<IEntity> OnSpawn(EditorContext context)
     {
         var nodes = new Dictionary<int, Node>();
-        Spawn(Diagram, Layout.Arrange(Diagram), nodes);
+        Spawn(Root, Layout.Arrange(Root), nodes);
         
         return nodes.Values.Select(x => x.Entity);
     }
@@ -58,7 +58,8 @@ public class BinaryDiagramSpawner : Spawner
 
         nodeEntity = nodeSpawnerEntity.GetRequiredComponent<Spawner>().Component!.Spawn().First();
         
-        var branchNodeComponent = nodeEntity.GetRequiredComponent<EditorBranchNode>().Component!;
+        var branchNodeComponent = nodeEntity.GetRequiredComponent<BinaryDiagramNode>().Component!;
+        branchNodeComponent.VariableId = branchNode.VariableId;
         nodeComponent = branchNodeComponent;
         nodes[node.Id] = branchNodeComponent;
 

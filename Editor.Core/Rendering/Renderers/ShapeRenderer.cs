@@ -16,6 +16,21 @@ public abstract class ShapeRenderer : Renderer
         set => StrokePaint.StrokeWidth = value;
     }
 
+    public SKPathEffect StrokePathEffect
+    {
+        get => StrokePaint.PathEffect;
+        set
+        {
+            if (value == StrokePaint.PathEffect)
+            {
+                return;
+            }
+            
+            StrokePaint.PathEffect?.Dispose();
+            StrokePaint.PathEffect = value;
+        }
+    }
+    
     public SKColor Fill
     {
         get => FillPaint.Color;

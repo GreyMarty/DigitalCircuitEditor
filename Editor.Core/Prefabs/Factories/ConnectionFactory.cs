@@ -33,8 +33,8 @@ public class ConnectionFactory : IEntityBuilderFactory
                 DestroyWithParent = true
             })
             .AddComponent<Connection>()
-            .AddComponent<ConnectionLabelToTextAdapter>()
             .AddComponent<ConnectionToLineShapeAdapter>()
+            .AddComponent<ConnectionTypeToStrokeStyleAdapter>()
             .AddComponent<LineShapeToRendererAdapter>()
             .AddComponent<ChangeStrokeOnSelect>()
             .AddComponent(new LabeledLineRenderer

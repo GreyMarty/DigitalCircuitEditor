@@ -17,6 +17,7 @@ using Editor.Core.Wpf.Converters;
 using Editor.Core.Wpf.Events;
 using Editor.Core.Wpf.View.Inspector;
 using Editor.Core.Wpf.ViewModel;
+using Editor.DecisionDiagrams;
 using SkiaSharp.Views.Desktop;
 using BranchNode = Editor.DecisionDiagrams.BranchNode;
 
@@ -109,16 +110,17 @@ public partial class EditorView : UserControl
         }
         
         var diagram = EntitiesToDiagramConverter.Convert(rootEntity.GetRequiredComponent<Node>()!);
-
+        diagram.Root = diagram.Root.Reduce();
+        
         var builder = new InstantSpawnerFactory<BinaryDiagramSpawner>()
             .Create()
             .ConfigureComponent<Position>(x => x.Value = new Vector2(20, 0))
             .ConfigureComponent<BinaryDiagramSpawner>(x =>
             {
-                x.Diagram = (BranchNode)diagram.Root;
+                x.Root = diagram.Root;
                 x.Layout = new ForceDirectedLayout
                 {
-                        
+                    Iterations = 1000
                 };
             })
             .AddComponent<SpawnOnInit>();

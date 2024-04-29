@@ -9,10 +9,11 @@ public class Connection : EditorComponentBase
 {
     public IEntity? Target { get; set; }
     public ConnectionType Type { get; set; }
-    
+
+    public string? CustomLabel { get; set; }
     public virtual string? Label
     {
-        get => Type != ConnectionType.Direct ? Type.ToString() : null;
+        get => CustomLabel ?? (Type != ConnectionType.Direct ? Type.ToString() : null);
         set { }
     }
 
@@ -38,6 +39,8 @@ public class Connection : EditorComponentBase
             .ConfigureComponent<Connection>(x =>
             {
                 x.Target = Target;
+                x.Type = Type;
+                x.CustomLabel = string.Empty;
             })
         );
         

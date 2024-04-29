@@ -15,19 +15,28 @@ public class ForceDirectedLayout : ILayout
     public float PassiveStiffness { get; set; } = 1;
     public float NodeDistance { get; set; } = 5;
     public float PassiveNodeDistance { get; set; } = 10;
-    public float Repulsion { get; set; } = 5;
-    public float JointRepulsionModifier { get; set; } = 0.5f;
-    public float Gravity { get; set; } = 1f;
+    public float Repulsion { get; set; } = 10;
+    public float JointRepulsionModifier { get; set; } = 0.25f;
+    public float Gravity { get; set; } = 2f;
     public int MaxJointsPerSegment { get; set; } = 1;
-    public float JointAngularStiffness { get; set; } = 2f;
+    public float JointAngularStiffness { get; set; } = 3f;
     public bool DoReduceJoints { get; set; } = true;
     public float Step { get; set; } = 0.1f;
     public float UpscaleFactor { get; set; } = 2f;
     
     
-    public NodeLayoutInfo Arrange(BranchNode root)
+    public NodeLayoutInfo Arrange(INode root)
     {
-        SetUp(root, out var nodes, out var joints);
+        if (root is not BranchNode branchRoot)
+        {
+            return new NodeLayoutInfo(new Dictionary<int, Vector2>()
+            {
+                [root.Id] = Vector2.Zero
+            },
+            []);
+        }
+        
+        SetUp(branchRoot, out var nodes, out var joints);
 
         var allNodes = nodes.Values
             .Concat(joints.Values.SelectMany(x => x))
@@ -122,12 +131,12 @@ public class ForceDirectedLayout : ILayout
         
         nodes[branchRoot.True.Id] = new LayoutNode
         {
-            Position = position + new Vector2(-depth * NodeDistance, depth * NodeDistance)
+            Position = position + new Vector2(depth * NodeDistance, depth * NodeDistance)
         };
 
         nodes[branchRoot.False.Id] = new LayoutNode
         {
-            Position = position + new Vector2(depth * NodeDistance, depth * NodeDistance)
+            Position = position + new Vector2(-depth * NodeDistance, depth * NodeDistance)
         };
 
         joints[(root.Id, branchRoot.True.Id)] = Enumerable.Range(0, MaxJointsPerSegment)
@@ -170,9 +179,11 @@ public class ForceDirectedLayout : ILayout
             foreach (var target in joints[(branchRoot.Id, child.Id)].Append(nodes[child.Id]))
             {
                 var force = CalculateAttraction(source, target, 2) * Step;
+
+                var horizontalGravity = sign * Gravity * Step * Vector2.UnitX;
                 
                 source.Position += force;
-                target.Position += sign * Gravity * Step * Vector2.UnitX - force;
+                target.Position += horizontalGravity - force;
             
                 source = target;
             }
@@ -219,7 +230,9 @@ public class ForceDirectedLayout : ILayout
         var delta = joint.Position - a.Position;
         var angle = MathF.Atan2(delta.Y, delta.X) - MathF.Atan2(ab.Y, ab.X);
 
-        return -MathF.Sin(angle) * JointAngularStiffness * abNormal;
+        var sin = MathF.Sin(angle);
+        
+        return -MathF.Sign(sin) * MathF.Pow(sin * JointAngularStiffness, 2) * abNormal;
     }
 
     private IEnumerable<ILayoutNode> ReduceJoints(ILayoutNode a, ILayoutNode b, IEnumerable<ILayoutNode> joints)
