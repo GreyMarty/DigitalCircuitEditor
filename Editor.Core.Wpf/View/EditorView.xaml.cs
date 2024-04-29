@@ -49,6 +49,7 @@ public partial class EditorView : UserControl
     
     public EditorContext? Context { get; private set; }
     
+    
     protected override void OnInitialized(EventArgs e)
     {
         base.OnInitialized(e);

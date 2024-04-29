@@ -14,8 +14,8 @@ public abstract class BehaviorBase<TContext, TArgs> : ComponentBase<TContext>, I
     {
         foreach (var trigger in Triggers)
         {
-            trigger.Init(Entity);
             trigger.Fired += Perform;
+            trigger.Init(Entity);
         }
     }
 

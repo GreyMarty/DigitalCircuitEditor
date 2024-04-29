@@ -57,11 +57,12 @@ public class NodeFactory : IEntityBuilderFactory
                     Filters = [ new HoveredFilter() ]
                 }
             )
-            .AddBehavior<FollowMouseBehavior, IMovePositionArgs>(
+            .AddBehavior<FollowMouseDeltaBehavior, IMovePositionArgs>(
                 new MouseMoveTrigger()
                 {
                     Button = MouseButton.Left,
-                    Filters = [ new SelectedFilter() ]
+                    Filters = [ new SelectedFilter(), new MouseUnlockedFilter() ],
+                    FilterMode = TriggerFilterMode.All
                 }
             )
             .AddBehavior<DestroyBehavior, ITriggerArgs>(

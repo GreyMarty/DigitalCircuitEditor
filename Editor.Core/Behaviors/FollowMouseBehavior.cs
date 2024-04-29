@@ -4,6 +4,25 @@ using Editor.Core.Components;
 
 namespace Editor.Core.Behaviors;
 
+public class FollowMouseDeltaBehavior : BehaviorBase<EditorContext, IMovePositionArgs>
+{
+    private Position _positionComponent = default!;
+
+    
+    protected override void OnInit()
+    {
+        base.OnInit();
+        
+        _positionComponent = Entity.GetRequiredComponent<Position>()!;
+    }
+
+    protected override void Perform(IMovePositionArgs e)
+    {
+        var delta = e.Position - e.OldPosition;
+        _positionComponent.Value += delta;
+    }
+}
+
 public class FollowMouseBehavior : BehaviorBase<EditorContext, IMovePositionArgs>
 {
     private Position _positionComponent = default!;
@@ -18,12 +37,6 @@ public class FollowMouseBehavior : BehaviorBase<EditorContext, IMovePositionArgs
 
     protected override void Perform(IMovePositionArgs e)
     {
-        if (Context.MouseLocked)
-        {
-            return;
-        }
-
-        var delta = e.Position - e.OldPosition;
-        _positionComponent.Value += delta;
+        _positionComponent.Value = e.Position;
     }
 }

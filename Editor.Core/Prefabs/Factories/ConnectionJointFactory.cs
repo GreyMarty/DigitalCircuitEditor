@@ -37,7 +37,7 @@ public class ConnectionJointFactory : IEntityBuilderFactory
             });
 
         builder
-            .AddBehavior<FollowMouseBehavior, IMovePositionArgs>(
+            .AddBehavior<FollowMouseDeltaBehavior, IMovePositionArgs>(
                 new MouseMoveTrigger
                 {
                     Button = MouseButton.Left,

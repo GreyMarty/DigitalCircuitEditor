@@ -43,7 +43,8 @@ public class GhostNodeFactory : IEntityBuilderFactory
                 new MouseButtonDownTrigger()
                 {
                     Button = MouseButton.Left,
-                    Filters = [ new HoveredFilter() ]
+                    Filters = [ new HoveredFilter(), new MouseUnlockedFilter() ],
+                    FilterMode = TriggerFilterMode.All
                 }
             )
             .AddBehavior<RequestRenderBehavior, ITriggerArgs>(

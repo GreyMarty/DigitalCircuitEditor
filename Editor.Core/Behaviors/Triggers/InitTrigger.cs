@@ -6,6 +6,7 @@ public class InitTrigger : TriggerBase<EditorContext, TriggerArgs>
 {
     protected override void OnInit()
     {
+        base.OnInit();
         OnFired(TriggerArgs.Empty);
     }
 }

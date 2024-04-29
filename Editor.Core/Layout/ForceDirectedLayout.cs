@@ -21,7 +21,7 @@ public class ForceDirectedLayout : ILayout
     public int MaxJointsPerSegment { get; set; } = 1;
     public float JointAngularStiffness { get; set; } = 3f;
     public bool DoReduceJoints { get; set; } = true;
-    public float Step { get; set; } = 0.1f;
+    public float Step { get; set; } = 0.3f;
     public float UpscaleFactor { get; set; } = 2f;
     
     

@@ -2,5 +2,7 @@
 
 public class EditorEntitiesListViewModel
 {
-    public EditorEntitiesListItemViewModel[] Items { get; set; }
+    public EditorEntitiesListItemViewModel[] Items { get; set; } = default!;
+
+    public EditorEntitiesListItemViewModel? SelectedItem { get; set; }
 }

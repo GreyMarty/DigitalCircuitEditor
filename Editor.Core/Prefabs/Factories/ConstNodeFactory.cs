@@ -48,11 +48,12 @@ public class ConstNodeFactory : IEntityBuilderFactory
             });
 
         builder
-            .AddBehavior<FollowMouseBehavior, IMovePositionArgs>(
+            .AddBehavior<FollowMouseDeltaBehavior, IMovePositionArgs>(
                 new MouseMoveTrigger
                 {
                     Button = MouseButton.Left,
-                    Filters = [ new SelectedFilter() ]
+                    Filters = [ new SelectedFilter(), new MouseUnlockedFilter() ],
+                    FilterMode = TriggerFilterMode.All
                 }
             )
             .AddBehavior<DestroyBehavior, ITriggerArgs>(

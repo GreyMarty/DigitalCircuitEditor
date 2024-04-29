@@ -1,7 +1,4 @@
-﻿using Editor.Core.Components.Diagrams.BinaryDiagrams;
-using Editor.Core.Prefabs;
-using Editor.Core.Prefabs.Factories;
-using Editor.Core.Prefabs.Spawners;
+﻿using Editor.Core.Prefabs.Factories.Previews;
 using Editor.Core.Wpf.Resources;
 
 namespace Editor.Core.Wpf.ViewModel.DesignTime;
@@ -13,17 +10,17 @@ public class EditorEntitiesListDesignTimeViewModel : EditorEntitiesListViewModel
         Items = [
             new EditorEntitiesListItemViewModel(
                 Images.Ifd,
-                new InstantSpawnerFactory<BinaryDiagramNodeSpawner>(),
+                new BinaryDiagramNodePreviewFactory(),
                 "If Diagram Node"
             ),
             new EditorEntitiesListItemViewModel(
                 Images.Const0,
-                new InstantSpawnerFactory<SimpleSpawner<ConstNodeFactory>>(),
+                new ConstNodePreviewFactory(),
                 "Const node"
             ),
             new EditorEntitiesListItemViewModel(
                 Images.Const0,
-                new InstantSpawnerFactory<BinaryDiagramOutputNodeSpawner>(),
+                new OutputNodePreviewFactory(),
                 "Output"
             )
         ];

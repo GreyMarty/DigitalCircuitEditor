@@ -40,7 +40,7 @@ public class SelectionManager : EditorComponentBase
     
     private void Context_OnMouseButtonDown(MouseButtonDown e)
     {
-        if (e.Button != MouseButton.Left)
+        if (e.Button != MouseButton.Left || Context.MouseLocked)
         {
             return;
         }

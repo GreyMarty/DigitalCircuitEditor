@@ -10,17 +10,4 @@ public partial class EditorEntitiesListItem : UserControl
     {
         InitializeComponent();
     }
-    
-    protected override void OnMouseMove(MouseEventArgs e)
-    {
-        base.OnMouseMove(e);
-        
-        if (e.LeftButton == MouseButtonState.Pressed)
-        {
-            var data = new DataObject();
-            data.SetData("Object", DataContext);
-
-            DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
-        }
-    }
 }
