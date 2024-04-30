@@ -18,6 +18,8 @@ using Editor.Core.Wpf.Events;
 using Editor.Core.Wpf.View.Inspector;
 using Editor.Core.Wpf.ViewModel;
 using Editor.DecisionDiagrams;
+using Editor.DecisionDiagrams.Extensions;
+using Editor.DecisionDiagrams.Operations;
 using SkiaSharp.Views.Desktop;
 using BranchNode = Editor.DecisionDiagrams.BranchNode;
 
@@ -99,7 +101,9 @@ public partial class EditorView : UserControl
         base.OnDrop(e);
     }
 
-    private void TestConvert()
+#region Test
+
+    private void TestReduce()
     {
         var rootEntity = Context.Entities
             .Where(x => x.GetComponent<Selectable>()?.Component?.Selected == true)
@@ -128,6 +132,42 @@ public partial class EditorView : UserControl
         Context.Instantiate(builder);
     }
     
+    private void TestOperation(IBooleanOperation operation)
+    {
+        var selected = Context.Entities
+            .Where(x => x.GetComponent<Selectable>()?.Component?.Selected == true)
+            .Select(x => x.GetComponent<Node>()?.Component)
+            .Where(x => x is not null)
+            .Take(2)
+            .ToList();
+
+        if (selected.Count != 2)
+        {
+            return;
+        }
+        
+        var diagramA = EntitiesToDiagramConverter.Convert(selected[0]!).Root.Reduce();
+        var diagramB = EntitiesToDiagramConverter.Convert(selected[1]!).Root.Reduce();
+
+        var diagramC = operation.Apply(diagramA, diagramB).Reduce();
+        
+        var builder = new InstantSpawnerFactory<BinaryDiagramSpawner>()
+            .Create()
+            .ConfigureComponent<Position>(x => x.Value = new Vector2(20, 0))
+            .ConfigureComponent<BinaryDiagramSpawner>(x =>
+            {
+                x.Root = diagramC;
+                x.Layout = new ForceDirectedLayout
+                {
+                    Iterations = 1000
+                };
+            })
+            .AddComponent<SpawnOnInit>();
+        Context.Instantiate(builder);
+    }
+    
+#endregion
+    
     private void Canvas_OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
     {
         _cameraTarget.Update(e.Info);
@@ -148,7 +188,15 @@ public partial class EditorView : UserControl
                 break;
             
             case Key.C:
-                TestConvert();
+                TestReduce();
+                break;
+            
+            case Key.A:
+                TestOperation(new And());
+                break;
+            
+            case Key.O:
+                TestOperation(new Or());
                 break;
         }
     }

@@ -57,7 +57,7 @@ public class SelectionManager : EditorComponentBase
             var hoverableComponent = entity.GetComponent<Hoverable>()?.Component;
             var selectableComponent = entity.GetComponent<Selectable>()?.Component;
 
-            if (hoverableComponent?.Hovered == true && selectableComponent is null)
+            if (hoverableComponent?.Hovered == true && selectableComponent is null && !e.ModKeys.HasFlag(ModKeys.Shift))
             {
                 UnselectAll();
                 return;
@@ -71,7 +71,7 @@ public class SelectionManager : EditorComponentBase
             clickedOn = selectableComponent;
         }
 
-        if (clickedOn?.Selected != true)
+        if (clickedOn?.Selected != true && !e.ModKeys.HasFlag(ModKeys.Shift))
         {
             UnselectAll();
         }

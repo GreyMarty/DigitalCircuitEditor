@@ -170,7 +170,7 @@ public class ForceDirectedLayout : ILayout
         ApplyAttraction(branchRoot.True, nodes, joints);
         ApplyAttraction(branchRoot.False, nodes, joints);
 
-        var sign = -1;
+        var sign = 1;
         
         foreach (var child in new[] { branchRoot.True, branchRoot.False })
         {
@@ -180,7 +180,7 @@ public class ForceDirectedLayout : ILayout
             {
                 var force = CalculateAttraction(source, target, 2) * Step;
 
-                var horizontalGravity = sign * Gravity * Step * Vector2.UnitX;
+                var horizontalGravity = sign * Gravity / 2 * Step * Vector2.UnitX;
                 
                 source.Position += force;
                 target.Position += horizontalGravity - force;

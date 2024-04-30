@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using Editor.Component.Events;
 using Editor.Core.Events;
+using Editor.Core.Input;
 using Editor.Core.Rendering;
 using Editor.Core.Wpf.Converters;
 using TinyMessenger;
@@ -68,7 +69,7 @@ public class MouseEventsRouter
         _button = e.ChangedButton.ToEditor();
         _position = e.GetPosition(_source).ToVector2();
         
-        _target.Publish(new MouseButtonDown(_source, _button, _position, _converter));
+        _target.Publish(new MouseButtonDown(_source, _button, _position, _converter, (ModKeys)Keyboard.Modifiers));
     }
     
     private void SourceContainer_OnMouseButtonUp(object sender, MouseButtonEventArgs e)
@@ -78,7 +79,7 @@ public class MouseEventsRouter
         _button = 0;
         _position = e.GetPosition(_source).ToVector2();
         
-        _target.Publish(new MouseButtonUp(_source, button, _position, _converter));
+        _target.Publish(new MouseButtonUp(_source, button, _position, _converter, (ModKeys)Keyboard.Modifiers));
     }
     
     private void SourceContainer_OnDrop(object sender, DragEventArgs e)
@@ -86,7 +87,7 @@ public class MouseEventsRouter
         _button = 0;
         _position = e.GetPosition(_source).ToVector2();
         
-        _target.Publish(new MouseButtonUp(_source, EditorMouseButton.Left, _position, _converter));
+        _target.Publish(new MouseButtonUp(_source, EditorMouseButton.Left, _position, _converter, (ModKeys)Keyboard.Modifiers));
     }
 
     private void SourceContainer_OnMouseMove(object sender, MouseEventArgs e)
@@ -102,7 +103,7 @@ public class MouseEventsRouter
         var oldPosition = _position;
         _position = e.GetPosition(_source).ToVector2();
         
-        _target.Publish(new MouseMove(_source, oldPosition, _position, _converter, _button));
+        _target.Publish(new MouseMove(_source, oldPosition, _position, _converter, _button, (ModKeys)Keyboard.Modifiers));
     }
     
     private void SourceContainer_OnMouseWheel(object sender, MouseWheelEventArgs e)

@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using Editor.Component.Events;
 using Editor.Core.Events;
+using Editor.Core.Input;
 using Editor.Core.Shapes;
 
 namespace Editor.Core.Components;
@@ -49,7 +50,8 @@ public class SelectionArea : EditorComponentBase
             }
 
             var relativePosition = positionComponent.Value - _positionComponent.Value;
-            selectableComponent.Selected = _shapeComponent.Contains(relativePosition);
+            selectableComponent.Selected = (selectableComponent.Selected && e.ModKeys.HasFlag(ModKeys.Shift)) ||
+                                           _shapeComponent.Contains(relativePosition);
         }
     }
 }

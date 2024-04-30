@@ -3,7 +3,9 @@
 [Flags]
 public enum ModKeys
 {
-    Shift = 1,
-    Ctrl,
-    Alt
+    None = 0,
+    Alt = 1,
+    Control = 2,
+    Shift = 4,
+    Windows = 8
 }
