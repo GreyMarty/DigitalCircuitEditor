@@ -78,7 +78,7 @@ public class Camera : INotifyPropertyChanged, IDisposable
         var mousePosition = e.PositionConverter.ScreenToCameraSpace(e.PositionPixels);
         var relativeMousePosition = (Position - mousePosition) / Scale;
         
-        Scale = Math.Clamp(Scale * factor, 0.1f, 10f);
+        Scale = Math.Clamp(Scale * factor, 0.25f, 1f);
         Position = mousePosition + relativeMousePosition * Scale;
         
         _context.EventBus.Publish(new RenderRequested(this));

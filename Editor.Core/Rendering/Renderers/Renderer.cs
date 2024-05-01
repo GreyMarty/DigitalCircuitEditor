@@ -7,19 +7,19 @@ namespace Editor.Core.Rendering.Renderers;
 
 public abstract class Renderer : EditorComponentBase
 {
-    private Position _positionComponent = default!;
+    private Position? _positionComponent = default!;
     
     public RenderLayer Layer { get; init; }
     public int ZIndex { get; init; } = 0;
 
     public bool Visible { get; set; } = true;
     
-    public Vector2 Position => _positionComponent.Value;
+    public Vector2 Position => _positionComponent?.Value ?? Vector2.Zero;
     
 
     protected override void OnInit()
     {
-        _positionComponent = Entity.GetRequiredComponent<Position>()!;
+        _positionComponent = Entity.GetComponent<Position>()?.Component;
     }
 
     public void Render(Camera camera, SKCanvas canvas)

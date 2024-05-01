@@ -20,6 +20,7 @@ using Editor.Core.Wpf.ViewModel;
 using Editor.DecisionDiagrams;
 using Editor.DecisionDiagrams.Extensions;
 using Editor.DecisionDiagrams.Operations;
+using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 using BranchNode = Editor.DecisionDiagrams.BranchNode;
 
@@ -81,6 +82,17 @@ public partial class EditorView : UserControl
         );
         
         Context.Init();
+        
+        Context.Instantiate(Entity.CreateBuilder()
+            .AddComponent(new GridRenderer
+            {
+                MajorStep = 4,
+                Subdivisions = 5,
+                Stroke = SKColors.Gray,
+                StrokeThickness = 0.25f,
+                Layer = RenderLayer.PreRender
+            })
+        );
     }
 
     protected override void OnDrop(DragEventArgs e)

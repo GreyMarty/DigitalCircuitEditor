@@ -27,7 +27,7 @@ public class GhostConnectionFactory : ConnectionFactory
             })
             .ConfigureComponent<LabeledLineRenderer>(x =>
             {
-                x.Stroke = new SKColor(125, 125, 125, 125);
+                x.Stroke = new SKColor(0, 0, 0, 125);
             });
     }
 }

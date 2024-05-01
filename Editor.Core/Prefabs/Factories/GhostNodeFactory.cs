@@ -34,7 +34,7 @@ public class GhostNodeFactory : IEntityBuilderFactory
             {
                 Radius = 1,
                 Fill = SKColor.Empty,
-                Stroke = new SKColor(125, 125, 125, 125),
+                Stroke = new SKColor(0, 0, 0, 125),
                 StrokeThickness = 0.2f
             });
 
