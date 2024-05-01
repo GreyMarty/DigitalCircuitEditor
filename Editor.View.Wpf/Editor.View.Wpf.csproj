@@ -10,13 +10,11 @@
 
     <ItemGroup>
       <PackageReference Include="MahApps.Metro" Version="3.0.0-alpha0492" />
+      <PackageReference Include="SkiaSharp.Views.WPF" Version="3.0.0-preview.3.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Converters\" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <ProjectReference Include="..\Editor.Core\Editor.Core.csproj" />
       <ProjectReference Include="..\Editor.ViewModel\Editor.ViewModel.csproj" />
     </ItemGroup>
 
@@ -27,6 +25,21 @@
         <SubType>Designer</SubType>
       </Page>
       <Page Update="Resources\Styles\Styles.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Controls\EditorView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Controls\Inspector\ConstNodeInspector.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Controls\Inspector\BinaryDiagramNodeInspector.xaml">
         <Generator>MSBuild:Compile</Generator>
         <XamlRuntime>Wpf</XamlRuntime>
         <SubType>Designer</SubType>

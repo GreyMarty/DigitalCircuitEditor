@@ -73,7 +73,8 @@ public class Camera : INotifyPropertyChanged, IDisposable
     
     private void OnMouseWheel(MouseWheel e)
     {
-        var factor = e.Delta > 0 ? 1.1f : 1 / 1.1f;
+        var delta = e.Delta / 120f;
+        var factor = MathF.Abs(delta) * (delta > 0 ? 1.1f : 1 / 1.1f);
 
         var mousePosition = e.PositionConverter.ScreenToCameraSpace(e.PositionPixels);
         var relativeMousePosition = (Position - mousePosition) / Scale;

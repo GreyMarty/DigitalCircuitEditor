@@ -25,7 +25,9 @@
                     BlurRadius="16"/>
             </Border.Effect>
             
-            <ItemsControl ItemsSource="{Binding Items}">
+            <ItemsControl 
+                ItemsSource="{Binding Items}"
+                PreviewMouseDown="ItemsControl_OnPreviewMouseDown">
             
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

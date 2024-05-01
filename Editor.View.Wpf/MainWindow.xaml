@@ -11,6 +11,8 @@
         WindowState="Maximized"
         ResizeMode="CanMinimize">
     <Grid>
+        <ctrl:EditorView x:Name="Editor"/>
+        
         <ctrl:ToolBar 
             x:Name="ToolBar"
             d:DataContext="{d:DesignInstance dd:ToolBarDesignData, IsDesignTimeCreatable=True}"

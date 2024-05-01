@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor.Component", "Editor.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor.Core", "Editor.Core\Editor.Core.csproj", "{02B6D2B2-41BB-4F7B-AC02-996E876C8CD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor.Core.Wpf", "Editor.Core.Wpf\Editor.Core.Wpf.csproj", "{C9815BC6-7FA8-4B4A-8A4D-69E3F9DFC419}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor.DecisionDiagrams", "Editor.DecisionDiagrams\Editor.DecisionDiagrams.csproj", "{6B017878-16E4-4C7A-BCF1-329D0E2609FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor.View.Wpf", "Editor.View.Wpf\Editor.View.Wpf.csproj", "{2103071F-0827-4304-919E-244BE567F06A}"
@@ -26,10 +24,6 @@ Global
 		{02B6D2B2-41BB-4F7B-AC02-996E876C8CD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02B6D2B2-41BB-4F7B-AC02-996E876C8CD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02B6D2B2-41BB-4F7B-AC02-996E876C8CD5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9815BC6-7FA8-4B4A-8A4D-69E3F9DFC419}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9815BC6-7FA8-4B4A-8A4D-69E3F9DFC419}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9815BC6-7FA8-4B4A-8A4D-69E3F9DFC419}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9815BC6-7FA8-4B4A-8A4D-69E3F9DFC419}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6B017878-16E4-4C7A-BCF1-329D0E2609FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6B017878-16E4-4C7A-BCF1-329D0E2609FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B017878-16E4-4C7A-BCF1-329D0E2609FD}.Release|Any CPU.ActiveCfg = Release|Any CPU

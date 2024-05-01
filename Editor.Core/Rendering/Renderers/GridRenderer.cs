@@ -42,12 +42,12 @@ public class GridRenderer : ShapeRenderer
 
     private void RenderGrid(SKCanvas canvas, float step, float sign, Vector2 offset, float halfWidth, float halfHeight)
     {
-        for (var x = 0f; x < halfWidth; x += step)
+        for (var x = 0f; x + offset.X <= halfWidth; x += step)
         {
             canvas.DrawLine(x * sign + offset.X, -halfHeight, x * sign + offset.X, halfHeight, StrokePaint);
         }
             
-        for (var y = 0f; y < halfHeight; y += step)
+        for (var y = 0f; y + offset.Y <= halfHeight; y += step)
         {
             canvas.DrawLine(-halfWidth, y * sign + offset.Y, halfWidth, y * sign + offset.Y, StrokePaint);
         }

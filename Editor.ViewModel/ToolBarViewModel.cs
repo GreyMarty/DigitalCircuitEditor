@@ -18,8 +18,9 @@ public partial class ToolBarViewModel : ViewModel
 
 
     [RelayCommand]
-    private void SelectItem(ToolBarItemViewModel item)
+    public void SelectItem(ToolBarItemViewModel item)
     {
+        SelectedItem = item;
         ItemSelected?.Invoke(this, item);
     }
 }
