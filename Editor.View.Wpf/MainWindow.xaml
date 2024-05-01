@@ -1,0 +1,20 @@
+﻿<mah:MetroWindow x:Class="Editor.View.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:dd="clr-namespace:Editor.View.Wpf.DesignData"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:ctrl="clr-namespace:Editor.View.Wpf.Controls"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        WindowState="Maximized"
+        ResizeMode="CanMinimize">
+    <Grid>
+        <ctrl:ToolBar 
+            x:Name="ToolBar"
+            d:DataContext="{d:DesignInstance dd:ToolBarDesignData, IsDesignTimeCreatable=True}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"/>
+    </Grid>
+</mah:MetroWindow>

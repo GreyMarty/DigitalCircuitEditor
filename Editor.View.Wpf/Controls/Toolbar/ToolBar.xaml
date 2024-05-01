@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="Editor.View.Wpf.Controls.ToolBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dd="clr-namespace:Editor.View.Wpf.DesignData"
+             xmlns:local="clr-namespace:Editor.View.Wpf.Controls"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance dd:ToolBarDesignData, IsDesignTimeCreatable=True}">
+    <Grid 
+        Margin="16,16,16,0"
+        Background="Transparent">
+        <Border
+            Padding="16"
+            BorderBrush="DarkGray"
+            Background="White"
+            CornerRadius="16, 16, 0, 0">
+            
+            <Border.Effect>
+                <DropShadowEffect
+                    Color="Black"
+                    Opacity="0.5"
+                    Direction="90"
+                    ShadowDepth="2"
+                    BlurRadius="16"/>
+            </Border.Effect>
+            
+            <ItemsControl ItemsSource="{Binding Items}">
+            
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel
+                            IsItemsHost="True"
+                            Orientation="Horizontal"
+                            Margin="-4"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="4"
+                            BorderBrush="LightGray"
+                            Background="Transparent"
+                            BorderThickness="1,0,1,0"
+                            CornerRadius="16"
+                            Style="{StaticResource AnimateMouseActions}">
+                            
+                            <Grid Margin="8">
+                                <TextBlock 
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Opacity="0.5"
+                                    Text="{Binding Label}"/>
+                                <ContentControl
+                                    Margin="16"
+                                    Width="64"
+                                    Height="64"
+                                    Content="{Binding Preview}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            
+            </ItemsControl>
+            
+        </Border>
+    </Grid>
+</UserControl>

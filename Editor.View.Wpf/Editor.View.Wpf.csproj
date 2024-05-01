@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MahApps.Metro" Version="3.0.0-alpha0492" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Converters\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Editor.ViewModel\Editor.ViewModel.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Controls\Toolbar\ToolBar.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Resources\Styles\Styles.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
+</Project>
