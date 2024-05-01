@@ -3,7 +3,7 @@ using SkiaSharp;
 
 namespace Editor.Core.Rendering.Helpers;
 
-public static class RenderingHelper
+public static class TextHelper
 {
     public static void DrawText(Camera camera, SKCanvas canvas, string text, SKFont font, SKPaint paint, Vector2 anchor)
     {

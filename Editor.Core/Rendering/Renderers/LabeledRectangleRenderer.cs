@@ -24,7 +24,7 @@ public class LabeledRectangleRenderer : LabeledShapeRenderer
         var oldColor = FillPaint.Color;
         FillPaint.Color = StrokePaint.Color;
             
-        RenderingHelper.DrawText(camera, canvas, Text, Font, FillPaint, Anchor);
+        TextHelper.DrawText(camera, canvas, Text, Font, FillPaint, Anchor);
             
         FillPaint.Color = oldColor;
     }
