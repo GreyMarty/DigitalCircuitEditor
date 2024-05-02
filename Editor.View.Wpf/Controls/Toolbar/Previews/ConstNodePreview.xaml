@@ -23,7 +23,7 @@
             Grid.Column="1"
             Grid.Row="1"
             Stroke="Black"
-            StrokeThickness="4"/>
+            StrokeThickness="{StaticResource PreviewStrokeThickness}"/>
         
         <TextBlock
             Grid.Column="1"

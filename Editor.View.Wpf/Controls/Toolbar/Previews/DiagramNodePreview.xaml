@@ -9,7 +9,7 @@
     <Grid>
         <Ellipse
             Stroke="Black"
-            StrokeThickness="4"/>
+            StrokeThickness="{StaticResource PreviewStrokeThickness}"/>
         
         <TextBlock
             HorizontalAlignment="Center"

@@ -50,14 +50,14 @@
                             
                             <Grid Margin="8">
                                 <TextBlock 
-                                    FontSize="16"
+                                    FontSize="14"
                                     FontWeight="SemiBold"
                                     Opacity="0.5"
                                     Text="{Binding Label}"/>
                                 <ContentControl
-                                    Margin="16"
-                                    Width="64"
-                                    Height="64"
+                                    Margin="10"
+                                    Width="{StaticResource PreviewSize}"
+                                    Height="{StaticResource PreviewSize}"
                                     Content="{Binding Preview}"/>
                             </Grid>
                         </Border>
