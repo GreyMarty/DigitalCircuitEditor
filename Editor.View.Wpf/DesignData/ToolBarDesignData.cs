@@ -7,23 +7,26 @@ public class ToolBarDesignData : ToolBarViewModel
 {
     public ToolBarDesignData()
     {
-        Items =
-        [
-            new ToolBarItemViewModel
-            {
-                Hotkey = '1',
-                Preview = new DiagramNodePreview()
-            },
-            new ToolBarItemViewModel
-            {
-                Hotkey = '2',
-                Preview = new ConstNodePreview()
-            },
-            new ToolBarItemViewModel
-            {
-                Hotkey = '3',
-                Preview = new LabelPreview()
-            }
-        ];
+        Items = DefaultItems;
     }
+
+
+    public static ToolBarItemViewModel[] DefaultItems =>
+    [
+        new ToolBarItemViewModel
+        {
+            Hotkey = '1',
+            Preview = new DiagramNodePreview()
+        },
+        new ToolBarItemViewModel
+        {
+            Hotkey = '2',
+            Preview = new ConstNodePreview()
+        },
+        new ToolBarItemViewModel
+        {
+            Hotkey = '3',
+            Preview = new LabelPreview()
+        }
+    ];
 }

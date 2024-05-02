@@ -48,8 +48,14 @@ public class RendererCollection : IDisposable
         _eventBus.Unsubscribe<EntityDestroyed>();
     }
 
-    public void Render(Camera camera, SKCanvas canvas)
+    public void Render(Camera camera, SKCanvas canvas, bool forceRedraw = false)
     {
+        if (forceRedraw)
+        {
+            ActualRender(camera, canvas);
+            return;
+        }
+        
         if (_renderCooldownTimer is not null)
         {
             _renderRequested = true;
@@ -70,7 +76,7 @@ public class RendererCollection : IDisposable
             
             Invoker.Invoke(() => _context.EventBus.Publish(new RenderRequested(this)));
             _renderRequested = false;
-        }, null, 33, Timeout.Infinite);
+        }, null, 17, Timeout.Infinite);
     }
 
     private void ActualRender(Camera camera, SKCanvas canvas)
@@ -119,7 +125,7 @@ public class RendererCollection : IDisposable
         var renderer = e.Entity.GetComponent<Renderer>()?.Component;
         ResolveCollection(renderer?.Layer)?.Add(renderer!);
         
-        _context.EventBus.Publish(new RenderRequested(this));
+        _context.EventBus.Publish(new RenderRequested(this, true));
     }
     
     private void OnEntityDestroyed(EntityDestroyed e)
@@ -129,6 +135,6 @@ public class RendererCollection : IDisposable
         var renderer = e.Entity.GetComponent<Renderer>()?.Component;
         ResolveCollection(renderer?.Layer)?.Remove(renderer!);
         
-        _context.EventBus.Publish(new RenderRequested(this));
+        _context.EventBus.Publish(new RenderRequested(this, true));
     }
 }

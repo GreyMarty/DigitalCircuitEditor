@@ -9,14 +9,21 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         WindowState="Maximized"
-        ResizeMode="CanMinimize">
-    <Grid>
-        <ctrl:EditorView x:Name="Editor"/>
-        
-        <ctrl:ToolBar 
-            x:Name="ToolBar"
-            d:DataContext="{d:DesignInstance dd:ToolBarDesignData, IsDesignTimeCreatable=True}"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Bottom"/>
-    </Grid>
+        ResizeMode="CanMinimize"
+        d:DataContext="{d:DesignInstance dd:MainWindowDesignData, IsDesignTimeCreatable=True}">
+    
+    <DockPanel>
+        <Menu>
+            
+        </Menu>
+        <Grid>
+            <ctrl:EditorView 
+                DataContext="{Binding Editor}"/>
+            
+            <ctrl:ToolBar 
+                DataContext="{Binding ToolBar}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"/>
+        </Grid>
+    </DockPanel>
 </mah:MetroWindow>

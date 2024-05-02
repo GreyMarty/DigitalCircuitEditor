@@ -2,4 +2,4 @@
 
 namespace Editor.Core.Events;
 
-public record RenderRequested(object Sender) : ITinyMessage;
+public record RenderRequested(object Sender, bool Force = false) : ITinyMessage;

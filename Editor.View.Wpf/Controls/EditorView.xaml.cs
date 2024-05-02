@@ -11,16 +11,17 @@ namespace Editor.View.Wpf.Controls;
 
 public partial class EditorView : UserControl
 {
-    private readonly EditorViewModel _viewModel = new();
-    private readonly IInspectorFactory _inspectorFactory = new InspectorFactory();
-    private MouseEventsRouter _mouseEventsRouter;
+    private readonly InspectorFactory _inspectorFactory = new InspectorFactory();
+    private MouseEventsRouter _mouseEventsRouter = default!;
 
+    private bool _forceNextRedraw = false;
+    
     private Window? _window;
     
     
     public EditorView()
     {
-        DataContext = _viewModel;
+        DataContext = ViewModel;
         InitializeComponent();
     }
 
@@ -31,53 +32,38 @@ public partial class EditorView : UserControl
             _window.KeyDown -= Window_OnKeyDown;
         }
     }
-    
-    protected override void OnInitialized(EventArgs e)
-    {
-        base.OnInitialized(e);
 
+
+    public EditorViewModel ViewModel
+    {
+        get => (EditorViewModel)DataContext;
+        set => DataContext = value;
+    }
+    
+
+    private void This_OnLoaded(object sender, RoutedEventArgs e)
+    {
         _window = Application.Current.MainWindow;
         _window.KeyDown += Window_OnKeyDown;
         
-        _viewModel.OnInitialized();
+        ViewModel.OnInitialized();
         
-        _viewModel.EventBus.Subscribe<RenderRequested>(_ => Canvas.InvalidateVisual());
-        _viewModel.EventBus.Subscribe<RequestPropertiesInspector>(Context_OnPropertiesInspectorRequested);
+        ViewModel.EventBus.Subscribe<RenderRequested>(e =>
+        {
+            _forceNextRedraw |= e.Force;
+            Canvas.InvalidateVisual();
+        });
+        ViewModel.EventBus.Subscribe<RequestPropertiesInspector>(Context_OnPropertiesInspectorRequested);
         
-        _mouseEventsRouter = new MouseEventsRouter(Canvas, _viewModel.Context.EventBus, _viewModel.PositionConverter);
+        _mouseEventsRouter = new MouseEventsRouter(Canvas, ViewModel.Context.EventBus, ViewModel.PositionConverter);
         _mouseEventsRouter.Bind();
-    }
 
+        Canvas.InvalidateVisual();
+    }
+    
 // #region Test
 //
-//     private void TestReduce()
-//     {
-//         var rootEntity = Context.Entities
-//             .Where(x => x.GetComponent<Selectable>()?.Component?.Selected == true)
-//             .FirstOrDefault(x => x.GetComponent<Node>() is not null);
-//
-//         if (rootEntity is null)
-//         {
-//             return;
-//         }
-//         
-//         var diagram = EntitiesToDiagramConverter.Convert(rootEntity.GetRequiredComponent<Node>()!);
-//         diagram.Root = diagram.Root.Reduce();
-//         
-//         var builder = new InstantSpawnerFactory<BinaryDiagramSpawner>()
-//             .Create()
-//             .ConfigureComponent<Position>(x => x.Value = new Vector2(20, 0))
-//             .ConfigureComponent<BinaryDiagramSpawner>(x =>
-//             {
-//                 x.Root = diagram.Root;
-//                 x.Layout = new ForceDirectedLayout
-//                 {
-//                     Iterations = 1000
-//                 };
-//             })
-//             .AddComponent<SpawnOnInit>();
-//         Context.Instantiate(builder);
-//     }
+//     
 //     
 //     private void TestOperation(IBooleanOperation operation)
 //     {
@@ -117,8 +103,14 @@ public partial class EditorView : UserControl
     
     private void Canvas_OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
     {
-        _viewModel.CameraTarget.Update(e.Info);
-        _viewModel.Context.Renderers.Render(_viewModel.Context.Camera, e.Surface.Canvas);
+        if (ViewModel.Context is null)
+        {
+            return;
+        }
+        
+        ViewModel.CameraTarget.Update(e.Info);
+        ViewModel.Context.Renderers.Render(ViewModel.Context.Camera, e.Surface.Canvas, _forceNextRedraw);
+        _forceNextRedraw = false;
     }
     
     private void Canvas_OnMouseDown(object sender, MouseButtonEventArgs e)
@@ -128,7 +120,7 @@ public partial class EditorView : UserControl
     
     private void Window_OnKeyDown(object sender, KeyEventArgs e)
     {
-        _viewModel.OnKeyDown(e.Key.ToString());
+        ViewModel.OnKeyDown(e.Key.ToString());
     }
 
     private void Popup_OnMouseDown(object sender, MouseButtonEventArgs e)

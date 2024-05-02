@@ -68,7 +68,7 @@ public class Camera : INotifyPropertyChanged, IDisposable
         var delta = e.PositionConverter.ScreenToWorldSpace(e.NewPositionPixels) - e.PositionConverter.ScreenToWorldSpace(e.OldPositionPixels);
         Position += delta * Scale;
         
-        _context.EventBus.Publish(new RenderRequested(this));
+        _context.EventBus.Publish(new RenderRequested(this, true));
     }
     
     private void OnMouseWheel(MouseWheel e)
@@ -82,6 +82,6 @@ public class Camera : INotifyPropertyChanged, IDisposable
         Scale = Math.Clamp(Scale * factor, 0.25f, 1f);
         Position = mousePosition + relativeMousePosition * Scale;
         
-        _context.EventBus.Publish(new RenderRequested(this));
+        _context.EventBus.Publish(new RenderRequested(this, true));
     }
 }

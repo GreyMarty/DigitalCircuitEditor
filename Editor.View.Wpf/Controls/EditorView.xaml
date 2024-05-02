@@ -5,44 +5,66 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:skia="clr-namespace:SkiaSharp.Views.WPF;assembly=SkiaSharp.Views.WPF"
              xmlns:vm="clr-namespace:Editor.ViewModel;assembly=Editor.ViewModel"
+             xmlns:ctrl="clr-namespace:Editor.View.Wpf.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance vm:EditorViewModel, IsDesignTimeCreatable=False}"
              AllowDrop="True"
-             Focusable="True">
-    <Grid>
-        <skia:SKElement 
-            x:Name="Canvas"
-            PaintSurface="Canvas_OnPaintSurface"
-            MouseDown="Canvas_OnMouseDown"/>
+             Focusable="True"
+             Loaded="This_OnLoaded">
+    <DockPanel>
+        <ctrl:EditorMenu 
+            DockPanel.Dock="Top"
+            DataContext="{Binding Menu}">
+            <ctrl:EditorMenu.Effect>
+                <DropShadowEffect
+                    Color="Black"
+                    Opacity="0.5"
+                    Direction="-90"
+                    ShadowDepth="1"
+                    BlurRadius="8"/>
+            </ctrl:EditorMenu.Effect>
+        </ctrl:EditorMenu>
         
-        <Popup 
-            x:Name="Popup"
-            Placement="Mouse"
-            AllowsTransparency="True"
-            MouseDown="Popup_OnMouseDown">
-            <Grid>
-                <Border
-                    Margin="16"
-                    BorderThickness="1"
-                    BorderBrush="DarkGray"
-                    CornerRadius="4"
-                    Background="White">
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="10" Opacity="0.8"  ShadowDepth="1" Direction="-90" RenderingBias="Quality" />
-                    </Border.Effect>
-                    <DockPanel Margin="8">
-                        <TextBlock
-                            DockPanel.Dock="Top"
-                            FontSize="14"
-                            FontWeight="SemiBold"
-                            Text="Properties"/>
-                        <Grid
-                            DockPanel.Dock="Bottom"
-                            x:Name="PopupContainer"/>
-                    </DockPanel>
-                </Border>
-            </Grid>
-        </Popup>
-    </Grid>
+        <Grid DockPanel.Dock="Bottom">
+            <skia:SKElement 
+                x:Name="Canvas"
+                PaintSurface="Canvas_OnPaintSurface"
+                MouseDown="Canvas_OnMouseDown"/>
+        
+            <Popup 
+                x:Name="Popup"
+                Placement="Mouse"
+                AllowsTransparency="True"
+                MouseDown="Popup_OnMouseDown">
+                <Grid>
+                    <Border
+                        Margin="16"
+                        BorderThickness="1"
+                        BorderBrush="DarkGray"
+                        CornerRadius="4"
+                        Background="White">
+                        <Border.Effect>
+                            <DropShadowEffect
+                                Color="Black"
+                                Opacity="0.5"
+                                Direction="-90"
+                                ShadowDepth="1"
+                                BlurRadius="8"/>
+                        </Border.Effect>
+                        <DockPanel Margin="8">
+                            <TextBlock
+                                DockPanel.Dock="Top"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Text="Properties"/>
+                            <Grid
+                                DockPanel.Dock="Bottom"
+                                x:Name="PopupContainer"/>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+            </Popup>
+        </Grid>
+    </DockPanel>
 </UserControl>

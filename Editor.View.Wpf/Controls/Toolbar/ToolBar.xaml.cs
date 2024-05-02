@@ -9,21 +9,25 @@ public partial class ToolBar : UserControl
 {
     public ToolBar()
     {
+        DataContext = ViewModel;
         InitializeComponent();
     }
+
+
+    public ToolBarViewModel ViewModel
+    {
+        get => (ToolBarViewModel)DataContext;
+        set => DataContext = value;
+    }
+    
     
     private void ItemsControl_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (DataContext is not ToolBarViewModel viewModel)
-        {
-            return;
-        }
-        
         if (ItemsControl.ContainerFromElement((ItemsControl)sender, e.OriginalSource as DependencyObject) is not FrameworkElement item)
         {
             return;
         }
 
-        viewModel.SelectItem((ToolBarItemViewModel)item.DataContext);
+        ViewModel.SelectItem((ToolBarItemViewModel)item.DataContext);
     }
 }

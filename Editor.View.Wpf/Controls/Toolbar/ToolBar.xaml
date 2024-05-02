@@ -21,8 +21,8 @@
                     Color="Black"
                     Opacity="0.5"
                     Direction="90"
-                    ShadowDepth="2"
-                    BlurRadius="16"/>
+                    ShadowDepth="1"
+                    BlurRadius="8"/>
             </Border.Effect>
             
             <ItemsControl 
