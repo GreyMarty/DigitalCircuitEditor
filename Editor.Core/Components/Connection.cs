@@ -2,9 +2,10 @@
 using Editor.Component;
 using Editor.Component.Events;
 using Editor.Core.Adapters;
+using Editor.Core.Components.Diagrams;
 using Editor.Core.Prefabs.Factories;
 
-namespace Editor.Core.Components.Diagrams;
+namespace Editor.Core.Components;
 
 public class Connection : EditorComponentBase
 {

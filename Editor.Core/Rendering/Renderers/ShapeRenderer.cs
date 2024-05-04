@@ -41,6 +41,8 @@ public abstract class ShapeRenderer : Renderer
     {
         IsAntialias = true,
         Style = SKPaintStyle.Stroke,
+        StrokeJoin = SKStrokeJoin.Round,
+        StrokeCap = SKStrokeCap.Round
     };
 
     protected SKPaint FillPaint { get; } = new()

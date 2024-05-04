@@ -1,4 +1,5 @@
-﻿using Editor.Core.Components.Diagrams;
+﻿using Editor.Core.Components;
+using Editor.Core.Components.Diagrams;
 using Editor.Core.Components.Diagrams.BinaryDiagrams;
 using Editor.DecisionDiagrams;
 using BranchNode = Editor.DecisionDiagrams.BranchNode;

@@ -1,4 +1,4 @@
-﻿namespace Editor.Core.Components.Diagrams;
+﻿namespace Editor.Core.Components;
 
 public enum ConnectionType
 {
