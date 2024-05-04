@@ -8,7 +8,6 @@ using Editor.Core.Components;
 using Editor.Core.Components.Diagrams;
 using Editor.Core.Converters;
 using Editor.Core.Events;
-using Editor.Core.Layout;
 using Editor.Core.Prefabs.Factories;
 using Editor.Core.Prefabs.Factories.Previews;
 using Editor.Core.Prefabs.Spawners;
@@ -16,6 +15,7 @@ using Editor.Core.Rendering;
 using Editor.Core.Rendering.Renderers;
 using Editor.DecisionDiagrams.Circuits;
 using Editor.DecisionDiagrams.Extensions;
+using Editor.DecisionDiagrams.Layout;
 using Editor.DecisionDiagrams.Operations;
 using SkiaSharp;
 
@@ -51,7 +51,7 @@ public partial class EditorViewModel : ViewModel
         Context = new EditorContext
         {
             Camera = new Camera(CameraTarget),
-            Renderers = new RendererCollection
+            RenderingManager = new RendererCollection
             {
                 Invoker = Invoker ?? (x => x.Invoke())
             }
@@ -109,10 +109,6 @@ public partial class EditorViewModel : ViewModel
              .ConfigureComponent<BinaryDiagramSpawner>(x =>
              {
                  x.Root = diagram.Root;
-                 x.Layout = new ForceDirectedLayout
-                 {
-                     Iterations = 1000
-                 };
              })
          );
     }
@@ -143,10 +139,6 @@ public partial class EditorViewModel : ViewModel
              .ConfigureComponent<BinaryDiagramSpawner>(x =>
              {
                  x.Root = diagramC;
-                 x.Layout = new ForceDirectedLayout
-                 {
-                     Iterations = 1000
-                 };
              })
          );
     }

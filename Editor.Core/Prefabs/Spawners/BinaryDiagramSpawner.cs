@@ -2,9 +2,9 @@
 using Editor.Core.Components;
 using Editor.Core.Components.Diagrams;
 using Editor.Core.Components.Diagrams.BinaryDiagrams;
-using Editor.Core.Layout;
 using Editor.Core.Prefabs.Factories;
 using Editor.DecisionDiagrams;
+using Editor.DecisionDiagrams.Layout;
 using BranchNode = Editor.DecisionDiagrams.BranchNode;
 using EditorBranchNode = Editor.Core.Components.Diagrams.BranchNode;
 
@@ -16,7 +16,7 @@ public class BinaryDiagramSpawner : Spawner
     public IEntityBuilderFactory ConstNodeFactory { get; set; } = new ConstNodeFactory();
     
     public INode Root { get; set; } = default!;
-    public ILayout Layout { get; set; } = new ForceDirectedLayout();
+    public ILayout Layout { get; set; } = new EfficientSugiyamaLayout();
     
     
     protected override IEnumerable<IEntity> OnSpawn(EditorContext context)

@@ -14,6 +14,11 @@ public class ConnectionToLineShapeAdapter : EditorComponentBase
     private ChildOf _childOfComponent = default!;
     private LineShape _shapeComponent = default!;
     private Position? _targetPosition;
+
+
+    public bool IgnoreSourceShape { get; set; } = false;
+    public bool IgnoreTargetShape { get; set; } = false;
+    
     
     protected override void OnInit()
     {
@@ -24,6 +29,7 @@ public class ConnectionToLineShapeAdapter : EditorComponentBase
         
         _connectionComponent.PropertyChanged += ConnectionComponent_OnPropertyChanged;
         _positionComponent.PropertyChanged += Position_OnPropertyChanged;
+        PropertyChanged += Position_OnPropertyChanged;
         ConnectionComponent_OnPropertyChanged(this, new PropertyChangedEventArgs(null));
     }
 
@@ -35,6 +41,8 @@ public class ConnectionToLineShapeAdapter : EditorComponentBase
         {
             _targetPosition.PropertyChanged -= Position_OnPropertyChanged;
         }
+
+        PropertyChanged -= Position_OnPropertyChanged;
     }
 
     private void ConnectionComponent_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -55,12 +63,12 @@ public class ConnectionToLineShapeAdapter : EditorComponentBase
         var from = Vector2.Zero;
         var to = (_targetPosition?.Value ?? Vector2.Zero) - _positionComponent.Value;
         
-        if (sourceShape is not null)
+        if (!IgnoreSourceShape && sourceShape is not null)
         {
             from += sourceShape.NearestIntersection(to - from);
         }
         
-        if (targetShape is not null)
+        if (!IgnoreTargetShape && targetShape is not null)
         {
             to += targetShape.NearestIntersection(from - to);
         }

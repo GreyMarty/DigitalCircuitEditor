@@ -1,8 +1,7 @@
 ﻿using System.Collections.Frozen;
 using System.Numerics;
-using Editor.DecisionDiagrams;
 
-namespace Editor.Core.Layout;
+namespace Editor.DecisionDiagrams.Layout;
 
 public record NodeLayoutInfo
 {

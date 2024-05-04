@@ -7,7 +7,7 @@ namespace Editor.Core;
 public class EditorContext : Context
 {
     public Camera Camera { get; init; }
-    public RendererCollection Renderers { get; init; } = new();
+    public RendererCollection RenderingManager { get; init; } = new();
 
     public bool MouseLocked { get; set; }
     
@@ -16,13 +16,13 @@ public class EditorContext : Context
     {
         base.Init();
         Camera.Init(this);
-        Renderers.Init(this);
+        RenderingManager.Init(this);
     }
 
     public override void Dispose()
     {
         Camera.Dispose();
-        Renderers.Dispose();
+        RenderingManager.Dispose();
         base.Dispose();
     }
 }

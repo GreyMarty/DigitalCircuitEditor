@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using Editor.Component;
 using Editor.Component.Events;
+using Editor.Core.Adapters;
 using Editor.Core.Prefabs.Factories;
 
 namespace Editor.Core.Components.Diagrams;
@@ -49,6 +50,16 @@ public class Connection : EditorComponentBase
         jointComponent.Connection1 = Entity;
         jointComponent.Connection2 = connection;
 
+        if (jointComponent.Connection1.GetComponent<ConnectionToLineShapeAdapter>()?.Component is { } connection1Adapter)
+        {
+            connection1Adapter.IgnoreTargetShape = true;
+        }
+        
+        if (jointComponent.Connection2.GetComponent<ConnectionToLineShapeAdapter>()?.Component is { } connection2Adapter)
+        {
+            connection2Adapter.IgnoreSourceShape = true;
+        }
+        
         return jointComponent;
     }
 

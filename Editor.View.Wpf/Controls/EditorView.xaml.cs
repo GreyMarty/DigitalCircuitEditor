@@ -109,7 +109,7 @@ public partial class EditorView : UserControl
         }
         
         ViewModel.CameraTarget.Update(e.Info);
-        ViewModel.Context.Renderers.Render(ViewModel.Context.Camera, e.Surface.Canvas, _forceNextRedraw);
+        ViewModel.Context.RenderingManager.Render(ViewModel.Context.Camera, e.Surface.Canvas, _forceNextRedraw);
         _forceNextRedraw = false;
     }
     

@@ -21,7 +21,7 @@ public class ConnectionJointFactory : IEntityBuilderFactory
             .AddComponent<Position>()
             .AddComponent(new CircleShape
             {
-                Radius = 0.5f
+                Radius = 1f
             })
             .AddComponent<Hoverable>()
             .AddComponent<Selectable>()
@@ -30,10 +30,11 @@ public class ConnectionJointFactory : IEntityBuilderFactory
             .AddComponent<ChangeStrokeOnSelect>()
             .AddComponent(new CircleRenderer
             {
-                Radius = 0.5f,
-                Fill = SKColors.White,
+                Radius = 0.2f,
+                Fill = SKColors.Black,
                 StrokeThickness = 0.2f,
                 Stroke = SKColors.Black,
+                ZIndex = 10
             });
 
         builder
@@ -41,7 +42,8 @@ public class ConnectionJointFactory : IEntityBuilderFactory
                 new MouseMoveTrigger
                 {
                     Button = MouseButton.Left,
-                    Filters = [ new SelectedFilter() ]
+                    Filters = [ new SelectedFilter(), new MouseUnlockedFilter() ],
+                    FilterMode = TriggerFilterMode.All
                 }
             )
             .AddBehavior<DestroyBehavior, ITriggerArgs>(

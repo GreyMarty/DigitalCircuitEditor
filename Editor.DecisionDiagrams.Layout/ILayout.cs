@@ -1,6 +1,4 @@
-﻿using Editor.DecisionDiagrams;
-
-namespace Editor.Core.Layout;
+﻿namespace Editor.DecisionDiagrams.Layout;
 
 public interface ILayout
 {

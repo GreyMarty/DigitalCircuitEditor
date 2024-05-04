@@ -23,6 +23,8 @@ public class RendererCollection : IDisposable
 
 
     public Action<Action> Invoker { get; init; } = x => x.Invoke();
+
+    public IEnumerable<Renderer> Renderers => _renderers;
     
     
     public void Init(EditorContext context)

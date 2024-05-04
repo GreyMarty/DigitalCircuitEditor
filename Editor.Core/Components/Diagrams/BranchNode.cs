@@ -2,7 +2,6 @@
 using Editor.Component;
 using Editor.Component.Events;
 using Editor.Core.Collections;
-using Editor.Core.Layout;
 using Editor.Core.Prefabs.Factories;
 using Editor.Core.Rendering.Renderers;
 

@@ -47,8 +47,10 @@ public class SelectionManager : EditorComponentBase
 
         Selectable? clickedOn = null;
         
-        foreach (var entity in Context.Entities)
+        foreach (var renderer in Context.RenderingManager.Renderers)
         {
+            var entity = renderer.Entity;
+            
             if (!entity.Active)
             {
                 continue;
