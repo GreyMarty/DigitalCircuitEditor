@@ -27,6 +27,7 @@ public partial class EditorMenuViewModel : ViewModel
 
     public IRelayCommand? ReduceCommand { get; set; } 
     public IRelayCommand<IBooleanOperation>? ApplyOperationCommand { get; set; }
+    public IRelayCommand? ConvertCommand { get; set; }
 }
 
 public class OperationViewModel : ViewModel

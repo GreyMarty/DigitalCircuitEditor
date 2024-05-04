@@ -14,6 +14,7 @@ using Editor.Core.Prefabs.Factories.Previews;
 using Editor.Core.Prefabs.Spawners;
 using Editor.Core.Rendering;
 using Editor.Core.Rendering.Renderers;
+using Editor.DecisionDiagrams.Circuits;
 using Editor.DecisionDiagrams.Extensions;
 using Editor.DecisionDiagrams.Operations;
 using SkiaSharp;
@@ -27,7 +28,8 @@ public partial class EditorViewModel : ViewModel
         Menu = new EditorMenuViewModel
         {
             ApplyOperationCommand = ApplyOperationCommand,
-            ReduceCommand = ReduceCommand
+            ReduceCommand = ReduceCommand,
+            ConvertCommand = ConvertCommand
         };
     }
     
@@ -147,5 +149,23 @@ public partial class EditorViewModel : ViewModel
                  };
              })
          );
+    }
+
+    [RelayCommand]
+    public void Convert()
+    {
+        var rootEntity = Context.Entities
+            .Where(x => x.GetComponent<Selectable>()?.Component?.Selected == true)
+            .FirstOrDefault(x => x.GetComponent<Node>() is not null);
+
+        if (rootEntity is null)
+        {
+            return;
+        }
+         
+        var diagram = EntitiesToDiagramConverter.Convert(rootEntity.GetRequiredComponent<Node>()!);
+        diagram.Root = diagram.Root.Reduce();
+
+        var circuit = diagram.Root.ToCircuit();
     }
 }

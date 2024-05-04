@@ -42,6 +42,10 @@
                             Command="{Binding ReduceCommand}"/>
                         
                         <MenuItem 
+                            Header="Convert"
+                            Command="{Binding ConvertCommand}"/>
+                        
+                        <MenuItem 
                             Header="Operations"
                             ItemsSource="{Binding Operations}">
                             
