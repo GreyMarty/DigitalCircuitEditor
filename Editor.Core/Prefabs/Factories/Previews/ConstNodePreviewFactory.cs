@@ -19,7 +19,7 @@ public class ConstNodePreviewFactory : PreviewSpawnerFactoryBase
                 Fill = new SKColor(255, 255, 255, 125),
                 StrokeThickness = 0.2f,
                 Stroke = new SKColor(0, 0, 0, 125),
-                FontSize = 2,
+                FontSize = 1.5f,
                 Anchor = Vector2.One * 0.5f,
                 Text = "0"
             });

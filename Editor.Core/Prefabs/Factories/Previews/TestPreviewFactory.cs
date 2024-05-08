@@ -1,27 +1,27 @@
 ﻿using System.Numerics;
 using Editor.Component;
-using Editor.Core.Prefabs.Spawners;
+using Editor.Core.Prefabs.Spawners.Circuits;
 using Editor.Core.Rendering.Renderers;
 using SkiaSharp;
 
 namespace Editor.Core.Prefabs.Factories.Previews;
 
-public class BinaryDiagramPreviewFactory : PreviewSpawnerFactoryBase
+public class TestPreviewFactory : PreviewSpawnerFactoryBase
 {
     public override IEntityBuilder Create()
     {
         var builder = base.Create()
-            .AddComponent<BinaryDiagramSpawner>()
-            .AddComponent(new LabeledCircleRenderer
+            .AddComponent<CircuitSpawner>()
+            .AddComponent(new LabeledRectangleRenderer()
             {
-                Radius = 2,
+                Width = 3,
+                Height = 3,
                 Fill = new SKColor(255, 255, 255, 125),
                 StrokeThickness = 0.2f,
                 Stroke = new SKColor(0, 0, 0, 125),
                 FontSize = 1.5f,
                 Anchor = Vector2.One * 0.5f,
-                Text = "Y",
-                ZIndex = 1000
+                Text = "F0"
             });
 
         return builder;

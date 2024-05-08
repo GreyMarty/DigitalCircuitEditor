@@ -1,21 +1,27 @@
 ﻿using System.Numerics;
 using Editor.DecisionDiagrams.Circuits;
 using Editor.DecisionDiagrams.Layout.Extensions;
+using GraphX.Logic.Algorithms;
 using GraphX.Logic.Algorithms.LayoutAlgorithms;
 using GraphX.Measure;
 using QuickGraph;
 
 namespace Editor.DecisionDiagrams.Layout;
 
-public class EfficientSugiyamaLayout : ILayout
+public class TestLayout : ILayout
 {
-    public EfficientSugiyamaLayoutParameters Parameters { get; set; } = new()
+    public SugiyamaLayoutParameters Parameters { get; set; } = new()
     {
-        Direction = LayoutDirection.TopToBottom,
-        EdgeRouting = SugiyamaEdgeRoutings.Traditional,
-        LayerDistance = 6,
-        VertexDistance = 6,
-        OptimizeWidth = false
+        HorizontalGap = 6,
+        VerticalGap = 6,
+        MaxWidth = 1000,
+        PositionCalculationMethod = PositionCalculationMethodTypes.IndexBased,
+        
+        // Direction = LayoutDirection.TopToBottom,
+        // EdgeRouting = SugiyamaEdgeRoutings.Traditional,
+        // LayerDistance = 6,
+        // VertexDistance = 6,
+        // OptimizeWidth = false
     };
     
     
@@ -46,7 +52,7 @@ public class EfficientSugiyamaLayout : ILayout
 
     private LayoutInfo Arrange(BidirectionalGraph<LayoutVertex, LayoutEdge> graph, Dictionary<LayoutVertex, Size> vertexSizes)
     {
-        var layout = new EfficientSugiyamaLayoutAlgorithm<LayoutVertex, LayoutEdge, BidirectionalGraph<LayoutVertex, LayoutEdge>>(graph, Parameters, vertexSizes);
+        var layout = new SugiyamaLayoutAlgorithm<LayoutVertex, LayoutEdge, BidirectionalGraph<LayoutVertex, LayoutEdge>>(graph, vertexSizes, Parameters, x => EdgeTypes.Hierarchical);
         
         layout.Compute(CancellationToken.None);
         

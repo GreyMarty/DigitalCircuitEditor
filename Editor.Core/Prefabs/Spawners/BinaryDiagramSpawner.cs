@@ -27,7 +27,7 @@ public class BinaryDiagramSpawner : Spawner
         return nodes.Values.Select(x => x.Entity);
     }
 
-    private Node Spawn(INode node, NodeLayoutInfo layout, Dictionary<int, Node> nodes)
+    private Node Spawn(INode node, LayoutInfo layout, Dictionary<int, Node> nodes)
     {
         if (nodes.TryGetValue(node.Id, out var nodeComponent))
         {
@@ -40,7 +40,7 @@ public class BinaryDiagramSpawner : Spawner
         {
             nodeEntity = Context.Instantiate(ConstNodeFactory
                 .Create()
-                .ConfigureComponent<Position>(x => x.Value = layout.Position(node)!.Value + Position)
+                .ConfigureComponent<Position>(x => x.Value = layout.Position(node.Id)!.Value + Position)
                 .ConfigureComponent<ConstNode>(x => x.Value = terminalNode.Value)
             );
             
@@ -53,7 +53,7 @@ public class BinaryDiagramSpawner : Spawner
 
         var nodeSpawnerEntity = Context.Instantiate(NodeSpawnerFactory
             .Create()
-            .ConfigureComponent<Position>(x => x.Value = layout.Position(node)!.Value + Position)
+            .ConfigureComponent<Position>(x => x.Value = layout.Position(node.Id)!.Value + Position)
         );
 
         nodeEntity = nodeSpawnerEntity.GetRequiredComponent<Spawner>().Component!.Spawn().First();
@@ -70,7 +70,7 @@ public class BinaryDiagramSpawner : Spawner
         {
             var connection = branchNodeComponent.Connect(t, ne)!;
 
-            foreach (var joint in layout.Joints(branchNode, n))
+            foreach (var joint in layout.Joints(branchNode.Id, n.Id))
             {
                 var jointComponent = connection.Split(joint + Position);
                 connection = jointComponent.Connection2.GetRequiredComponent<Connection>()!;

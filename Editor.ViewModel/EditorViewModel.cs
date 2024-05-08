@@ -11,6 +11,7 @@ using Editor.Core.Events;
 using Editor.Core.Prefabs.Factories;
 using Editor.Core.Prefabs.Factories.Previews;
 using Editor.Core.Prefabs.Spawners;
+using Editor.Core.Prefabs.Spawners.Circuits;
 using Editor.Core.Rendering;
 using Editor.Core.Rendering.Renderers;
 using Editor.DecisionDiagrams.Circuits;
@@ -159,5 +160,14 @@ public partial class EditorViewModel : ViewModel
         diagram.Root = diagram.Root.Reduce();
 
         var circuit = diagram.Root.ToCircuit();
+        
+        Context.Instantiate(new TestPreviewFactory()
+            .Create()
+            .ConfigureComponent<Position>(x => x.Value = Vector2.One * 10000)
+            .ConfigureComponent<CircuitSpawner>(x =>
+            {
+                x.Root = circuit;
+            })
+        );
     }
 }

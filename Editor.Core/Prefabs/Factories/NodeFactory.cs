@@ -39,7 +39,7 @@ public class NodeFactory : IEntityBuilderFactory
                 Fill = SKColors.White,
                 StrokeThickness = 0.2f,
                 Stroke = SKColors.Black,
-                FontSize = 2,
+                FontSize = 1.5f,
                 Anchor = Vector2.One * 0.5f
             });
 
