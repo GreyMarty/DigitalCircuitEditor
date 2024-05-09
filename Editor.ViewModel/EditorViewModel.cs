@@ -12,6 +12,7 @@ using Editor.Core.Prefabs.Spawners;
 using Editor.Core.Rendering;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Serialization;
+using Editor.DecisionDiagrams;
 using Editor.DecisionDiagrams.Circuits;
 using Editor.DecisionDiagrams.Extensions;
 using Editor.DecisionDiagrams.Operations;
@@ -128,7 +129,7 @@ public partial class EditorViewModel : ViewModel
     }
 
     [RelayCommand]
-    public void ApplyOperation(IBinaryOperation operation)
+    public void ApplyOperation(IOperation operation)
     {
         var selected = Context.Entities
              .Where(x => x.GetComponent<Selectable>()?.Component?.Selected == true)
@@ -137,24 +138,47 @@ public partial class EditorViewModel : ViewModel
              .Take(2)
              .ToList();
 
-         if (selected.Count != 2)
-         {
-             return;
-         }
-         
-         var diagramA = EntitiesToDiagramConverter.Convert(selected[0]!).Root.Reduce();
-         var diagramB = EntitiesToDiagramConverter.Convert(selected[1]!).Root.Reduce();
+        var diagramC = default(INode);
 
-         var diagramC = operation.Apply(diagramA, diagramB).Reduce();
-         
-         Context.Instantiate(new BinaryDiagramPreviewFactory()
-             .Create()
-             .ConfigureComponent<Position>(x => x.Value = Vector2.One * 10000)
-             .ConfigureComponent<BinaryDiagramSpawner>(x =>
-             {
-                 x.Root = diagramC;
-             })
-         );
+        switch (operation)
+        {
+            case IUnaryOperation:
+            {
+                if (selected.Count != 1)
+                {
+                    return;
+                }
+                
+                var diagramA = EntitiesToDiagramConverter.Convert(selected[0]!).Root.Reduce();
+                diagramC = operation.Apply(diagramA);
+                break;
+            }
+
+            case IBinaryOperation:
+            {
+                if (selected.Count != 2)
+                {
+                    return;
+                }
+                
+                var diagramA = EntitiesToDiagramConverter.Convert(selected[0]!).Root.Reduce();
+                var diagramB = EntitiesToDiagramConverter.Convert(selected[1]!).Root.Reduce();
+                diagramC = operation.Apply(diagramA, diagramB).Reduce();
+                break;
+            }
+            
+            default:
+                return;
+        }
+        
+        Context.Instantiate(new BinaryDiagramPreviewFactory()
+            .Create()
+            .ConfigureComponent<Position>(x => x.Value = Vector2.One * 10000)
+            .ConfigureComponent<BinaryDiagramSpawner>(x =>
+            {
+                x.Root = diagramC;
+            })
+        );
     }
 
     [RelayCommand]

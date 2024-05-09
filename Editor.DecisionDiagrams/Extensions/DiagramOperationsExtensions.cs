@@ -4,12 +4,50 @@ namespace Editor.DecisionDiagrams.Extensions;
 
 public static class DiagramOperationsExtensions
 {
-    public static INode Apply(this IBinaryOperation operation, INode a, INode b)
+    public static INode Apply(this IOperation operation, params INode[] nodes)
     {
         var id = 0;
-        return operation.Apply(a, b, ref id, []);
+
+        return operation switch
+        {
+            IBinaryOperation binary => binary.Apply(nodes[0], nodes[1], ref id, []),
+            IUnaryOperation unary => unary.Apply(nodes[0], ref id, []),
+            _ => throw new InvalidOperationException()
+        };
     }
 
+    private static INode Apply(this IUnaryOperation operation, INode a, ref int id, Dictionary<int, INode> cache)
+    {
+        if (cache.TryGetValue(a.Id, out var node))
+        {
+            return node;
+        }
+
+        switch (a)
+        {
+            case TerminalNode ta:
+                node = new TerminalNode(
+                    id++,
+                    operation.Compute(ta.Value)
+                );
+                cache[a.Id] = node;
+                return node;
+            
+            case BranchNode ba:
+                node = new BranchNode(
+                    id++,
+                    ba.VariableId,
+                    operation.Apply(ba.True, ref id, cache),
+                    operation.Apply(ba.False, ref id, cache)
+                );
+                cache[a.Id] = node;
+                return node;
+            
+            default:
+                throw new InvalidOperationException();
+        }
+    }
+    
     private static INode Apply(this IBinaryOperation operation, INode a, INode b, ref int id, Dictionary<(int, int), INode> cache)
     {
         if (cache.TryGetValue((a.Id, b.Id), out var node))

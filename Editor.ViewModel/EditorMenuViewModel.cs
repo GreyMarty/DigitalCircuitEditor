@@ -11,6 +11,11 @@ public class EditorMenuViewModel : ViewModel
         [
             new OperationViewModel
             {
+                Label = "NOT",
+                Operation = new Not()
+            },
+            new OperationViewModel
+            {
                 Label = "OR",
                 Operation = new Or(),
             },
@@ -19,6 +24,11 @@ public class EditorMenuViewModel : ViewModel
                 Label = "AND",
                 Operation = new And(),
             },
+            new OperationViewModel
+            {
+                Label = "XOR",
+                Operation = new Xor()
+            }
         ];
     }
 
@@ -27,7 +37,7 @@ public class EditorMenuViewModel : ViewModel
     public OperationViewModel[] Operations { get; set; }
 
     public IRelayCommand? ReduceCommand { get; set; } 
-    public IRelayCommand<IBinaryOperation>? ApplyOperationCommand { get; set; }
+    public IRelayCommand<IOperation>? ApplyOperationCommand { get; set; }
     public IRelayCommand? ConvertCommand { get; set; }
     public IRelayCommand? SaveCommand { get; set; }
     public IRelayCommand? SaveAsCommand { get; set; }
@@ -37,5 +47,5 @@ public class EditorMenuViewModel : ViewModel
 public class OperationViewModel : ViewModel
 {
     public string Label { get; set; } = default!;
-    public IBinaryOperation Operation { get; set; } = default!;
+    public IOperation Operation { get; set; } = default!;
 }
