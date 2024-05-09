@@ -59,6 +59,7 @@ public class Connection : EditorComponentBase
         if (jointComponent.Connection2.GetComponent<ConnectionToLineShapeAdapter>()?.Component is { } connection2Adapter)
         {
             connection2Adapter.IgnoreSourceShape = true;
+            connection2Adapter.IgnoreTargetShape = connection.GetRequiredComponent<Connection>().Component!.Target!.GetComponent<ConnectionJoint>() is not null;
         }
         
         return jointComponent;

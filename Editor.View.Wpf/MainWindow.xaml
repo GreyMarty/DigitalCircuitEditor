@@ -7,15 +7,25 @@
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:ctrl="clr-namespace:Editor.View.Wpf.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="BDD Editor" Height="450" Width="800"
         WindowState="Maximized"
         ResizeMode="CanMinimize"
         d:DataContext="{d:DesignInstance dd:MainWindowDesignData, IsDesignTimeCreatable=True}">
     
     <DockPanel>
-        <Menu>
-            
-        </Menu>
+        <ctrl:EditorMenu
+            DockPanel.Dock="Top"
+            DataContext="{Binding Editor.Menu}">
+            <ctrl:EditorMenu.Effect>
+                <DropShadowEffect
+                    Color="Black"
+                    Opacity="0.5"
+                    Direction="-90"
+                    ShadowDepth="1"
+                    BlurRadius="8"/>
+            </ctrl:EditorMenu.Effect>
+        </ctrl:EditorMenu>
+        
         <Grid>
             <ctrl:EditorView 
                 DataContext="{Binding Editor}"/>

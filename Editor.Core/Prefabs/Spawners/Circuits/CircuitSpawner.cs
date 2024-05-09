@@ -3,6 +3,7 @@ using Editor.Component;
 using Editor.Core.Components;
 using Editor.Core.Components.Circuits;
 using Editor.Core.Prefabs.Factories;
+using Editor.Core.Prefabs.Factories.Circuits;
 using Editor.DecisionDiagrams.Circuits;
 using Editor.DecisionDiagrams.Circuits.Gates;
 using Editor.DecisionDiagrams.Layout;
@@ -26,7 +27,7 @@ public class CircuitSpawner : Spawner
         [typeof(MuxGate)] = new InstantSpawnerFactory<MuxGateSpawner>()
     };
 
-    public IEntityBuilderFactory ConnectionFactory { get; set; } = new ConnectionFactory();
+    public IEntityBuilderFactory ConnectionFactory { get; set; } = new CircuitConnectionFactory();
     
     public ICircuitElement Root { get; set; } = default!;
     public ILayout Layout { get; set; } = new EfficientSugiyamaLayout
@@ -35,8 +36,8 @@ public class CircuitSpawner : Spawner
         {
             Direction = LayoutDirection.LeftToRight,
             OptimizeWidth = true,
-            LayerDistance = 3.5,
-            VertexDistance = 4
+            LayerDistance = 1,
+            VertexDistance = 2
         }
     };
 

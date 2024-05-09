@@ -9,7 +9,7 @@ public class InputSpawner : LogicGateSpawnerBase<InputFactory>
     {
         return
         [
-            new Vector2(width / 2, 0)
+            new Vector2(0, 0)
         ];
     }
 }

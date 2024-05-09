@@ -46,6 +46,17 @@ public class EfficientSugiyamaLayout : ILayout
 
     private LayoutInfo Arrange(BidirectionalGraph<LayoutVertex, LayoutEdge> graph, Dictionary<LayoutVertex, Size> vertexSizes)
     {
+        if (graph.VertexCount == 1)
+        {
+            return new LayoutInfo(
+                new Dictionary<int, Vector2>
+                {
+                    [graph.Vertices.First().NodeId] = Vector2.Zero
+                },
+                []
+            );
+        }
+        
         var layout = new EfficientSugiyamaLayoutAlgorithm<LayoutVertex, LayoutEdge, BidirectionalGraph<LayoutVertex, LayoutEdge>>(graph, Parameters, vertexSizes);
         
         layout.Compute(CancellationToken.None);

@@ -9,7 +9,7 @@ public class ConstantSpawner : LogicGateSpawnerBase<ConstantFactory>
     {
         return
         [
-            new Vector2(width / 2, 0)
+            new Vector2(0, 0)
         ];
     }
 }

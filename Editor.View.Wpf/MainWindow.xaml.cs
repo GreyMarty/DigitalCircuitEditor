@@ -18,6 +18,7 @@ public partial class MainWindow : MetroWindow
     {
         DataContext = _viewModel;
         _viewModel.Editor.FilePrompt = new FilePathPrompt();
+        _viewModel.Editor.PreviewService = new CircuitPreviewService(this);
         _viewModel.ToolBar.Items = [
             new ToolBarItemViewModel
             {

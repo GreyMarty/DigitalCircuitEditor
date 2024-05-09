@@ -6,3 +6,8 @@ public class EntityDestroyed(object sender, IEntity entity) : TinyMessageBase(se
 {
     public IEntity Entity { get; } = entity;
 }
+
+public class EntityDestroying(object sender, IEntity entity) : TinyMessageBase(sender)
+{
+    public IEntity Entity { get; } = entity;
+}

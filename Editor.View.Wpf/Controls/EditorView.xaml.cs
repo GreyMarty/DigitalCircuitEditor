@@ -43,7 +43,7 @@ public partial class EditorView : UserControl
 
     private void This_OnLoaded(object sender, RoutedEventArgs e)
     {
-        _window = Application.Current.MainWindow;
+        _window = Window.GetWindow(this);
         _window.KeyDown += Window_OnKeyDown;
         
         ViewModel.OnInitialized();
@@ -60,46 +60,6 @@ public partial class EditorView : UserControl
 
         Canvas.InvalidateVisual();
     }
-    
-// #region Test
-//
-//     
-//     
-//     private void TestOperation(IBooleanOperation operation)
-//     {
-//         var selected = Context.Entities
-//             .Where(x => x.GetComponent<Selectable>()?.Component?.Selected == true)
-//             .Select(x => x.GetComponent<Node>()?.Component)
-//             .Where(x => x is not null)
-//             .Take(2)
-//             .ToList();
-//
-//         if (selected.Count != 2)
-//         {
-//             return;
-//         }
-//         
-//         var diagramA = EntitiesToDiagramConverter.Convert(selected[0]!).Root.Reduce();
-//         var diagramB = EntitiesToDiagramConverter.Convert(selected[1]!).Root.Reduce();
-//
-//         var diagramC = operation.Apply(diagramA, diagramB).Reduce();
-//         
-//         var builder = new InstantSpawnerFactory<BinaryDiagramSpawner>()
-//             .Create()
-//             .ConfigureComponent<Position>(x => x.Value = new Vector2(20, 0))
-//             .ConfigureComponent<BinaryDiagramSpawner>(x =>
-//             {
-//                 x.Root = diagramC;
-//                 x.Layout = new ForceDirectedLayout
-//                 {
-//                     Iterations = 1000
-//                 };
-//             })
-//             .AddComponent<SpawnOnInit>();
-//         Context.Instantiate(builder);
-//     }
-//     
-// #endregion
     
     private void Canvas_OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
     {

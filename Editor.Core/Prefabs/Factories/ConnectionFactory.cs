@@ -41,7 +41,8 @@ public class ConnectionFactory : IEntityBuilderFactory
             {
                 Stroke = SKColors.Black,
                 StrokeThickness = 0.2f,
-                Anchor = new Vector2(0.5f, 0.5f)
+                Anchor = new Vector2(0.5f, 0.5f),
+                ZIndex = -10
             });
 
         builder

@@ -40,6 +40,7 @@ public partial class EditorViewModel : ViewModel
 
 
     public IFilePathPrompt FilePrompt { get; set; } = default!;
+    public ICircuitPreviewService PreviewService { get; set; } = default!;
     
     public EditorContext? Context { get; private set; } = default!;
     public Action<Action>? Invoker { get; set; } = default!;
@@ -51,6 +52,9 @@ public partial class EditorViewModel : ViewModel
     public IEventBusSubscriber EventBus { get; private set; } = default!;
 
     public EditorMenuViewModel Menu { get; }
+
+
+    public event Action? Initialized;
     
     
     public void OnInitialized()
@@ -83,6 +87,8 @@ public partial class EditorViewModel : ViewModel
                 Layer = RenderLayer.PreRender
             })
         );
+        
+        Initialized?.Invoke();
     }
     
     public void OnKeyDown(string key)
@@ -167,14 +173,7 @@ public partial class EditorViewModel : ViewModel
 
         var circuit = diagram.Root.ToCircuit();
         
-        Context.Instantiate(new TestPreviewFactory()
-            .Create()
-            .ConfigureComponent<Position>(x => x.Value = Vector2.One * 10000)
-            .ConfigureComponent<CircuitSpawner>(x =>
-            {
-                x.Root = circuit;
-            })
-        );
+        PreviewService.Show(circuit);
     }
 
     [RelayCommand]

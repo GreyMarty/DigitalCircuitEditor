@@ -82,6 +82,8 @@ public class Context : IContext
 
     public void Destroy(IEntity entity)
     {
+        EventBus.Publish(new EntityDestroying(this, entity));
+        
         if (!_entities.Remove(entity))
         {
             return;

@@ -19,7 +19,8 @@ public class CircuitPortFactory : IEntityBuilderFactory
             {
                 Fill = SKColors.Black,
                 Stroke = SKColors.Transparent,
-                Radius = 0.1f
+                Radius = 0.1f,
+                ZIndex = -9
             });
     }
 }

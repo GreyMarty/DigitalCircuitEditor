@@ -4,13 +4,13 @@ namespace Editor.DecisionDiagrams.Circuits;
 
 public static class DiagramToCircuitConverter
 {
-    public static ICircuitElement ToCircuit(this INode root)
+    public static ICircuitElement ToCircuit(this INode root, bool reuseInputs = false)
     {
         var id = 0;
-        return root.ToCircuit([], [], ref id);
+        return root.ToCircuit([], reuseInputs, [], ref id);
     }
 
-    private static ICircuitElement ToCircuit(this INode root, Dictionary<int, ICircuitElement> cache, Dictionary<int, Input> inputs, ref int id)
+    private static ICircuitElement ToCircuit(this INode root, Dictionary<int, ICircuitElement> cache, bool reuseInputs, Dictionary<int, Input> inputs, ref int id)
     {
         // Constant
         if (root is TerminalNode terminalNode)
@@ -29,7 +29,7 @@ public static class DiagramToCircuitConverter
         
         if (terminalTrue?.Value == false || terminalFalse?.Value == true)
         {
-            if (!inputs.TryGetValue(-branchNode.VariableId, out input))
+            if (!reuseInputs || !inputs.TryGetValue(-branchNode.VariableId, out input))
             {
                 input = new Input(id++, branchNode.VariableId, true);
                 inputs[-input.InputId] = input;
@@ -37,7 +37,7 @@ public static class DiagramToCircuitConverter
 
             inverted = true;
         }
-        else if (!inputs.TryGetValue(branchNode.VariableId, out input))
+        else if (!reuseInputs || !inputs.TryGetValue(branchNode.VariableId, out input))
         {
             input = new Input(id++, branchNode.VariableId);
             inputs[input.InputId] = input;
@@ -46,14 +46,14 @@ public static class DiagramToCircuitConverter
         ICircuitElement element = (terminalTrue?.Value, terminalFalse?.Value, inverted) switch
         {
             (not null, not null, _) => input,
-            (true, _, false) => new OrGate(id++, input, branchNode.False.ToCircuit(cache, inputs, ref id)),
-            (_, false, false) => new AndGate(id++, branchNode.True.ToCircuit(cache, inputs, ref id), input),
-            (_, true, true) => new OrGate(id++, branchNode.True.ToCircuit(cache, inputs, ref id), input),
-            (false, _, true) => new AndGate(id++, input, branchNode.False.ToCircuit(cache, inputs, ref id)),
+            (true, _, false) => new OrGate(id++, input, branchNode.False.ToCircuit(cache, reuseInputs, inputs, ref id)),
+            (_, false, false) => new AndGate(id++, branchNode.True.ToCircuit(cache, reuseInputs, inputs, ref id), input),
+            (_, true, true) => new OrGate(id++, branchNode.True.ToCircuit(cache, reuseInputs, inputs, ref id), input),
+            (false, _, true) => new AndGate(id++, input, branchNode.False.ToCircuit(cache, reuseInputs, inputs, ref id)),
             _ => new MuxGate(
                 id++,
-                branchNode.False.ToCircuit(cache, inputs, ref id),
-                branchNode.True.ToCircuit(cache, inputs, ref id),
+                branchNode.False.ToCircuit(cache, reuseInputs, inputs, ref id),
+                branchNode.True.ToCircuit(cache, reuseInputs, inputs, ref id),
                 input
             )
         };

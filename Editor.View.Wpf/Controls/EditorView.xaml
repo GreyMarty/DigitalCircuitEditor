@@ -13,19 +13,6 @@
              Focusable="True"
              Loaded="This_OnLoaded">
     <DockPanel>
-        <ctrl:EditorMenu 
-            DockPanel.Dock="Top"
-            DataContext="{Binding Menu}">
-            <ctrl:EditorMenu.Effect>
-                <DropShadowEffect
-                    Color="Black"
-                    Opacity="0.5"
-                    Direction="-90"
-                    ShadowDepth="1"
-                    BlurRadius="8"/>
-            </ctrl:EditorMenu.Effect>
-        </ctrl:EditorMenu>
-        
         <Grid DockPanel.Dock="Bottom">
             <skia:SKElement 
                 x:Name="Canvas"

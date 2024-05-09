@@ -33,12 +33,6 @@ public abstract class LogicGateFactoryBase : IEntityBuilderFactory
             .AddComponent<ChangeStrokeOnSelect>();
 
         builder
-            .AddBehavior<DestroyBehavior, ITriggerArgs>(
-                new EventTrigger<DestroyRequested>
-                {
-                    Filters = [ new SelectedFilter() ]
-                }
-            )
             .AddBehavior<FollowMouseDeltaBehavior, IMovePositionArgs>(
                 new MouseMoveTrigger
                 {
