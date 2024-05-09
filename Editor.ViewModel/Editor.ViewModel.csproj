@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Editor.Component\Editor.Component.csproj" />
+      <ProjectReference Include="..\Editor.Core.Serialization\Editor.Core.Serialization.csproj" />
       <ProjectReference Include="..\Editor.Core\Editor.Core.csproj" />
     </ItemGroup>
 

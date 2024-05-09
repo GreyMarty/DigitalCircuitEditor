@@ -1,5 +1,6 @@
 ﻿using Editor.Core.Prefabs.Factories.Previews;
 using Editor.View.Wpf.Controls.Toolbar.Previews;
+using Editor.View.Wpf.Services;
 using Editor.ViewModel;
 using MahApps.Metro.Controls;
 
@@ -16,6 +17,7 @@ public partial class MainWindow : MetroWindow
     public MainWindow()
     {
         DataContext = _viewModel;
+        _viewModel.Editor.FilePrompt = new FilePathPrompt();
         _viewModel.ToolBar.Items = [
             new ToolBarItemViewModel
             {

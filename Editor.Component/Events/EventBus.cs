@@ -48,7 +48,11 @@ internal class EventBusSubscriber(ITinyMessengerHub hub, Func<bool>? globalFilte
 
     public void Unsubscribe<TEvent>() where TEvent : class, ITinyMessage
     {
-        var token = _subscriptions[typeof(TEvent)];
+        if (!_subscriptions.TryGetValue(typeof(TEvent), out var token))
+        {
+            return;
+        }
+        
         _hub.Unsubscribe<TEvent>(token);
     }
 }

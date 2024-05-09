@@ -33,8 +33,14 @@
                     DockPanel.Dock="Right"
                     Margin="0,4,0,0"
                     FontSize="16">
-                    <MenuItem Header="File"/>
+                    
+                    <MenuItem Header="File">
+                        <MenuItem Header="Open" Command="{Binding LoadCommand}"/>
+                        <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
+                    </MenuItem>
+                    
                     <MenuItem Header="Edit"/>
+                    
                     <MenuItem Header="Diagram">
                         
                         <MenuItem 
