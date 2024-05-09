@@ -4,13 +4,13 @@ namespace Editor.DecisionDiagrams.Extensions;
 
 public static class DiagramOperationsExtensions
 {
-    public static INode Apply(this IBooleanOperation operation, INode a, INode b)
+    public static INode Apply(this IBinaryOperation operation, INode a, INode b)
     {
         var id = 0;
         return operation.Apply(a, b, ref id, []);
     }
 
-    private static INode Apply(this IBooleanOperation operation, INode a, INode b, ref int id, Dictionary<(int, int), INode> cache)
+    private static INode Apply(this IBinaryOperation operation, INode a, INode b, ref int id, Dictionary<(int, int), INode> cache)
     {
         if (cache.TryGetValue((a.Id, b.Id), out var node))
         {

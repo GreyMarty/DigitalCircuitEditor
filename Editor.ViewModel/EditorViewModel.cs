@@ -9,7 +9,6 @@ using Editor.Core.Converters;
 using Editor.Core.Events;
 using Editor.Core.Prefabs.Factories.Previews;
 using Editor.Core.Prefabs.Spawners;
-using Editor.Core.Prefabs.Spawners.Circuits;
 using Editor.Core.Rendering;
 using Editor.Core.Rendering.Renderers;
 using Editor.Core.Serialization;
@@ -24,6 +23,7 @@ namespace Editor.ViewModel;
 public partial class EditorViewModel : ViewModel
 {
     private readonly EditorSerializer _serializer = new();
+    private string? _saveFilePath;
     
     
     public EditorViewModel()
@@ -34,6 +34,7 @@ public partial class EditorViewModel : ViewModel
             ReduceCommand = ReduceCommand,
             ConvertCommand = ConvertCommand,
             SaveCommand = SaveCommand,
+            SaveAsCommand = SaveAsCommand,
             LoadCommand = LoadCommand
         };
     }
@@ -127,7 +128,7 @@ public partial class EditorViewModel : ViewModel
     }
 
     [RelayCommand]
-    public void ApplyOperation(IBooleanOperation operation)
+    public void ApplyOperation(IBinaryOperation operation)
     {
         var selected = Context.Entities
              .Where(x => x.GetComponent<Selectable>()?.Component?.Selected == true)
@@ -179,12 +180,28 @@ public partial class EditorViewModel : ViewModel
     [RelayCommand]
     public void Save()
     {
-        if (FilePrompt.GetSaveFilePath() is not { } path)
+        if (_saveFilePath is null)
+        {
+            SaveAs();
+            return;
+        }
+
+        using var stream = File.CreateText(_saveFilePath);
+        _serializer.Serialize(Context!, stream);
+    }
+    
+    [RelayCommand]
+    public void SaveAs()
+    {
+        if (FilePrompt.GetSaveFilePath(_saveFilePath) is not { } path)
         {
             return;
         }
 
-        using var stream = File.CreateText(path);
+        _saveFilePath = path;
+        Menu.FileName = Path.GetFileName(_saveFilePath);
+
+        using var stream = File.CreateText(_saveFilePath);
         _serializer.Serialize(Context!, stream);
     }
 
@@ -196,7 +213,10 @@ public partial class EditorViewModel : ViewModel
             return;
         }
 
-        using var stream = File.OpenText(path);
+        _saveFilePath = path;
+        Menu.FileName = Path.GetFileName(_saveFilePath);
+        
+        using var stream = File.OpenText(_saveFilePath);
         _serializer.Deserialize(Context!, stream);
     }
 }

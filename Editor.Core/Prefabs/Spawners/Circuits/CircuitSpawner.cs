@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using Editor.Component;
+﻿using Editor.Component;
 using Editor.Core.Components;
 using Editor.Core.Components.Circuits;
 using Editor.Core.Prefabs.Factories;
@@ -34,7 +33,7 @@ public class CircuitSpawner : Spawner
     {
         Parameters =
         {
-            Direction = LayoutDirection.LeftToRight,
+            Direction = LayoutDirection.RightToLeft,
             OptimizeWidth = true,
             LayerDistance = 1,
             VertexDistance = 2
@@ -56,7 +55,7 @@ public class CircuitSpawner : Spawner
             return entity;
         }
 
-        var position = -layout.Position(root.Id)!.Value;
+        var position = layout.Position(root.Id)!.Value;
         
         var spawnerEntity = Context.Instantiate(GateFactories[root.GetType()]
             .Create()
@@ -108,14 +107,12 @@ public class CircuitSpawner : Spawner
             
             foreach (var joint in layout.Joints(gate.Id, gate.Inputs[i].Id))
             {
-                var actualJoint = -joint;
-
-                if ((actualJoint + Position).X > portPositionComponent.Value.X)
+                if ((joint + Position).X > portPositionComponent.Value.X)
                 {
                     continue;
                 }
                 
-                var jointComponent = connection.Split(actualJoint + Position);
+                var jointComponent = connection.Split(joint + Position);
                 
                 if (!jointPositionSet)
                 {
