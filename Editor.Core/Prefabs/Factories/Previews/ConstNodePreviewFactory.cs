@@ -8,11 +8,24 @@ namespace Editor.Core.Prefabs.Factories.Previews;
 
 public class ConstNodePreviewFactory : PreviewSpawnerFactoryBase
 {
+    private readonly bool _value = false;
+
+
+    public ConstNodePreviewFactory()
+    {
+    }
+
+    public ConstNodePreviewFactory(bool value)
+    {
+        _value = value;
+    }
+    
+    
     public override IEntityBuilder Create()
     {
         return base.Create()
-            .AddComponent<SimpleSpawner<ConstNodeFactory>>()
-            .AddComponent(new LabeledRectangleRenderer()
+            .AddComponent(new SimpleSpawner<ConstNodeFactory>(new ConstNodeFactory(_value)))
+            .AddComponent(new LabeledRectangleRenderer
             {
                 Width = 3,
                 Height = 3,
@@ -21,7 +34,7 @@ public class ConstNodePreviewFactory : PreviewSpawnerFactoryBase
                 Stroke = new SKColor(0, 0, 0, 125),
                 FontSize = 1.5f,
                 Anchor = Vector2.One * 0.5f,
-                Text = "0"
+                Text = _value ? "1" : "0"
             });
     }
 }

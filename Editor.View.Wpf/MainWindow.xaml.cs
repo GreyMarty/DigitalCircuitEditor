@@ -35,8 +35,9 @@ public partial class MainWindow : MetroWindow
             new ToolBarItemViewModel
             {
                 Hotkey = '3',
-                Preview = new LabelPreview()
-            }
+                Preview = new ConstNodePreview(true),
+                Factory = new ConstNodePreviewFactory(true)
+            },
         ];
         
         InitializeComponent();

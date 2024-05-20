@@ -13,7 +13,6 @@ public interface IContext : IDisposable
     public void Init();
     
     public IEntity Instantiate(IEntityBuilder? builder = null);
-    public IEnumerable<IEntity> Instantiate(IEntityTreeBuilder treeBuilder);
     public void Destroy(IEntity entity);
 }
 
@@ -57,27 +56,6 @@ public class Context : IContext
         EventBus.Publish(new EntityInstantiated(this, entity));
 
         return entity;
-    }
-
-    public IEnumerable<IEntity> Instantiate(IEntityTreeBuilder treeBuilder)
-    {
-        var entities = new List<IEntity>();
-        
-        foreach (var entity in treeBuilder.Build())
-        {
-            entities.Add(entity);
-            _entities.Add(entity);
-
-            if (!Initialized)
-            {
-                continue;
-            }
-            
-            entity.Init(this);
-            EventBus.Publish(new EntityInstantiated(this, entity));
-        }
-
-        return entities;
     }
 
     public void Destroy(IEntity entity)

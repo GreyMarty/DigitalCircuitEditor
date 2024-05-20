@@ -32,6 +32,6 @@
             VerticalAlignment="Center"
             FontSize="{StaticResource PreviewFontSize}"
             FontFamily="Consolas"
-            Text="0"/>
+            Text="{Binding Label}"/>
     </Grid>
 </UserControl>

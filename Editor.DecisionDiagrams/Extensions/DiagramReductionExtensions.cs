@@ -2,20 +2,20 @@
 
 public static class DiagramReductionExtensions
 {
-    public static INode Reduce(this INode node)
+    public static INode Reduce(this INode root)
     {
-        while (ReduceI(node) | ReduceS(ref node, [])) { }
+        while (ReduceI(root) | ReduceS(ref root, [])) { }
 
-        return node;
+        return root;
     }
     
-    private static bool ReduceI(INode node)
+    private static bool ReduceI(INode root)
     {
         var result = false;
         
-        foreach (var childA in node)
+        foreach (var childA in root)
         {
-            foreach (var childB in node)
+            foreach (var childB in root)
             {
                 if (childA.Id == childB.Id)
                 {
@@ -29,7 +29,7 @@ public static class DiagramReductionExtensions
 
                 result = true;
                 
-                foreach (var parent in node.ParentsOf(childB))
+                foreach (var parent in root.ParentsOf(childB))
                 {
                     if (parent.True.Id == childB.Id)
                     {
@@ -46,16 +46,16 @@ public static class DiagramReductionExtensions
         return result;
     }
 
-    private static bool ReduceS(ref INode node, HashSet<int> reduced)
+    private static bool ReduceS(ref INode root, HashSet<int> reduced)
     {
         var result = false;
         
-        if (node is not BranchNode branchNode || reduced.Contains(node.Id))
+        if (root is not BranchNode branchNode || reduced.Contains(root.Id))
         {
             return false;
         }
         
-        reduced.Add(node.Id);
+        reduced.Add(root.Id);
 
         var trueNode = branchNode.True;
         var falseNode = branchNode.False;
@@ -68,7 +68,7 @@ public static class DiagramReductionExtensions
 
         if (trueNode.IsIdenticalTo(falseNode))
         {
-            node = trueNode;
+            root = trueNode;
             result = true;
         }
         

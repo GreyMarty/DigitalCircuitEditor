@@ -55,9 +55,6 @@ public static class DiagramOperationsExtensions
             return node;
         }
 
-        var ba = a as BranchNode;
-        var bb = b as BranchNode;
-        
         // Both terminal
         if (a is TerminalNode ta && b is TerminalNode tb)
         {
@@ -68,6 +65,9 @@ public static class DiagramOperationsExtensions
             cache[(a.Id, b.Id)] = node;
             return node;
         }
+        
+        var ba = a as BranchNode;
+        var bb = b as BranchNode;
         
         // Both non-terminal, var(a) == var(b)
         if (ba is not null && bb is not null && ba.VariableId == bb.VariableId)

@@ -5,6 +5,15 @@ namespace Editor.Core.Prefabs.Spawners;
 
 public class SimpleSpawner<TFactory> : Spawner where TFactory : IEntityBuilderFactory, new()
 {
+    public SimpleSpawner()
+    {
+    }
+
+    public SimpleSpawner(TFactory factory)
+    {
+        Factory = factory;
+    }
+    
     public IEntityBuilderFactory Factory { get; set; } = new TFactory();
     
     protected override IEnumerable<IEntity> OnSpawn(EditorContext context)

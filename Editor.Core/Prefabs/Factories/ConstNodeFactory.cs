@@ -16,8 +16,21 @@ using SkiaSharp;
 
 namespace Editor.Core.Prefabs.Factories;
 
-public class ConstNodeFactory : IEntityBuilderFactory 
+public class ConstNodeFactory : IEntityBuilderFactory
 {
+    private readonly bool _value = false;
+
+
+    public ConstNodeFactory()
+    {
+    }
+
+    public ConstNodeFactory(bool value)
+    {
+        _value = value;
+    }
+    
+    
     public virtual IEntityBuilder Create()
     {
         var builder = Entity.CreateBuilder()
@@ -29,7 +42,10 @@ public class ConstNodeFactory : IEntityBuilderFactory
             })
             .AddComponent<Hoverable>()
             .AddComponent<Selectable>()
-            .AddComponent<ConstNode>()
+            .AddComponent(new ConstNode
+            {
+                Value = _value
+            })
             .AddComponent(new ChangeFillOnHover
             {
                 HighlightColor = SKColors.LightGray

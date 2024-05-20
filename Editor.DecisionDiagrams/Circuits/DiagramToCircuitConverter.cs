@@ -12,6 +12,11 @@ public static class DiagramToCircuitConverter
 
     private static ICircuitElement ToCircuit(this INode root, Dictionary<int, ICircuitElement> cache, bool reuseInputs, Dictionary<int, Input> inputs, ref int id)
     {
+        if (cache.TryGetValue(root.Id, out var element) && (element is not Input || reuseInputs))
+        {
+            return element;
+        }
+        
         // Constant
         if (root is TerminalNode terminalNode)
         {
@@ -43,7 +48,7 @@ public static class DiagramToCircuitConverter
             inputs[input.InputId] = input;
         }
 
-        ICircuitElement element = (terminalTrue?.Value, terminalFalse?.Value, inverted) switch
+        element = (terminalTrue?.Value, terminalFalse?.Value, inverted) switch
         {
             (not null, not null, _) => input,
             (true, _, false) => new OrGate(id++, input, branchNode.False.ToCircuit(cache, reuseInputs, inputs, ref id)),

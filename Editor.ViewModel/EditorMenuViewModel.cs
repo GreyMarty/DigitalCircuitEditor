@@ -28,6 +28,21 @@ public class EditorMenuViewModel : ViewModel
             {
                 Label = "XOR",
                 Operation = new Xor()
+            },
+            new OperationViewModel
+            {
+                Label = "NOR",
+                Operation = new Nor()
+            },
+            new OperationViewModel
+            {
+                Label = "NAND",
+                Operation = new Nand()
+            },
+            new OperationViewModel
+            {
+                Label = "XNOR",
+                Operation = new Xnor()
             }
         ];
     }

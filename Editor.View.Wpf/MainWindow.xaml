@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="BDD Editor" Height="450" Width="800"
         WindowState="Maximized"
-        ResizeMode="CanMinimize"
+        
         d:DataContext="{d:DesignInstance dd:MainWindowDesignData, IsDesignTimeCreatable=True}">
     
     <DockPanel>
