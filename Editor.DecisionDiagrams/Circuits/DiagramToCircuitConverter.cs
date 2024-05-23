@@ -52,8 +52,8 @@ public static class DiagramToCircuitConverter
         {
             (not null, not null, _) => input,
             (true, _, false) => new OrGate(id++, input, branchNode.False.ToCircuit(cache, reuseInputs, inputs, ref id)),
-            (_, false, false) => new AndGate(id++, branchNode.True.ToCircuit(cache, reuseInputs, inputs, ref id), input),
-            (_, true, true) => new OrGate(id++, branchNode.True.ToCircuit(cache, reuseInputs, inputs, ref id), input),
+            (_, false, false) => new AndGate(id++, input, branchNode.True.ToCircuit(cache, reuseInputs, inputs, ref id)),
+            (_, true, true) => new OrGate(id++, input, branchNode.True.ToCircuit(cache, reuseInputs, inputs, ref id)),
             (false, _, true) => new AndGate(id++, input, branchNode.False.ToCircuit(cache, reuseInputs, inputs, ref id)),
             _ => new MuxGate(
                 id++,

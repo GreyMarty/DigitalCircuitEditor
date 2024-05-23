@@ -57,6 +57,9 @@ public class EditorMenuViewModel : ViewModel
     public IRelayCommand? SaveCommand { get; set; }
     public IRelayCommand? SaveAsCommand { get; set; }
     public IRelayCommand? LoadCommand { get; set; }
+    public IRelayCommand? CopyCommand { get; set; }
+    public IRelayCommand? PasteCommand { get; set; }
+    public IRelayCommand? DuplicateCommand { get; set; }
 }
 
 public class OperationViewModel : ViewModel

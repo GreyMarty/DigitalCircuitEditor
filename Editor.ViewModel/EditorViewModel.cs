@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Text;
 using CommunityToolkit.Mvvm.Input;
 using Editor.Component;
 using Editor.Component.Events;
@@ -36,13 +37,17 @@ public partial class EditorViewModel : ViewModel
             ConvertCommand = ConvertCommand,
             SaveCommand = SaveCommand,
             SaveAsCommand = SaveAsCommand,
-            LoadCommand = LoadCommand
+            LoadCommand = LoadCommand,
+            CopyCommand = CopyCommand,
+            PasteCommand = PasteCommand,
+            DuplicateCommand = DuplicateCommand
         };
     }
 
 
     public IFilePathPrompt FilePrompt { get; set; } = default!;
     public ICircuitPreviewService PreviewService { get; set; } = default!;
+    public IClipboardService ClipboardService { get; set; } = default!;
     
     public EditorContext? Context { get; private set; } = default!;
     public Action<Action>? Invoker { get; set; } = default!;
@@ -211,7 +216,7 @@ public partial class EditorViewModel : ViewModel
         }
 
         using var stream = File.CreateText(_saveFilePath);
-        _serializer.Serialize(Context!, stream);
+        _serializer.Serialize(stream, Context!);
     }
     
     [RelayCommand]
@@ -226,7 +231,7 @@ public partial class EditorViewModel : ViewModel
         Menu.FileName = Path.GetFileName(_saveFilePath);
 
         using var stream = File.CreateText(_saveFilePath);
-        _serializer.Serialize(Context!, stream);
+        _serializer.Serialize(stream, Context!);
     }
 
     [RelayCommand]
@@ -241,6 +246,59 @@ public partial class EditorViewModel : ViewModel
         Menu.FileName = Path.GetFileName(_saveFilePath);
         
         using var stream = File.OpenText(_saveFilePath);
-        _serializer.Deserialize(Context!, stream);
+        _serializer.Deserialize(stream, Context!, true, deserializeCamera: true);
+    }
+
+    [RelayCommand]
+    public void Copy()
+    {
+        var entities = Context.Entities
+            .Where(x => x.GetComponent<Selectable>()?.Component?.Selected == true)
+            .ToList();
+
+        if (entities.Count == 0)
+        {
+            return;
+        }
+
+        using var writer = new StringWriter();
+        _serializer.Serialize(writer, entities);
+        ClipboardService.Copy(writer.ToString());
+    }
+
+    [RelayCommand]
+    public void Paste()
+    {
+        if (ClipboardService.Paste() is not { } clipboardText)
+        {
+            return;
+        }
+
+        var oldSelectables = Context.Entities
+            .Select(x => x.GetComponent<Selectable>()?.Component)
+            .Where(x => x is not null)
+            .ToList();
+
+        try
+        {
+            using var reader = new StringReader(clipboardText);
+            _serializer.Deserialize(reader, Context, false, true, deserializeCamera: false, new Vector2(5, 5));
+
+            foreach (var selectable in oldSelectables)
+            {
+                selectable!.Selected = false;
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    [RelayCommand]
+    public void Duplicate()
+    {
+        Copy();
+        Paste();
     }
 }

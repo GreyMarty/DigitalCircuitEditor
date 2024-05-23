@@ -21,7 +21,8 @@ public class InputFactory : LogicGateFactoryBase
                 StrokeThickness = 0.2f,
                 Stroke = SKColors.Black,
                 FontSize = 1.5f,
-                Anchor = Vector2.One * 0.5f
+                Anchor = Vector2.One * 0.5f,
+                ZIndex = 2
             });
     }
 }

@@ -35,12 +35,16 @@
                     FontSize="16">
                     
                     <MenuItem Header="File">
-                        <MenuItem Header="Open" Command="{Binding LoadCommand}"/>
-                        <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
-                        <MenuItem Header="Save As" Command="{Binding SaveAsCommand}"/>
+                        <MenuItem Header="Open" Command="{Binding LoadCommand}" InputGestureText="Ctrl+O"/>
+                        <MenuItem Header="Save" Command="{Binding SaveCommand}" InputGestureText="Ctrl+S"/>
+                        <MenuItem Header="Save As" Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+Shift+S"/>
                     </MenuItem>
                     
-                    <MenuItem Header="Edit"/>
+                    <MenuItem Header="Edit">
+                        <MenuItem Header="Copy" Command="{Binding CopyCommand}" InputGestureText="Ctrl+C"/>
+                        <MenuItem Header="Paste" Command="{Binding PasteCommand}" InputGestureText="Ctrl+V"/>
+                        <MenuItem Header="Duplicate" Command="{Binding DuplicateCommand}" InputGestureText="Ctrl+D"/>
+                    </MenuItem>
                     
                     <MenuItem Header="Diagram">
                         
