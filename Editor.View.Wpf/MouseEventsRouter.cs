@@ -44,6 +44,7 @@ public class MouseEventsRouter
         
         _source.MouseDown += SourceContainer_OnMouseButtonDown;
         _source.MouseUp += SourceContainer_OnMouseButtonUp;
+        _source.MouseLeave += SourceContainer_OnMouseLeave;
         _source.Drop += SourceContainer_OnDrop;
         _source.MouseMove += SourceContainer_OnMouseMove;
         _source.MouseWheel += SourceContainer_OnMouseWheel;
@@ -58,6 +59,7 @@ public class MouseEventsRouter
         
         _source.MouseDown -= SourceContainer_OnMouseButtonDown;
         _source.MouseUp -= SourceContainer_OnMouseButtonUp;
+        _source.MouseLeave -= SourceContainer_OnMouseLeave;
         _source.Drop -= SourceContainer_OnDrop;
         _source.MouseMove -= SourceContainer_OnMouseMove;
         _source.MouseWheel -= SourceContainer_OnMouseWheel;
@@ -77,6 +79,14 @@ public class MouseEventsRouter
         
         _button = 0;
         _position = e.GetPosition(_source).ToVector2();
+        
+        _target.Publish(new MouseButtonUp(_source, button, _position, _converter, (ModKeys)Keyboard.Modifiers));
+    }
+    
+    private void SourceContainer_OnMouseLeave(object sender, MouseEventArgs e)
+    {
+        var button = _button;
+        _button = 0;
         
         _target.Publish(new MouseButtonUp(_source, button, _position, _converter, (ModKeys)Keyboard.Modifiers));
     }

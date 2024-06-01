@@ -18,6 +18,8 @@
         <KeyBinding Key="C" Modifiers="Control" Command="{Binding Editor.CopyCommand}"/>
         <KeyBinding Key="V" Modifiers="Control" Command="{Binding Editor.PasteCommand}"/>
         <KeyBinding Key="D" Modifiers="Control" Command="{Binding Editor.DuplicateCommand}"/>
+        <KeyBinding Key="R" Modifiers="Control" Command="{Binding Editor.ReduceCommand}"/>
+        <KeyBinding Key="C" Modifiers="Control+Alt" Command="{Binding Editor.ConvertCommand}"/>
     </Window.InputBindings>
     
     <DockPanel>

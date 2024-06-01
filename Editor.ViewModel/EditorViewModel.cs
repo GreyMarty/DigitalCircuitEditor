@@ -119,71 +119,80 @@ public partial class EditorViewModel : ViewModel
          {
              return;
          }
+
+         try
+         {
+             var diagram = EntitiesToDiagramConverter.Convert(rootEntity.GetRequiredComponent<Node>()!);
+             diagram.Root = diagram.Root.Reduce();
+
+             Context.Instantiate(new BinaryDiagramPreviewFactory()
+                 .Create()
+                 .ConfigureComponent<Position>(x => x.Value = Vector2.One * 10000)
+                 .ConfigureComponent<BinaryDiagramSpawner>(x => { x.Root = diagram.Root; })
+             );
+         }
+         catch
+         {
+             // Ignore
+         }
          
-         var diagram = EntitiesToDiagramConverter.Convert(rootEntity.GetRequiredComponent<Node>()!);
-         diagram.Root = diagram.Root.Reduce();
-         
-         Context.Instantiate(new BinaryDiagramPreviewFactory()
-             .Create()
-             .ConfigureComponent<Position>(x => x.Value = Vector2.One * 10000)
-             .ConfigureComponent<BinaryDiagramSpawner>(x =>
-             {
-                 x.Root = diagram.Root;
-             })
-         );
     }
 
     [RelayCommand]
     public void ApplyOperation(IOperation operation)
     {
         var selected = Context.Entities
-             .Where(x => x.GetComponent<Selectable>()?.Component?.Selected == true)
-             .Select(x => x.GetComponent<Node>()?.Component)
-             .Where(x => x is not null)
-             .Take(2)
-             .ToList();
+            .Where(x => x.GetComponent<Selectable>()?.Component?.Selected == true)
+            .Select(x => x.GetComponent<Node>()?.Component)
+            .Where(x => x is not null)
+            .Take(2)
+            .ToList();
 
         var diagramC = default(INode);
 
-        switch (operation)
+        try
         {
-            case IUnaryOperation:
+            switch (operation)
             {
-                if (selected.Count != 1)
+                case IUnaryOperation:
                 {
-                    return;
+                    if (selected.Count != 1)
+                    {
+                        return;
+                    }
+
+                    var diagramA = EntitiesToDiagramConverter.Convert(selected[0]!).Root.Reduce();
+                    diagramC = operation.Apply(diagramA);
+                    break;
                 }
-                
-                var diagramA = EntitiesToDiagramConverter.Convert(selected[0]!).Root.Reduce();
-                diagramC = operation.Apply(diagramA);
-                break;
+
+                case IBinaryOperation:
+                {
+                    if (selected.Count != 2)
+                    {
+                        return;
+                    }
+
+                    var diagramA = EntitiesToDiagramConverter.Convert(selected[0]!).Root.Reduce();
+                    var diagramB = EntitiesToDiagramConverter.Convert(selected[1]!).Root.Reduce();
+                    diagramC = operation.Apply(diagramA, diagramB).Reduce();
+                    break;
+                }
+
+                default:
+                    return;
             }
 
-            case IBinaryOperation:
-            {
-                if (selected.Count != 2)
-                {
-                    return;
-                }
-                
-                var diagramA = EntitiesToDiagramConverter.Convert(selected[0]!).Root.Reduce();
-                var diagramB = EntitiesToDiagramConverter.Convert(selected[1]!).Root.Reduce();
-                diagramC = operation.Apply(diagramA, diagramB).Reduce();
-                break;
-            }
-            
-            default:
-                return;
+            Context.Instantiate(new BinaryDiagramPreviewFactory()
+                .Create()
+                .ConfigureComponent<Position>(x => x.Value = Vector2.One * 10000)
+                .ConfigureComponent<BinaryDiagramSpawner>(x => { x.Root = diagramC; })
+            );
         }
-        
-        Context.Instantiate(new BinaryDiagramPreviewFactory()
-            .Create()
-            .ConfigureComponent<Position>(x => x.Value = Vector2.One * 10000)
-            .ConfigureComponent<BinaryDiagramSpawner>(x =>
-            {
-                x.Root = diagramC;
-            })
-        );
+        catch
+        {
+            // Ignore
+        }
     }
 
     [RelayCommand]
@@ -197,13 +206,20 @@ public partial class EditorViewModel : ViewModel
         {
             return;
         }
-         
-        var diagram = EntitiesToDiagramConverter.Convert(rootEntity.GetRequiredComponent<Node>()!);
-        diagram.Root = diagram.Root.Reduce();
 
-        var circuit = diagram.Root.ToCircuit();
-        
-        PreviewService.Show(circuit);
+        try
+        {
+            var diagram = EntitiesToDiagramConverter.Convert(rootEntity.GetRequiredComponent<Node>()!);
+            diagram.Root = diagram.Root.Reduce();
+
+            var circuit = diagram.Root.ToCircuit();
+
+            PreviewService.Show(circuit);
+        }
+        catch
+        {
+            // Ignore
+        }
     }
 
     [RelayCommand]
@@ -215,8 +231,15 @@ public partial class EditorViewModel : ViewModel
             return;
         }
 
-        using var stream = File.CreateText(_saveFilePath);
-        _serializer.Serialize(stream, Context!);
+        try
+        {
+            using var stream = File.CreateText(_saveFilePath);
+            _serializer.Serialize(stream, Context!);
+        }
+        catch
+        {
+            // Ignore
+        }
     }
     
     [RelayCommand]
@@ -230,8 +253,15 @@ public partial class EditorViewModel : ViewModel
         _saveFilePath = path;
         Menu.FileName = Path.GetFileName(_saveFilePath);
 
-        using var stream = File.CreateText(_saveFilePath);
-        _serializer.Serialize(stream, Context!);
+        try
+        {
+            using var stream = File.CreateText(_saveFilePath);
+            _serializer.Serialize(stream, Context!);
+        }
+        catch
+        {
+            // Ignore
+        }
     }
 
     [RelayCommand]
@@ -244,9 +274,16 @@ public partial class EditorViewModel : ViewModel
 
         _saveFilePath = path;
         Menu.FileName = Path.GetFileName(_saveFilePath);
-        
-        using var stream = File.OpenText(_saveFilePath);
-        _serializer.Deserialize(stream, Context!, true, deserializeCamera: true);
+
+        try
+        {
+            using var stream = File.OpenText(_saveFilePath);
+            _serializer.Deserialize(stream, Context!, true, deserializeCamera: true);
+        }
+        catch
+        {
+            // Ignore
+        }
     }
 
     [RelayCommand]
@@ -261,9 +298,16 @@ public partial class EditorViewModel : ViewModel
             return;
         }
 
-        using var writer = new StringWriter();
-        _serializer.Serialize(writer, entities);
-        ClipboardService.Copy(writer.ToString());
+        try
+        {
+            using var writer = new StringWriter();
+            _serializer.Serialize(writer, entities);
+            ClipboardService.Copy(writer.ToString());
+        }
+        catch
+        {
+            // Ignore
+        }
     }
 
     [RelayCommand]

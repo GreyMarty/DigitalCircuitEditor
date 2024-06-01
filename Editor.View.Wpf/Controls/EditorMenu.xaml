@@ -50,11 +50,11 @@
                         
                         <MenuItem 
                             Header="Reduce"
-                            Command="{Binding ReduceCommand}"/>
+                            Command="{Binding ReduceCommand}" InputGestureText="Ctrl+R"/>
                         
                         <MenuItem 
                             Header="Convert"
-                            Command="{Binding ConvertCommand}"/>
+                            Command="{Binding ConvertCommand}" InputGestureText="Ctrl+Alt+C"/>
                         
                         <MenuItem 
                             Header="Operations"
