@@ -1,11 +1,14 @@
-﻿using System.Windows;
+﻿using System.Numerics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Editor.Component;
 using Editor.Core.Events;
 using Editor.View.Wpf.Controls.Inspector;
 using Editor.ViewModel;
 using SkiaSharp.Views.Desktop;
+using Vector = System.Windows.Vector;
 
 namespace Editor.View.Wpf.Controls;
 
@@ -67,8 +70,11 @@ public partial class EditorView : UserControl
         {
             return;
         }
+
+        var dpi = VisualTreeHelper.GetDpi(sender as Visual);
+        var dpiScale = new Vector2((float)dpi.DpiScaleX, (float)dpi.DpiScaleY);            
         
-        ViewModel.CameraTarget.Update(e.Info);
+        ViewModel.CameraTarget.Update(e.Info, dpiScale);
         ViewModel.Context.RenderingManager.Render(ViewModel.Context.Camera, e.Surface.Canvas, _forceNextRedraw);
         _forceNextRedraw = false;
     }

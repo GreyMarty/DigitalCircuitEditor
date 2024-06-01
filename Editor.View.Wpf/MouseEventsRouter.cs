@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Editor.Component.Events;
 using Editor.Core.Events;
 using Editor.Core.Input;

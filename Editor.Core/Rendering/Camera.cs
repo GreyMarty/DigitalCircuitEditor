@@ -29,6 +29,7 @@ public class Camera : INotifyPropertyChanged, IDisposable
     public Vector2 Size => SizePixels / PixelsPerUnit;
     public Vector2 SizePixels => _target.Size;
 
+    public Vector2 DpiScale => _target.DpiScale;
     public float PixelsPerUnit => SizePixels.Y / 32;
     
     public SKColor Background = SKColors.White;
